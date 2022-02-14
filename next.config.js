@@ -14,6 +14,8 @@ module.exports = {
         destination: 'http://localhost:3001/api2/:path*' // Proxy to Backend
       },
 
+
+
     ]
   }
 };

@@ -12,12 +12,15 @@
     "@emotion/styled": "^11.6.0",
     "axios": "^0.26.0",
     "emotion": "^11.0.0",
+    "google-translate-api": "^2.3.0",
     "next": "12.0.10",
     "next-auth": "^4.2.1",
     "react": "17.0.2",
+    "react-auto-translate": "^0.0.6",
     "react-dom": "17.0.2",
     "react-select": "^5.2.2",
-    "swr": "^1.2.1"
+    "swr": "^1.2.1",
+    "translate-google-api": "^1.0.4"
   },
   "devDependencies": {
     "@emotion/babel-plugin": "^11.7.2",
