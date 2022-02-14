@@ -1,0 +1,35 @@
+@font-face {
+  font-family: "Spoqa Han Sans Neo";
+  font-style: normal;
+  font-weight: 400;
+  src: url(./SpoqaHanSansNeoRegular.eot);
+  src: local("Spoqa Han Sans Neo"), local("SpoqaHanSansNeo"),
+    url(./SpoqaHanSansNeoRegular.eot?#iefix) format("embedded-opentype"),
+    url(./SpoqaHanSansNeoRegular.woff2) format("woff2"),
+    url(./SpoqaHanSansNeoRegular.woff) format("woff"),
+    url(./SpoqaHanSansNeoRegular.otf) format("opentype");
+}
+
+@font-face {
+  font-family: "Spoqa Han Sans Neo";
+  font-style: medium;
+  font-weight: 500;
+  src: url(./SpoqaHanSansNeoMedium.eot);
+  src: local("Spoqa Han Sans Neo"), local("SpoqaHanSansNeo"),
+    url(./SpoqaHanSansNeoMedium.eot?#iefix) format("embedded-opentype"),
+    url(./SpoqaHanSansNeoMedium.woff2) format("woff2"),
+    url(./SpoqaHanSansNeoMedium.woff) format("woff"),
+    url(./SpoqaHanSansNeoMedium.otf) format("opentype");
+}
+
+@font-face {
+  font-family: "Spoqa Han Sans Neo";
+  font-style: bold;
+  font-weight: 700;
+  src: url(./SpoqaHanSansNeoBold.eot);
+  src: local("Spoqa Han Sans Neo"), local("SpoqaHanSansNeo"),
+    url(./SpoqaHanSansNeoBold.eot?#iefix) format("embedded-opentype"),
+    url(./SpoqaHanSansNeoBold.woff2) format("woff2"),
+    url(./SpoqaHanSansNeoBold.woff) format("woff"),
+    url(./SpoqaHanSansNeoBold.otf) format("opentype");
+}

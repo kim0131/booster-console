@@ -1,0 +1,13 @@
+{
+  "expandProps": false,
+  "prettier": true,
+  "typescript": true,
+  "replaceAttrValues": {
+    "#18181B": "{color}"
+  },
+  "svgProps": {
+    "width": "{size}",
+    "height": "{size}",
+    "viewBox": "0 0 24 24"
+  }
+}
