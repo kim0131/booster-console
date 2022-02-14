@@ -7,11 +7,6 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
 const Home: NextPage = () => {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-  if (status != "authenticated") {
-    router.push("/login");
-  }
   const toast = useToast();
   return <>관리자페이지입니다</>;
 };

@@ -1,7 +1,6 @@
 export const globalNavigation = [
-  { id: 0, content: "토픽", url: "/topics" },
-  { id: 1, content: "인사이트", url: "/insights" },
-  { id: 2, content: "서비스", url: "/services" },
+  { id: 0, content: "게시판 카테고리 관리", url: "/category" },
+  { id: 1, content: "게시판 게시물 관리", url: "/board" },
 ];
 
 export const globalNavigationMore = [
@@ -14,12 +13,7 @@ export const globalNavigationMy = [
   { id: 1, content: "로그아웃", url: "logout" },
 ];
 
-export const accountsNavigation = [
-  { id: 0, content: "로그인", url: "/accounts" },
-  { id: 1, content: "회원가입", url: "/accounts/signup" },
-  { id: 2, content: "아이디 찾기", url: "/accounts/find-id" },
-  { id: 3, content: "비밀번호 초기화", url: "/accounts/reset-password" },
-];
+export const accountsNavigation = [{ id: 0, content: "로그인", url: "/login" }];
 
 export const footerNavigation = [
   { id: 0, content: "커뮤니티소개", url: "/" },

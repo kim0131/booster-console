@@ -10,7 +10,7 @@ import {
 import useDesktop from "@core/hook/use-desktop";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Dropdown from "@components/elements/dropdown";
 import { accountsNavigation } from "@core/config/navigation";
@@ -19,13 +19,13 @@ import theme from "@components/styles/theme";
 interface IPropsNavItem {
   isRoute?: boolean;
 }
-console.log(theme);
+
 const Container = styled.header`
   position: sticky;
   width: 100%;
   top: 0;
-  background-color: ${(props) => props.theme.color.white};
-  box-shadow: ${(props) => props.theme.shadow.inset.bottom};
+  background-color: ${props => props.theme.color.white};
+  box-shadow: ${props => props.theme.shadow.inset.bottom};
   display: flex;
   flex-direction: column;
   z-index: 10;
@@ -36,7 +36,7 @@ const Wrapper = styled.div`
   max-width: 72rem;
   margin: 0 auto;
   padding: 0.5rem 1.25rem;
-  ${(props) => props.theme.screen.md} {
+  ${props => props.theme.screen.md} {
     padding: 0 3rem;
   }
   display: flex;
@@ -62,7 +62,7 @@ const Nav = styled.nav`
 
 const NavItem = styled.div<IPropsNavItem>`
   height: 3rem;
-  ${(props) => props.theme.screen.md} {
+  ${props => props.theme.screen.md} {
     height: 3.5rem;
   }
   padding: 0 0.75rem;
@@ -73,12 +73,12 @@ const NavItem = styled.div<IPropsNavItem>`
   position: relative;
   cursor: pointer;
   &:hover {
-    box-shadow: ${(props) =>
+    box-shadow: ${props =>
       props.isRoute
         ? `inset 0px -4px 0px ${props.theme.color.blue[600]}`
         : `inset 0px -4px 0px ${props.theme.color.gray[300]}`};
   }
-  box-shadow: ${(props) =>
+  box-shadow: ${props =>
     props.isRoute
       ? `inset 0px -4px 0px ${props.theme.color.blue[600]}`
       : "none"};
@@ -128,27 +128,37 @@ const Util = styled.div`
 `;
 
 const Header = () => {
-  const { data: session, status } = useSession();
-
   const router = useRouter();
+  const { data: session, status } = useSession();
+  useEffect(() => {
+    if (status != "authenticated") {
+      router.push("/login");
+      console.log(status);
+    }
+  }, [status]);
+
   const { isDesktop } = useDesktop();
 
   const onClickLink = (
-    e: React.MouseEvent<HTMLButtonElement | HTMLDivElement | SVGElement>
+    e: React.MouseEvent<HTMLButtonElement | HTMLDivElement | SVGElement>,
   ) => {
     e.preventDefault();
     const link: string | undefined = e.currentTarget.dataset.value;
     const content: string | null = e.currentTarget.textContent;
-    if (link) {
-      link === "logout" ? console.log("logout") : router.push(link);
-    }
+    if (status == "authenticated") {
+      if (link) {
+        link === "logout" ? console.log("logout") : router.push(link);
+      }
 
-    if (content) {
-      content === "로그아웃"
-        ? signOut({
-            redirect: false,
-          })
-        : "";
+      if (content) {
+        content === "로그아웃"
+          ? signOut({
+              redirect: false,
+            })
+          : "";
+      }
+    } else {
+      alert("이동할 수 없습니다.");
     }
   };
   return (
@@ -157,7 +167,7 @@ const Header = () => {
         <Logo onClick={onClickLink} />
         {isDesktop && (
           <Nav>
-            {globalNavigation.map((nav) => (
+            {globalNavigation.map(nav => (
               <NavItem
                 key={nav.id}
                 data-value={nav.url}
@@ -218,7 +228,7 @@ const Header = () => {
       {!isDesktop && (
         <MobileWrapper>
           <Nav>
-            {globalNavigation.map((nav) => (
+            {globalNavigation.map(nav => (
               <NavItem
                 key={nav.id}
                 data-value={nav.url}
