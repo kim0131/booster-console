@@ -13,6 +13,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
+import SideBar from "@components/templates/sidebar";
 
 const Container = styled.header`
   width: 100%;
@@ -95,16 +96,6 @@ const Category: NextPage = () => {
     });
   };
 
-  const onClickSearch = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    setState({ ...state, isLoading: true });
-    window.open(
-      `https://translate.google.com/?hl=ko&sl=ko&tl=en&op=translate&text=${state.data.bo_subject}`,
-      "_blank",
-    );
-    setState({ ...state, isLoading: false });
-  };
-
   const onClickCategory = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setState({ ...state, isLoading: true });
@@ -112,12 +103,13 @@ const Category: NextPage = () => {
       bo_subject: state.data.bo_subject,
       bo_table: state.data.bo_table,
     });
+    onClickCategoryList();
     setState({ ...state, isLoading: false });
   };
 
   const onClickCategoryList = async () => {
     setState({ ...state, isLoading: true });
-    axios.get("/api2/category").then((res: any) => {
+    await axios.get("/api2/category").then((res: any) => {
       let list = res.data.result;
       list.map((item: any, idx: any) => {
         list[idx] = {
@@ -161,19 +153,7 @@ const Category: NextPage = () => {
             {state.invalid && (
               <Body2 color={theme.color.red[600]}>{state.invalid}</Body2>
             )}
-          </>
-        }
-        section2={
-          <>
-            <Button
-              variants="solid"
-              color="primary"
-              size="large"
-              isLoading={state.isLoading}
-              onClick={onClickSearch}
-            >
-              영문조회
-            </Button>
+
             <Button
               variants="light"
               color="primary"
@@ -188,21 +168,21 @@ const Category: NextPage = () => {
             </Button>
           </>
         }
+        section2={
+          <>
+            <Button
+              variants="light"
+              color="primary"
+              size="large"
+              isLoading={state.isLoading}
+              onClick={onClickCategoryList}
+            >
+              게시판 조회
+            </Button>
+            <Table columns={state.colums} data={category} />
+          </>
+        }
       />
-      <>
-        <Container>
-          <Button
-            variants="light"
-            color="primary"
-            size="large"
-            isLoading={state.isLoading}
-            onClick={onClickCategoryList}
-          >
-            게시판 조회
-          </Button>
-          <Table columns={state.colums} data={category} />
-        </Container>
-      </>
     </>
   );
 };

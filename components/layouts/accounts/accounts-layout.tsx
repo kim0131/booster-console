@@ -9,8 +9,8 @@ const Container = styled.div`
   flex-direction: column;
   gap: 1.5rem;
   ${props => props.theme.screen.md} {
-    max-width: 27rem;
-    margin: 3rem auto;
+    // max-width: 50rem;
+    margin: 3rem 1rem;
     padding: 2.25rem;
     border: 1px solid ${props => props.theme.color.gray[300]};
     border-radius: ${props => props.theme.rounded.xxl};
@@ -18,6 +18,11 @@ const Container = styled.div`
 `;
 
 const Block = styled.div`
+  display: flex;
+  // flex-direction: column;
+  gap: 0.75rem;
+`;
+const Block2 = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -49,7 +54,7 @@ const AccountsLayout = ({
     <Container>
       {title && <Block>{title}</Block>}
       {section1 && <Block>{section1}</Block>}
-      {section2 && <Block>{section2}</Block>}
+      {section2 && <Block2>{section2}</Block2>}
       {section3 && <Block>{section3}</Block>}
       {find && <Find>{find}</Find>}
     </Container>

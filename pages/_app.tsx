@@ -8,6 +8,12 @@ import { MordalPortal, ToastPortal } from "@components/templates/portal";
 import useToast from "@core/hook/use-toast";
 import Header from "@components/templates/header";
 import Footer from "@components/templates/footer";
+import SideBar from "@components/templates/sidebar";
+import styled from "@emotion/styled";
+
+const Flex = styled.div`
+  display: flex;
+`;
 
 function MyApp({ Component, pageProps }: AppProps) {
   const { message } = useToast();
@@ -16,8 +22,11 @@ function MyApp({ Component, pageProps }: AppProps) {
       <SessionProvider>
         <Global styles={global} />
         <Header />
-        <Component {...pageProps} />
-        <Footer />
+        <Flex>
+          <SideBar />
+          <Component {...pageProps} />
+        </Flex>
+        {/* <Footer /> */}
         <div>{message}</div>
       </SessionProvider>
     </ThemeProvider>

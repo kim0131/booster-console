@@ -3,7 +3,6 @@ import Logo from "@components/elements/logo";
 import TextField from "@components/elements/text-field";
 import { IconMenu, IconProfile, IconSearch } from "@components/icons";
 import {
-  globalNavigation,
   globalNavigationMore,
   globalNavigationMy,
 } from "@core/config/navigation";
@@ -165,36 +164,8 @@ const Header = () => {
     <Container>
       <Wrapper>
         <Logo onClick={onClickLink} />
-        {isDesktop && (
-          <Nav>
-            {globalNavigation.map(nav => (
-              <NavItem
-                key={nav.id}
-                data-value={nav.url}
-                isRoute={router.pathname === nav.url}
-                onClick={onClickLink}
-              >
-                {nav.content}
-              </NavItem>
-            ))}
-            <NavMore>
-              더보기
-              <Dropdown menu={globalNavigationMore} onClick={() => {}} />
-            </NavMore>
-          </Nav>
-        )}
+
         <Util>
-          {isDesktop && (
-            <TextField
-              isRounded
-              size="small"
-              placeholder="검색"
-              prefix={<IconSearch />}
-            />
-          )}
-          <Button variants="solid" size="small">
-            글쓰기
-          </Button>
           {status == "authenticated" ? (
             // isDesktop && (
             <ProfileWrapper>
@@ -225,23 +196,6 @@ const Header = () => {
           )}
         </Util>
       </Wrapper>
-      {!isDesktop && (
-        <MobileWrapper>
-          <Nav>
-            {globalNavigation.map(nav => (
-              <NavItem
-                key={nav.id}
-                data-value={nav.url}
-                isRoute={router.pathname === nav.url}
-                onClick={onClickLink}
-              >
-                {nav.content}
-              </NavItem>
-            ))}
-          </Nav>
-          <IconMenu />
-        </MobileWrapper>
-      )}
     </Container>
   );
 };

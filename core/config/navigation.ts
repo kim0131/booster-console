@@ -1,6 +1,23 @@
-export const globalNavigation = [
-  { id: 0, content: "게시판 카테고리 관리", url: "/category" },
-  { id: 1, content: "게시판 게시물 관리", url: "/board" },
+export const CategoryNavigation = [
+  { id: 0, content: "카테고리", url: "/category" }, // 제목
+  { id: 1, content: "카테고리 조회", url: "/category" },
+  { id: 2, content: "카테고리 생성", url: "/category" },
+];
+
+export const TopicNavigation = [
+  { id: 0, content: "토픽", url: "/topic" },
+  { id: 1, content: "토픽 조회", url: "/topic" },
+  { id: 2, content: "토픽 수정", url: "/topic" },
+];
+
+export const InsightNavigation = [
+  { id: 0, content: "인사이트", url: "/insight" },
+  { id: 1, content: "인사이트 조회", url: "/insight" },
+];
+
+export const UserNavigation = [
+  { id: 0, content: "회원 관리", url: "/user" },
+  { id: 1, content: "회원 조회", url: "/user" },
 ];
 
 export const globalNavigationMore = [
