@@ -14,6 +14,7 @@ import { useRouter } from "next/router";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import SideBar from "@components/templates/sidebar";
+import { stat } from "fs";
 
 const Container = styled.header`
   width: 100%;
@@ -33,22 +34,25 @@ const Container = styled.header`
 interface IStateAccounts {
   data: { [key in string]: string };
   invalid?: string;
+  isSearch: boolean;
   isLoading: boolean;
-
+  searchTerm: string;
   colums: any;
 }
 
 const Category: NextPage = () => {
   const router = useRouter();
   const [category, setCategory] = useState([]);
+  const [searchResult, setSearchResult] = useState([]);
   const [state, setState] = useState<IStateAccounts>({
     data: {
       bo_table: "",
       bo_subject: "",
     },
     invalid: "",
+    isSearch: false,
     isLoading: false,
-
+    searchTerm: "",
     colums: [
       {
         Header: "순서",
@@ -76,12 +80,12 @@ const Category: NextPage = () => {
     onClickCategoryList();
   }, [router]);
 
-  const onClickLink = (
-    e: React.MouseEvent<HTMLButtonElement | HTMLParagraphElement>,
-  ) => {
-    e.preventDefault();
-    const link = e.currentTarget.dataset.value;
-    link && router.push(link);
+  const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, name } = e.currentTarget;
+    setState({
+      ...state,
+      searchTerm: value,
+    });
   };
 
   const onChangeAccounts = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,7 +111,30 @@ const Category: NextPage = () => {
     setState({ ...state, isLoading: false });
   };
 
+  const onClickSearch = async () => {
+    let result = [];
+    let list = await category.filter((item: any) => {
+      // console.log(Object.values(item));
+      if (state.searchTerm == "") {
+        return item;
+      } else {
+        Object.values(item).filter((content: any) => {
+          if (typeof content == "string") {
+            if (content.includes(state.searchTerm)) {
+              result.push(item);
+            }
+          }
+        });
+      }
+    });
+
+    setSearchResult(result);
+    setState({ ...state, isLoading: false, isSearch: true });
+  };
+
   const onClickCategoryList = async () => {
+    // if(state.searchTerm)
+
     setState({ ...state, isLoading: true });
     await axios.get("/api2/category").then((res: any) => {
       let list = res.data.result;
@@ -122,7 +149,7 @@ const Category: NextPage = () => {
       });
       setCategory(list);
     });
-    setState({ ...state, isLoading: false });
+    setState({ ...state, isLoading: false, isSearch: false });
   };
   return (
     <>
@@ -170,6 +197,21 @@ const Category: NextPage = () => {
         }
         section2={
           <>
+            <TextField
+              placeholder="카테고리 검색"
+              name="bo_table"
+              size="large"
+              onChange={onChangeSearch}
+            />
+            <Button
+              variants="light"
+              color="primary"
+              size="large"
+              isLoading={state.isLoading}
+              onClick={onClickSearch}
+            >
+              검색
+            </Button>
             <Button
               variants="light"
               color="primary"
@@ -177,9 +219,16 @@ const Category: NextPage = () => {
               isLoading={state.isLoading}
               onClick={onClickCategoryList}
             >
-              게시판 조회
+              전체조회
             </Button>
-            <Table columns={state.colums} data={category} />
+          </>
+        }
+        section3={
+          <>
+            <Table
+              columns={state.colums}
+              data={state.isSearch ? searchResult : category}
+            />
           </>
         }
       />

@@ -54,8 +54,8 @@ const AccountsLayout = ({
     <Container>
       {title && <Block>{title}</Block>}
       {section1 && <Block>{section1}</Block>}
-      {section2 && <Block2>{section2}</Block2>}
-      {section3 && <Block>{section3}</Block>}
+      {section2 && <Block>{section2}</Block>}
+      {section3 && <Block2>{section3}</Block2>}
       {find && <Find>{find}</Find>}
     </Container>
   );
