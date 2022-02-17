@@ -1,5 +1,5 @@
 import Button from "@components/elements/button";
-import Table from "@components/elements/table";
+import Table from "@components/elements/table/table-category";
 import TextField from "@components/elements/text-field";
 import { Body1, Body2, Header4 } from "@components/elements/types";
 import AccountsLayout from "@components/layouts/accounts/accounts-layout";
@@ -15,6 +15,7 @@ import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import SideBar from "@components/templates/sidebar";
 import { stat } from "fs";
+import TableCategory from "@components/elements/table/table-category";
 
 const Container = styled.header`
   width: 100%;
@@ -37,7 +38,7 @@ interface IStateAccounts {
   isSearch: boolean;
   isLoading: boolean;
   searchTerm: string;
-  colums: any;
+  tablesize: number;
 }
 
 const Category: NextPage = () => {
@@ -53,31 +54,11 @@ const Category: NextPage = () => {
     isSearch: false,
     isLoading: false,
     searchTerm: "",
-    colums: [
-      {
-        Header: "순서",
-        accessor: "idx",
-      },
-      {
-        Header: "카테고리 테이블 이름",
-        accessor: "bo_table",
-      },
-      {
-        Header: "카테고리 이름",
-        accessor: "bo_subject",
-      },
-      {
-        Header: "게시물보기",
-        accessor: "view_content",
-      },
-      {
-        Header: "수정 및 삭제",
-        accessor: "edit_subject",
-      },
-    ],
+    tablesize: 10,
   });
   useEffect(() => {
     onClickCategoryList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
   const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,6 +81,15 @@ const Category: NextPage = () => {
     });
   };
 
+  const onChangTablesize = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, name } = e.currentTarget;
+    setState({
+      ...state,
+
+      [name]: value,
+    });
+  };
+
   const onClickCategory = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setState({ ...state, isLoading: true });
@@ -112,7 +102,7 @@ const Category: NextPage = () => {
   };
 
   const onClickSearch = async () => {
-    let result = [];
+    let result: any = [];
     let list = await category.filter((item: any) => {
       // console.log(Object.values(item));
       if (state.searchTerm == "") {
@@ -157,45 +147,10 @@ const Category: NextPage = () => {
       <AccountsLayout
         title={
           <>
-            <Header4>게시판 카테고리 생성</Header4>
+            <Header4>게시판 카테고리 조회</Header4>
           </>
         }
         section1={
-          <>
-            <TextField
-              placeholder="카테고리 이름"
-              name="bo_subject"
-              type="text"
-              size="large"
-              width="100%"
-              onChange={onChangeAccounts}
-            />
-            <TextField
-              placeholder="카테고리 영문"
-              name="bo_table"
-              size="large"
-              onChange={onChangeAccounts}
-            />
-
-            {state.invalid && (
-              <Body2 color={theme.color.red[600]}>{state.invalid}</Body2>
-            )}
-
-            <Button
-              variants="light"
-              color="primary"
-              size="large"
-              isDisabled={
-                state.data.bo_subject && state.data.bo_table ? false : true
-              }
-              isLoading={state.isLoading}
-              onClick={onClickCategory}
-            >
-              게시판 생성
-            </Button>
-          </>
-        }
-        section2={
           <>
             <TextField
               placeholder="카테고리 검색"
@@ -223,11 +178,21 @@ const Category: NextPage = () => {
             </Button>
           </>
         }
+        section2={
+          <>
+            <TextField
+              placeholder="테이블 행"
+              name="tablesize"
+              size="large"
+              onChange={onChangTablesize}
+            />
+          </>
+        }
         section3={
           <>
-            <Table
-              columns={state.colums}
-              data={state.isSearch ? searchResult : category}
+            <TableCategory
+              size={state.tablesize ? state.tablesize : 1}
+              data={category}
             />
           </>
         }

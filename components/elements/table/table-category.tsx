@@ -5,8 +5,8 @@ import Link from "next/link";
 
 // react-table 의 타입 정의가 완벽하게 작동하지 않고 오류를 뿜는다...ㅠ
 interface IPropsTable {
-  columns: any;
   data: any;
+  size: number;
 }
 
 const TableLayout = styled.div`
@@ -42,7 +42,29 @@ const ButtonContainer = styled.div`
 const Td = styled.td`
   text-align: center;
 `;
-const Table = ({ columns, data }: IPropsTable) => {
+const columns = [
+  {
+    Header: "순서",
+    accessor: "idx",
+  },
+  {
+    Header: "카테고리 테이블 이름",
+    accessor: "bo_table",
+  },
+  {
+    Header: "카테고리 이름",
+    accessor: "bo_subject",
+  },
+  {
+    Header: "게시물보기",
+    accessor: "view_content",
+  },
+  {
+    Header: "수정 및 삭제",
+    accessor: "edit_subject",
+  },
+];
+const TableCategory = ({ data, size }: IPropsTable) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -67,8 +89,9 @@ const Table = ({ columns, data }: IPropsTable) => {
     useSortBy,
     usePagination,
   );
-
-  // setPageSize(10);
+  useEffect(() => {
+    setPageSize(size);
+  }, [setPageSize, size]);
 
   return (
     <>
@@ -173,4 +196,4 @@ const Table = ({ columns, data }: IPropsTable) => {
   );
 };
 
-export default Table;
+export default TableCategory;

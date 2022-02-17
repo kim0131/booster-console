@@ -1,7 +1,7 @@
 export const CategoryNavigation = [
   { id: 0, content: "카테고리", url: "/category" }, // 제목
   { id: 1, content: "카테고리 조회", url: "/category" },
-  { id: 2, content: "카테고리 생성", url: "/category" },
+  { id: 2, content: "카테고리 생성", url: "/category/create" },
 ];
 
 export const TopicNavigation = [

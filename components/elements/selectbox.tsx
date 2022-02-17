@@ -1,13 +1,24 @@
 import Select from "react-select";
 
-const style = {};
+const customStyles = {
+  option: (provided: any, state: { isSelected: any }) => ({
+    ...provided,
 
-const options = [
-  { value: "chocolate", label: "Chocolate" },
-  { value: "strawberry", label: "Strawberry" },
-  { value: "vanilla", label: "Vanilla" },
-];
+    color: state.isSelected ? "red" : "black",
+    padding: 5,
+    wideh: "200px",
+  }),
+};
 
-const Selectbox = () => <Select options={options} />;
+const Selectbox = (props: any) => {
+  return (
+    <Select
+      options={props.options}
+      isMulti={props.isMulti}
+      placeholder={props.placeholder}
+      styles={customStyles}
+    />
+  );
+};
 
 export default Selectbox;

@@ -1,5 +1,5 @@
 import Button from "@components/elements/button";
-import Table from "@components/elements/table";
+import Table from "@components/elements/table/table-category";
 import TextField from "@components/elements/text-field";
 import { Body1, Body2, Header4 } from "@components/elements/types";
 import AccountsLayout from "@components/layouts/accounts/accounts-layout";
