@@ -13,18 +13,21 @@ export default NextAuth({
       // e.g. domain, username, password, 2FA token, etc.
       // You can pass any HTML attribute to the <input> tag through the object.
       credentials: {
-        mb_id: { label: "mb_id", type: "text", placeholder: "jsmith" },
+        mb_id: { label: "mb_id", type: "text" },
         mb_pw: { label: "mb_pw", type: "password" },
       },
       async authorize(credentials, req) {
         // Add logic here to look up the user from the credentials supplied
+        console.log(credentials);
         const mb_id = credentials?.mb_id;
         const mb_pw = credentials?.mb_pw;
         //이유를 모르겠으나... 아이디는 email, 닉네임은 name에 할당
 
+        const user = { email: "admin", name: "관리자" };
+
         if (mb_id == "admin" && mb_pw == "admin") {
           // Any object returned will be saved in `user` property of the JWT
-          const user = { mb_id: mb_id };
+
           return user;
         } else {
           // If you return null or false then the credentials will be rejected

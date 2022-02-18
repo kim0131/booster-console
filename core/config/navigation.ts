@@ -7,7 +7,7 @@ export const CategoryNavigation = [
 export const TopicNavigation = [
   { id: 0, content: "토픽", url: "/topic" },
   { id: 1, content: "토픽 조회", url: "/topic" },
-  { id: 2, content: "토픽 수정", url: "/topic" },
+  { id: 2, content: "토픽 생성", url: "/topic/create" },
 ];
 
 export const InsightNavigation = [

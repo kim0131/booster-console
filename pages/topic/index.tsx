@@ -25,6 +25,14 @@ interface IStateAccounts {
   searchTerm: string;
   tablesize: number;
 }
+interface IStateAccounts {
+  data: { [key in string]: string };
+  invalid?: string;
+  isSearch: boolean;
+  isLoading: boolean;
+  searchTerm: string;
+  tablesize: number;
+}
 const Topic: NextPage = () => {
   const router = useRouter();
   const [topic, setTopic] = useState([]);
@@ -42,9 +50,11 @@ const Topic: NextPage = () => {
     tablesize: 10,
   });
 
-  // useEffect(() => {
-  //   onClickTopicList();
-  // }, [router]);
+  useEffect(() => {
+    onClickCategoryList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router]);
+
   const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.currentTarget;
     setState({
@@ -52,6 +62,7 @@ const Topic: NextPage = () => {
       searchTerm: value,
     });
   };
+
   const onClickSearch = async () => {
     let result: any = [];
     let list = await category.filter((item: any) => {
@@ -74,27 +85,52 @@ const Topic: NextPage = () => {
   };
 
   const onClickTopicList = async () => {
-    // if(state.searchTerm)
-
     setState({ ...state, isLoading: true });
-    await axios.get("/api2/topic").then((res: any) => {
+    const result = await axios
+      .get("/api2/topic/list")
+      .then(async (res: any) => {
+        let list = res.data;
+
+        list.map(async (item: any, idx: any) => {
+          list[idx] = {
+            category: getCategoryName(list[idx].board),
+            wr_subject: list[idx].wr_subject,
+            mb_name: list[idx].mb_name,
+            datetime: list[idx].wr_datetime.slice(0, 10),
+            update: list[idx].wr_update.slice(0, 10),
+            view: list[idx].wr_view,
+            like: list[idx].wr_good,
+            comment: "댓글",
+          };
+        });
+        setTopic(list);
+      });
+
+    setState({ ...state, isLoading: false, isSearch: false });
+  };
+  const getCategoryName = (idx: number) => {
+    for (let i = 0; i < category.length; i++) {
+      if (category[i].value == idx) {
+        return category[i].label;
+      }
+    }
+  };
+
+  const onClickCategoryList = async () => {
+    setState({ ...state, isLoading: true });
+    await axios.get("/api2/category").then((res: any) => {
       let list = res.data.result;
       list.map((item: any, idx: any) => {
         list[idx] = {
-          category: list[idx].board,
-          wr_subject: list[idx].wr_subject,
-          mb_name: list[idx].mb_name,
-          datetime: list[idx].wr_datetime,
-          update: list[idx].wr_update,
-          view: list[idx].wr_view,
-          like: list[idx].wr_good,
-          comment: "댓글",
+          value: list[idx].idx,
+          label: list[idx].bo_subject,
         };
       });
-      setTopic(list);
+      setCategory(list);
     });
     setState({ ...state, isLoading: false, isSearch: false });
   };
+
   return (
     <>
       {" "}
@@ -110,7 +146,7 @@ const Topic: NextPage = () => {
               options={category}
               isMulti={false}
               placeholder={"전체"}
-            ></Selectbox>
+            />
             <CalendarContainer />
             <CalendarContainer />
             <TextField

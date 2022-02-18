@@ -1,3 +1,4 @@
+import { NextPage } from "next";
 import Button from "@components/elements/button";
 import Table from "@components/elements/table/table-category";
 import TextField from "@components/elements/text-field";
@@ -8,13 +9,10 @@ import { accountsDescription } from "@core/config/description";
 import { accountsNavigation } from "@core/config/navigation";
 import { IAccountsData } from "@core/interfaces/accounts";
 import axios from "axios";
-import { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
-import SideBar from "@components/templates/sidebar";
-import { stat } from "fs";
 import TableCategory from "@components/elements/table/table-category";
 
 const Container = styled.header`
@@ -38,11 +36,11 @@ interface IStateAccounts {
   isSearch: boolean;
   isLoading: boolean;
   searchTerm: string;
-  tablesize: number;
+  colums: any;
 }
-
-const Category: NextPage = () => {
+const TopiceUpdate: NextPage = () => {
   const router = useRouter();
+  const { id } = router.query;
   const [category, setCategory] = useState([]);
   const [searchResult, setSearchResult] = useState([]);
   const [state, setState] = useState<IStateAccounts>({
@@ -54,19 +52,49 @@ const Category: NextPage = () => {
     isSearch: false,
     isLoading: false,
     searchTerm: "",
-    tablesize: 10,
+    colums: [
+      {
+        Header: "순서",
+        accessor: "idx",
+      },
+      {
+        Header: "카테고리 테이블 이름",
+        accessor: "bo_table",
+      },
+      {
+        Header: "카테고리 이름",
+        accessor: "bo_subject",
+      },
+      {
+        Header: "게시물보기",
+        accessor: "view_content",
+      },
+      {
+        Header: "수정 및 삭제",
+        accessor: "edit_subject",
+      },
+    ],
   });
   useEffect(() => {
+    if (id) {
+      axios.get(`/api2/category/${id}`).then(res => {
+        let bo_subject = res.data.result.bo_subject;
+        let bo_table = res.data.result.bo_table;
+        setState({
+          ...state,
+          data: { bo_subject: bo_subject, bo_table: bo_table },
+        });
+      });
+    }
     onClickCategoryList();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
-  const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, name } = e.currentTarget;
-    setState({
-      ...state,
-      searchTerm: value,
-    });
+  const onClickLink = (
+    e: React.MouseEvent<HTMLButtonElement | HTMLParagraphElement>,
+  ) => {
+    e.preventDefault();
+    const link = e.currentTarget.dataset.value;
+    link && router.push(link);
   };
 
   const onChangeAccounts = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,27 +108,52 @@ const Category: NextPage = () => {
       invalid: "",
     });
   };
-
-  const onChangTablesize = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.currentTarget;
     setState({
       ...state,
-
-      [name]: value,
+      searchTerm: value,
     });
   };
-
-  const onClickCategory = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onClickCategoryEdit = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     e.preventDefault();
     setState({ ...state, isLoading: true });
-    await axios.post("/api2/category/create", {
+    await axios.post(`/api2/category/update/${id}`, {
       bo_subject: state.data.bo_subject,
       bo_table: state.data.bo_table,
     });
     onClickCategoryList();
     setState({ ...state, isLoading: false });
   };
+  const onClickCategoryDel = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setState({ ...state, isLoading: true });
+    await axios.post(`/api2/category/delete/${id}`);
+    onClickCategoryList();
+    router.push("/category");
+    setState({ ...state, isLoading: false });
+  };
 
+  const onClickCategoryList = async () => {
+    setState({ ...state, isLoading: true });
+
+    axios.get("/api2/category").then((res: any) => {
+      let list = res.data.result;
+      list.map((item: any, idx: any) => {
+        list[idx] = {
+          idx: list[idx].idx,
+          bo_table: list[idx].bo_table,
+          bo_subject: list[idx].bo_subject,
+          view_content: "게시물보기",
+          edit_subject: "수정 및 삭제하기",
+        };
+      });
+      setCategory(list);
+    });
+    setState({ ...state, isLoading: false });
+  };
   const onClickSearch = async () => {
     let result: any = [];
     let list = await category.filter((item: any) => {
@@ -117,29 +170,8 @@ const Category: NextPage = () => {
         });
       }
     });
-
     setSearchResult(result);
     setState({ ...state, isLoading: false, isSearch: true });
-  };
-
-  const onClickCategoryList = async () => {
-    // if(state.searchTerm)
-
-    setState({ ...state, isLoading: true });
-    await axios.get("/api2/category").then((res: any) => {
-      let list = res.data.result;
-      list.map((item: any, idx: any) => {
-        list[idx] = {
-          idx: list[idx].idx,
-          bo_table: list[idx].bo_table,
-          bo_subject: list[idx].bo_subject,
-          view_content: "게시물보기",
-          edit_subject: "수정 및 삭제하기",
-        };
-      });
-      setCategory(list);
-    });
-    setState({ ...state, isLoading: false, isSearch: false });
   };
   return (
     <>
@@ -147,10 +179,58 @@ const Category: NextPage = () => {
       <AccountsLayout
         title={
           <>
-            <Header4>게시판 카테고리 조회</Header4>
+            <Header4>카테고리 수정</Header4>
           </>
         }
         section1={
+          <>
+            <TextField
+              placeholder="카테고리 이름"
+              name="bo_subject"
+              type="text"
+              size="large"
+              width="100%"
+              onChange={onChangeAccounts}
+              value={state.data.bo_subject}
+            />
+            <TextField
+              placeholder="카테고리 영문"
+              name="bo_table"
+              size="large"
+              onChange={onChangeAccounts}
+              value={state.data.bo_table}
+            />
+
+            {state.invalid && (
+              <Body2 color={theme.color.red[600]}>{state.invalid}</Body2>
+            )}
+            <Button
+              variants="light"
+              color="primary"
+              size="large"
+              isDisabled={
+                state.data.bo_subject && state.data.bo_table ? false : true
+              }
+              isLoading={state.isLoading}
+              onClick={onClickCategoryEdit}
+            >
+              카테고리 수정
+            </Button>
+            <Button
+              variants="light"
+              color="primary"
+              size="large"
+              isDisabled={
+                state.data.bo_subject && state.data.bo_table ? false : true
+              }
+              isLoading={state.isLoading}
+              onClick={onClickCategoryDel}
+            >
+              카테고리 삭제
+            </Button>
+          </>
+        }
+        section2={
           <>
             <TextField
               placeholder="카테고리 검색"
@@ -178,22 +258,9 @@ const Category: NextPage = () => {
             </Button>
           </>
         }
-        // section2={
-        //   <>
-        //     <TextField
-        //       placeholder="테이블 행"
-        //       name="tablesize"
-        //       size="large"
-        //       onChange={onChangTablesize}
-        //     />
-        //   </>
-        // }
         section3={
           <>
-            <TableCategory
-              size={state.tablesize ? state.tablesize : 1}
-              data={state.isSearch ? searchResult : category}
-            />
+            <TableCategory size={10} data={category} />
           </>
         }
       />
@@ -201,4 +268,4 @@ const Category: NextPage = () => {
   );
 };
 
-export default Category;
+export default TopiceUpdate;

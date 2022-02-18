@@ -15,9 +15,8 @@ const CalendarContainer = () => {
     <Container>
       <DatePicker
         selected={startDate}
-        onChange={(date: SetStateAction<Date>) => setStartDate(date)}
-        locale={ko} // 한글로 변경
-        dateFormat="yyyy.MM.dd (eee)" // 시간 포맷 변경
+        onChange={(date: any) => setStartDate(date)}
+        dateFormat="yyyy.MM.dd " // 시간 포맷 변경
         showPopperArrow={false} // 화살표 변경
         customInput={
           // 날짜 뜨는 인풋 커스텀

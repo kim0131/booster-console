@@ -7,7 +7,9 @@ const customStyles = {
     color: state.isSelected ? "red" : "black",
     padding: 5,
     wideh: "200px",
+    zindex: "5",
   }),
+  menu: (provided: any) => ({ ...provided, zIndex: 9999 }),
 };
 
 const Selectbox = (props: any) => {
@@ -17,6 +19,8 @@ const Selectbox = (props: any) => {
       isMulti={props.isMulti}
       placeholder={props.placeholder}
       styles={customStyles}
+      name={props.name}
+      onChange={props.onChange}
     />
   );
 };

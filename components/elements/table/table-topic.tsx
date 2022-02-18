@@ -146,15 +146,7 @@ const TableTopic = ({ data, size }: IPropsTable) => {
                 >
                   {row.cells.map((cell: any, idx: number) => (
                     <Td key={idx} {...cell.getCellProps()} className="p-0.5">
-                      {cell.value == "수정 및 삭제하기" ? (
-                        <Link href={`/category/update/${row.cells[0].value}`}>
-                          <a>{cell.value}</a>
-                        </Link>
-                      ) : (
-                        cell.render("Cell")
-                      )}
-
-                      {/* {cell.render("Cell")} */}
+                      {cell.render("Cell")}
                     </Td>
                   ))}
                 </tr>
