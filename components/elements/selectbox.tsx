@@ -21,6 +21,9 @@ const Selectbox = (props: any) => {
       styles={customStyles}
       name={props.name}
       onChange={props.onChange}
+      value={props.options.filter(
+        (option: any) => option.value === props.value,
+      )}
     />
   );
 };

@@ -95,13 +95,11 @@ const TopicCrate: NextPage = () => {
         mb_name: session?.user?.name,
       },
     });
-
-    console.log(value, name);
-    console.log(state.data);
   };
 
   const onChangeSelcet = (e: any) => {
     const value = e.value;
+
     setState({ ...state, data: { ...state.data, board: value } });
   };
 

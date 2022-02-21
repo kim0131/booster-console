@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSortBy, useTable, usePagination } from "react-table";
 import styled from "@emotion/styled";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 // react-table 의 타입 정의가 완벽하게 작동하지 않고 오류를 뿜는다...ㅠ
 interface IPropsTable {
@@ -101,6 +102,7 @@ const TableTopic = ({ data, size }: IPropsTable) => {
     useSortBy,
     usePagination,
   );
+  const router = useRouter();
   useEffect(() => {
     setPageSize(size);
   }, [setPageSize, size]);
@@ -143,6 +145,10 @@ const TableTopic = ({ data, size }: IPropsTable) => {
                   {...row.getRowProps()}
                   key={idx}
                   className="bg-gray-800 odd:bg-gray-900 bg-opacity-50 text-center"
+                  onClick={() => {
+                    let idx = row.original.idx;
+                    router.push(`/topic/update/${idx}`);
+                  }}
                 >
                   {row.cells.map((cell: any, idx: number) => (
                     <Td key={idx} {...cell.getCellProps()} className="p-0.5">

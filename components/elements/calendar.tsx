@@ -9,18 +9,17 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
 `;
-const CalendarContainer = () => {
-  const [startDate, setStartDate] = useState(new Date());
+const CalendarContainer = (props: any) => {
   return (
     <Container>
       <DatePicker
-        selected={startDate}
-        onChange={(date: any) => setStartDate(date)}
+        selected={props.selected}
+        onChange={props.onChange}
         dateFormat="yyyy.MM.dd " // 시간 포맷 변경
         showPopperArrow={false} // 화살표 변경
         customInput={
           // 날짜 뜨는 인풋 커스텀
-          <TextField></TextField>
+          <TextField name={props.name}></TextField>
         }
       />
     </Container>

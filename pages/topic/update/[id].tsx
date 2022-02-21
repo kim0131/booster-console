@@ -14,6 +14,8 @@ import { useRouter } from "next/router";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import TableCategory from "@components/elements/table/table-category";
+import Selectbox from "@components/elements/selectbox";
+import Textarea from "@components/textarea";
 
 const Container = styled.header`
   width: 100%;
@@ -42,11 +44,15 @@ const TopiceUpdate: NextPage = () => {
   const router = useRouter();
   const { id } = router.query;
   const [category, setCategory] = useState([]);
-  const [searchResult, setSearchResult] = useState([]);
+  const { data: session, status } = useSession();
   const [state, setState] = useState<IStateAccounts>({
     data: {
-      bo_table: "",
-      bo_subject: "",
+      wr_subject: "",
+      wr_content: "",
+      mb_name: "",
+      board: "",
+      wr_view: "",
+      wr_good: "",
     },
     invalid: "",
     isSearch: false,
@@ -76,28 +82,45 @@ const TopiceUpdate: NextPage = () => {
     ],
   });
   useEffect(() => {
-    if (id) {
-      axios.get(`/api2/category/${id}`).then(res => {
-        let bo_subject = res.data.result.bo_subject;
-        let bo_table = res.data.result.bo_table;
-        setState({
-          ...state,
-          data: { bo_subject: bo_subject, bo_table: bo_table },
-        });
-      });
-    }
     onClickCategoryList();
+    getTopicInfo();
   }, [router]);
-
-  const onClickLink = (
-    e: React.MouseEvent<HTMLButtonElement | HTMLParagraphElement>,
-  ) => {
-    e.preventDefault();
-    const link = e.currentTarget.dataset.value;
-    link && router.push(link);
+  const getTopicInfo = async () => {
+    await axios.get(`/api2/topic/list/${id}`).then(res => {
+      setState({
+        ...state,
+        data: {
+          wr_subject: res.data.wr_subject,
+          wr_content: res.data.wr_content,
+          mb_name: res.data.mb_name,
+          board: res.data.board,
+          wr_view: res.data.wr_view,
+          wr_good: res.data.wr_good,
+        },
+      });
+    });
+  };
+  const onClickCategoryList = async () => {
+    setState({ ...state, isLoading: true });
+    await axios.get("/api2/category").then((res: any) => {
+      let list = res.data.result;
+      list.map((item: any, idx: any) => {
+        list[idx] = {
+          value: list[idx].idx,
+          label: list[idx].bo_subject,
+        };
+      });
+      setCategory(list);
+    });
+    setState({ ...state, isLoading: false, isSearch: false });
   };
 
-  const onChangeAccounts = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeSelcet = (e: any) => {
+    const value = e.value;
+    setState({ ...state, data: { ...state.data, board: value } });
+  };
+
+  const onChangeTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.currentTarget;
     setState({
       ...state,
@@ -105,162 +128,119 @@ const TopiceUpdate: NextPage = () => {
         ...state.data,
         [name]: value,
       },
-      invalid: "",
     });
-  };
-  const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, name } = e.currentTarget;
-    setState({
-      ...state,
-      searchTerm: value,
-    });
-  };
-  const onClickCategoryEdit = async (
-    e: React.MouseEvent<HTMLButtonElement>,
-  ) => {
-    e.preventDefault();
-    setState({ ...state, isLoading: true });
-    await axios.post(`/api2/category/update/${id}`, {
-      bo_subject: state.data.bo_subject,
-      bo_table: state.data.bo_table,
-    });
-    onClickCategoryList();
-    setState({ ...state, isLoading: false });
-  };
-  const onClickCategoryDel = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    setState({ ...state, isLoading: true });
-    await axios.post(`/api2/category/delete/${id}`);
-    onClickCategoryList();
-    router.push("/category");
-    setState({ ...state, isLoading: false });
   };
 
-  const onClickCategoryList = async () => {
+  const onClickSubmitTopic = async () => {
     setState({ ...state, isLoading: true });
-
-    axios.get("/api2/category").then((res: any) => {
-      let list = res.data.result;
-      list.map((item: any, idx: any) => {
-        list[idx] = {
-          idx: list[idx].idx,
-          bo_table: list[idx].bo_table,
-          bo_subject: list[idx].bo_subject,
-          view_content: "게시물보기",
-          edit_subject: "수정 및 삭제하기",
-        };
+    await axios
+      .post(`/api2/topic/update/${id}`, {
+        wr_subject: state.data.wr_subject,
+        wr_content: state.data.wr_content,
+        board: state.data.board,
+      })
+      .then(() => {
+        alert("수정되었습니다");
+        router.push("/topic");
       });
-      setCategory(list);
+    setState({ ...state, isLoading: false });
+  };
+
+  const onClickDeleteTopic = async () => {
+    setState({ ...state, isLoading: true });
+    await axios.post(`/api2/topic/delete/${id}`).then(() => {
+      alert("삭제되었습니다");
+      router.push("/topic");
     });
     setState({ ...state, isLoading: false });
   };
-  const onClickSearch = async () => {
-    let result: any = [];
-    let list = await category.filter((item: any) => {
-      // console.log(Object.values(item));
-      if (state.searchTerm == "") {
-        return item;
-      } else {
-        Object.values(item).filter((content: any) => {
-          if (typeof content == "string") {
-            if (content.includes(state.searchTerm)) {
-              result.push(item);
-            }
-          }
-        });
-      }
-    });
-    setSearchResult(result);
-    setState({ ...state, isLoading: false, isSearch: true });
-  };
+
   return (
     <>
       {" "}
       <AccountsLayout
         title={
           <>
-            <Header4>카테고리 수정</Header4>
+            <Header4>토픽 수정</Header4>
           </>
         }
         section1={
           <>
-            <TextField
-              placeholder="카테고리 이름"
-              name="bo_subject"
-              type="text"
-              size="large"
-              width="100%"
-              onChange={onChangeAccounts}
-              value={state.data.bo_subject}
+            <Selectbox
+              options={category}
+              isMulti={false}
+              placeholder={"카테고리 선택"}
+              name="board"
+              onChange={onChangeSelcet}
+              value={state.data.board}
             />
             <TextField
-              placeholder="카테고리 영문"
-              name="bo_table"
+              placeholder="사진 첨부 (임시)"
+              name="file_rul"
               size="large"
-              onChange={onChangeAccounts}
-              value={state.data.bo_table}
             />
-
-            {state.invalid && (
-              <Body2 color={theme.color.red[600]}>{state.invalid}</Body2>
-            )}
-            <Button
-              variants="light"
-              color="primary"
+            <TextField
+              placeholder="제목"
+              name="wr_subject"
               size="large"
-              isDisabled={
-                state.data.bo_subject && state.data.bo_table ? false : true
-              }
-              isLoading={state.isLoading}
-              onClick={onClickCategoryEdit}
-            >
-              카테고리 수정
+              onChange={onChangeTopic}
+              value={state.data.wr_subject}
+            />
+            <Button variants="light" color="primary" size="large">
+              작성자 : {state.data.mb_name}
             </Button>
-            <Button
-              variants="light"
-              color="primary"
-              size="large"
-              isDisabled={
-                state.data.bo_subject && state.data.bo_table ? false : true
-              }
-              isLoading={state.isLoading}
-              onClick={onClickCategoryDel}
-            >
-              카테고리 삭제
+            <Button variants="light" color="primary" size="large">
+              조회수 : {state.data.wr_view}
+            </Button>
+            <Button variants="light" color="primary" size="large">
+              좋아요 : {state.data.wr_good}
             </Button>
           </>
         }
         section2={
           <>
-            <TextField
-              placeholder="카테고리 검색"
-              name="bo_table"
+            <Textarea
+              placeholder="내용"
+              name="wr_content"
               size="large"
-              onChange={onChangeSearch}
+              col={100}
+              row={20}
+              onChange={onChangeTopic}
+              value={state.data.wr_content}
             />
-            <Button
-              variants="light"
-              color="primary"
-              size="large"
-              isLoading={state.isLoading}
-              onClick={onClickSearch}
-            >
-              검색
-            </Button>
-            <Button
-              variants="light"
-              color="primary"
-              size="large"
-              isLoading={state.isLoading}
-              onClick={onClickCategoryList}
-            >
-              전체조회
-            </Button>
           </>
         }
         section3={
           <>
-            <TableCategory size={10} data={category} />
+            <Button
+              variants="light"
+              color="primary"
+              size="large"
+              isLoading={state.isLoading}
+              onClick={onClickSubmitTopic}
+            >
+              수정
+            </Button>
+            <Button
+              variants="light"
+              color="primary"
+              size="large"
+              isLoading={state.isLoading}
+              onClick={onClickDeleteTopic}
+            >
+              삭제
+            </Button>
+            <Button
+              variants="light"
+              color="primary"
+              size="large"
+              isLoading={state.isLoading}
+              onClick={() => {
+                router.push("/topic");
+              }}
+            >
+              취소
+            </Button>
           </>
         }
       />
