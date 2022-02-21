@@ -24,8 +24,8 @@ interface IStateAccounts {
   isLoading: boolean;
   searchTerm: string;
   tablesize: number;
-  startDay: Date;
-  endDay: Date;
+  startDay: any;
+  endDay: any;
 }
 
 const Topic: NextPage = () => {
@@ -45,8 +45,8 @@ const Topic: NextPage = () => {
     isLoading: false,
     searchTerm: "",
     tablesize: 10,
-    startDay: new Date(),
-    endDay: new Date(),
+    startDay: "시작일",
+    endDay: "종료일",
   });
 
   useEffect(() => {
@@ -66,8 +66,11 @@ const Topic: NextPage = () => {
     let result1: any = [];
     let result2: any = [];
     let result3: any = [];
-    var start = new Date(state.startDay);
-    var end = new Date(state.endDay);
+    let start = new Date(state.startDay);
+    let end = new Date(state.endDay);
+    end.setDate(end.getDate() + 1);
+    let startString = getToday(state.startDay);
+    let endString = getToday(state.endDay);
     onClickTopicList();
     let list = topic;
     //카테고리
@@ -84,8 +87,35 @@ const Topic: NextPage = () => {
     //날짜
     await result1.filter((item: any) => {
       let item_datetime = new Date(item.datetime);
+      let item_datetime_string = getToday(item.datetime);
 
-      if (item_datetime >= start && end >= item_datetime) {
+      if (
+        typeof state.startDay == "object" &&
+        typeof state.endDay != "object"
+      ) {
+        if (item_datetime >= start) {
+          result2.push(item);
+        }
+      } else if (
+        typeof state.startDay != "object" &&
+        typeof state.endDay == "object"
+      ) {
+        if (end >= item_datetime) {
+          result2.push(item);
+        }
+      } else if (
+        typeof state.startDay == "object" &&
+        typeof state.endDay == "object"
+      ) {
+        if (item_datetime >= start && end >= item_datetime) {
+          result2.push(item);
+        } else if (
+          startString == endString &&
+          startString == item_datetime_string
+        ) {
+          result2.push(item);
+        }
+      } else {
         result2.push(item);
       }
     });
@@ -105,10 +135,20 @@ const Topic: NextPage = () => {
       }
     });
 
+    if (result3.length == 0) {
+      alert("검색결과가 없습니다.");
+    }
     setSearchResult(result3);
     setState({ ...state, isLoading: false, isSearch: true });
   };
+  const getToday = (date: Date) => {
+    var date = new Date(date);
+    var year = date.getFullYear();
+    var month = ("0" + (1 + date.getMonth())).slice(-2);
+    var day = ("0" + date.getDate()).slice(-2);
 
+    return year + "-" + month + "-" + day;
+  };
   const onClickTopicList = async () => {
     setState({ ...state, isLoading: true });
     await onClickCategoryList();
@@ -141,7 +181,6 @@ const Topic: NextPage = () => {
   };
 
   const onClickCategoryList = async () => {
-    setState({ ...state, isLoading: true });
     await axios.get("/api2/category").then((res: any) => {
       let list = res.data.result;
       list.map((item: any, idx: any) => {
@@ -152,8 +191,6 @@ const Topic: NextPage = () => {
       });
       setCategory(list);
     });
-
-    setState({ ...state, isLoading: false, isSearch: false });
   };
   const onChangeSelcet = (e: any) => {
     const value = e.value;
@@ -203,6 +240,7 @@ const Topic: NextPage = () => {
               onChange={onChangeCalendarStartDay}
               selected={state.startDay}
             />
+            ~
             <CalendarContainer
               name="endDay"
               onChange={onChangeCalendarEndtDay}

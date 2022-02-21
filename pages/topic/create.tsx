@@ -76,6 +76,7 @@ const TopicCrate: NextPage = () => {
       });
       setCategory(list);
     });
+
     setState({ ...state, isLoading: false, isSearch: false });
   };
 
@@ -105,16 +106,21 @@ const TopicCrate: NextPage = () => {
 
   const onClickSubmitTopic = async () => {
     setState({ ...state, isLoading: true });
-    await axios.post("/api2/topic/write", {
-      wr_subject: state.data.wr_subject,
-      wr_content: state.data.wr_content,
-      wr_ip: state.data.wr_ip,
-      mb_id: state.data.mb_id,
-      mb_name: state.data.mb_name,
-      board: state.data.board,
-      wr_datetime: state.data.wr_datetime,
-      wr_update: state.data.wr_update,
-    });
+    await axios
+      .post("/api2/topic/write", {
+        wr_subject: state.data.wr_subject,
+        wr_content: state.data.wr_content,
+        wr_ip: state.data.wr_ip,
+        mb_id: state.data.mb_id,
+        mb_name: state.data.mb_name,
+        board: state.data.board,
+        wr_datetime: state.data.wr_datetime,
+        wr_update: state.data.wr_update,
+      })
+      .then(res => {
+        alert("토픽이 등록되었습니다");
+        router.push("/topic");
+      });
     setState({ ...state, isLoading: false });
   };
 
@@ -134,6 +140,7 @@ const TopicCrate: NextPage = () => {
               placeholder={"카테고리 선택"}
               name="board"
               onChange={onChangeSelcet}
+              value={state.data.board}
             />
             <TextField
               placeholder="사진 첨부 (임시)"

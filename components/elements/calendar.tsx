@@ -13,10 +13,13 @@ const CalendarContainer = (props: any) => {
   return (
     <Container>
       <DatePicker
-        selected={props.selected}
+        selected={typeof props.selected == "object" ? props.selected : ""}
         onChange={props.onChange}
         dateFormat="yyyy.MM.dd " // 시간 포맷 변경
         showPopperArrow={false} // 화살표 변경
+        placeholderText={
+          typeof props.selected == "string" ? props.selected : ""
+        }
         customInput={
           // 날짜 뜨는 인풋 커스텀
           <TextField name={props.name}></TextField>

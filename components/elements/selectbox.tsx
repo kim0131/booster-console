@@ -13,6 +13,8 @@ const customStyles = {
 };
 
 const Selectbox = (props: any) => {
+  console.log(props.value);
+  console.log(props.options);
   return (
     <Select
       options={props.options}
