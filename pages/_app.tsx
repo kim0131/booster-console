@@ -13,6 +13,7 @@ import styled from "@emotion/styled";
 
 const Flex = styled.div`
   display: flex;
+  justify-content: center;
 `;
 
 function MyApp({ Component, pageProps }: AppProps) {

@@ -152,7 +152,7 @@ const CategoryUpdate: NextPage = () => {
       });
       setCategory(list);
     });
-    setState({ ...state, isLoading: false });
+    setState({ ...state, isLoading: false, isSearch: false });
   };
   const onClickSearch = async () => {
     let result: any = [];
@@ -173,17 +173,19 @@ const CategoryUpdate: NextPage = () => {
     setSearchResult(result);
     setState({ ...state, isLoading: false, isSearch: true });
   };
+
   return (
     <>
       {" "}
       <AccountsLayout
         title={
           <>
-            <Header4>카테고리 수정</Header4>
+            <Header4>카테고리 편집</Header4>
           </>
         }
         section1={
           <>
+            카테고리 :
             <TextField
               placeholder="카테고리 이름"
               name="bo_subject"
@@ -193,6 +195,7 @@ const CategoryUpdate: NextPage = () => {
               onChange={onChangeAccounts}
               value={state.data.bo_subject}
             />
+            카테고리 영문 :
             <TextField
               placeholder="카테고리 영문"
               name="bo_table"
@@ -200,7 +203,6 @@ const CategoryUpdate: NextPage = () => {
               onChange={onChangeAccounts}
               value={state.data.bo_table}
             />
-
             {state.invalid && (
               <Body2 color={theme.color.red[600]}>{state.invalid}</Body2>
             )}
@@ -260,7 +262,10 @@ const CategoryUpdate: NextPage = () => {
         }
         section3={
           <>
-            <TableCategory size={10} data={category} />
+            <TableCategory
+              size={10}
+              data={state.isSearch ? searchResult : category}
+            />
           </>
         }
       />

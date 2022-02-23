@@ -1,25 +1,27 @@
-export const CategoryNavigation = [
-  { id: 0, content: "카테고리", url: "/category" }, // 제목
-  { id: 1, content: "카테고리 조회", url: "/category" },
-  { id: 2, content: "카테고리 생성", url: "/category/create" },
-];
-
-export const TopicNavigation = [
-  { id: 0, content: "토픽", url: "/topic" },
-  { id: 1, content: "토픽 조회", url: "/topic" },
-  { id: 2, content: "토픽 생성", url: "/topic/create" },
-];
+export const TopicNavigation = [{ id: 0, content: "토픽", url: "/topic" }];
 
 export const InsightNavigation = [
   { id: 0, content: "인사이트", url: "/insight" },
-  { id: 1, content: "인사이트 조회", url: "/insight" },
 ];
 
 export const UserNavigation = [
-  { id: 0, content: "회원 관리", url: "/user" },
-  { id: 1, content: "회원 조회", url: "/user" },
+  { id: 0, content: "사용자", url: "/user" },
+  { id: 1, content: "회사 인증", url: "/user" },
+  { id: 2, content: "사용자 목록", url: "/user" },
 ];
-
+export const HomeNavigation = [
+  { id: 0, content: "홈", url: "/" },
+  { id: 1, content: "홈 편집", url: "/" },
+  { id: 2, content: "카테고리 편집", url: "/category" },
+];
+export const AdsNavigation = [
+  { id: 0, content: "광고", url: "/" },
+  { id: 1, content: "메뉴", url: "/" },
+];
+export const StatisticsNavigation = [
+  { id: 0, content: "통계", url: "/" },
+  { id: 1, content: "메뉴", url: "/" },
+];
 export const globalNavigationMore = [
   { id: 0, content: "공지사항", url: "/" },
   { id: 1, content: "도움센터", url: "/" },

@@ -50,7 +50,8 @@ const Topic: NextPage = () => {
   });
 
   useEffect(() => {
-    onClickTopicList();
+    onClickCategoryList();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
@@ -71,7 +72,7 @@ const Topic: NextPage = () => {
     end.setDate(end.getDate() + 1);
     let startString = getToday(state.startDay);
     let endString = getToday(state.endDay);
-    onClickTopicList();
+
     let list = topic;
     //카테고리
     await list.filter((item: any) => {
@@ -151,9 +152,9 @@ const Topic: NextPage = () => {
   };
   const onClickTopicList = async () => {
     setState({ ...state, isLoading: true });
-    await onClickCategoryList();
+
     await axios.get("/api2/topic/list").then(async (res: any) => {
-      let list = res.data;
+      let list = res.data.result;
       list.map(async (item: any, idx: any) => {
         list[idx] = {
           idx: list[idx].idx,
@@ -169,9 +170,10 @@ const Topic: NextPage = () => {
       });
       setTopic(list);
     });
-
+    setSearchResult([]);
     setState({ ...state, isLoading: false, isSearch: false });
   };
+
   const getCategoryName = (idx: any) => {
     for (let i = 0; i < category.length; i++) {
       if (category[i].value == idx) {
@@ -192,6 +194,7 @@ const Topic: NextPage = () => {
       setCategory(list);
     });
   };
+
   const onChangeSelcet = (e: any) => {
     const value = e.value;
 
@@ -210,7 +213,6 @@ const Topic: NextPage = () => {
   const onChangeCalendarEndtDay = (e: any) => {
     var start = new Date(state.startDay);
     var end = new Date(e);
-
     if (start > end) {
       alert("시작일보다 빠를 순 없습니다.");
     } else {
@@ -224,6 +226,17 @@ const Topic: NextPage = () => {
         title={
           <>
             <Header4>토픽 조회</Header4>
+            <Button
+              variants="light"
+              color="primary"
+              size="large"
+              isLoading={state.isLoading}
+              onClick={() => {
+                router.push("/topic/create");
+              }}
+            >
+              토픽 쓰기
+            </Button>
           </>
         }
         section1={
@@ -231,7 +244,7 @@ const Topic: NextPage = () => {
             <Selectbox
               options={category}
               isMulti={false}
-              placeholder={"전체"}
+              placeholder={"카테고리"}
               onChange={onChangeSelcet}
               value={state.data.board}
             />

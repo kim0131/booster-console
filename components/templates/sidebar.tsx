@@ -3,10 +3,12 @@ import Logo from "@components/elements/logo";
 import TextField from "@components/elements/text-field";
 import { IconMenu, IconProfile, IconSearch } from "@components/icons";
 import {
-  CategoryNavigation,
+  AdsNavigation,
   globalNavigationMore,
   globalNavigationMy,
+  HomeNavigation,
   InsightNavigation,
+  StatisticsNavigation,
   TopicNavigation,
   UserNavigation,
 } from "@core/config/navigation";
@@ -33,6 +35,7 @@ const Container = styled.header`
   display: flex;
   flex-direction: column;
   z-index: 10;
+  // margin: auto;
   ${props => props.theme.screen.md} {
     max-width: 50rem;
     padding: 1.25rem 0;
@@ -148,31 +151,6 @@ const SideBar = () => {
       <Wrapper>
         {isDesktop && (
           <Nav>
-            {CategoryNavigation.map((nav, idx) =>
-              idx == 0 ? (
-                <NavItem
-                  key={nav.id}
-                  data-value={nav.url}
-                  isRoute={router.pathname === nav.url}
-                  onClick={onClickLink}
-                >
-                  {nav.content}
-                </NavItem>
-              ) : (
-                <NavItem2
-                  key={nav.id}
-                  data-value={nav.url}
-                  isRoute={router.pathname === nav.url}
-                  onClick={onClickLink}
-                >
-                  {nav.content}
-                </NavItem2>
-              ),
-            )}
-          </Nav>
-        )}
-        {isDesktop && (
-          <Nav>
             {TopicNavigation.map((nav, idx) =>
               idx == 0 ? (
                 <NavItem
@@ -196,6 +174,7 @@ const SideBar = () => {
             )}
           </Nav>
         )}
+
         {isDesktop && (
           <Nav>
             {InsightNavigation.map((nav, idx) =>
@@ -224,6 +203,81 @@ const SideBar = () => {
         {isDesktop && (
           <Nav>
             {UserNavigation.map((nav, idx) =>
+              idx == 0 ? (
+                <NavItem
+                  key={nav.id}
+                  data-value={nav.url}
+                  isRoute={router.pathname === nav.url}
+                  onClick={onClickLink}
+                >
+                  {nav.content}
+                </NavItem>
+              ) : (
+                <NavItem2
+                  key={nav.id}
+                  data-value={nav.url}
+                  isRoute={router.pathname === nav.url}
+                  onClick={onClickLink}
+                >
+                  {nav.content}
+                </NavItem2>
+              ),
+            )}
+          </Nav>
+        )}
+        {isDesktop && (
+          <Nav>
+            {HomeNavigation.map((nav, idx) =>
+              idx == 0 ? (
+                <NavItem
+                  key={nav.id}
+                  data-value={nav.url}
+                  isRoute={router.pathname === nav.url}
+                  onClick={onClickLink}
+                >
+                  {nav.content}
+                </NavItem>
+              ) : (
+                <NavItem2
+                  key={nav.id}
+                  data-value={nav.url}
+                  isRoute={router.pathname === nav.url}
+                  onClick={onClickLink}
+                >
+                  {nav.content}
+                </NavItem2>
+              ),
+            )}
+          </Nav>
+        )}
+        {isDesktop && (
+          <Nav>
+            {AdsNavigation.map((nav, idx) =>
+              idx == 0 ? (
+                <NavItem
+                  key={nav.id}
+                  data-value={nav.url}
+                  isRoute={router.pathname === nav.url}
+                  onClick={onClickLink}
+                >
+                  {nav.content}
+                </NavItem>
+              ) : (
+                <NavItem2
+                  key={nav.id}
+                  data-value={nav.url}
+                  isRoute={router.pathname === nav.url}
+                  onClick={onClickLink}
+                >
+                  {nav.content}
+                </NavItem2>
+              ),
+            )}
+          </Nav>
+        )}
+        {isDesktop && (
+          <Nav>
+            {StatisticsNavigation.map((nav, idx) =>
               idx == 0 ? (
                 <NavItem
                   key={nav.id}

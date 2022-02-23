@@ -45,24 +45,24 @@ const Td = styled.td`
 `;
 const columns = [
   {
-    Header: "순서",
-    accessor: "idx",
-  },
-  {
-    Header: "카테고리 테이블 이름",
-    accessor: "bo_table",
-  },
-  {
     Header: "카테고리 이름",
     accessor: "bo_subject",
   },
   {
-    Header: "게시물보기",
-    accessor: "view_content",
+    Header: "카테고리 영문",
+    accessor: "bo_table",
   },
   {
-    Header: "수정 및 삭제",
-    accessor: "edit_subject",
+    Header: "게시글 수",
+    accessor: "num_board",
+  },
+  {
+    Header: "조회수",
+    accessor: "num_view",
+  },
+  {
+    Header: "좋아요수",
+    accessor: "num_good",
   },
 ];
 const TableCategory = ({ data, size }: IPropsTable) => {

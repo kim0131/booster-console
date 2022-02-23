@@ -128,6 +128,7 @@ const Category: NextPage = () => {
     setState({ ...state, isLoading: true });
     await axios.get("/api2/category").then((res: any) => {
       let list = res.data.result;
+      console.log(res);
       list.map((item: any, idx: any) => {
         list[idx] = {
           idx: list[idx].idx,
@@ -137,6 +138,7 @@ const Category: NextPage = () => {
           edit_subject: "수정 및 삭제하기",
         };
       });
+
       setCategory(list);
     });
     setState({ ...state, isLoading: false, isSearch: false });
@@ -147,7 +149,18 @@ const Category: NextPage = () => {
       <AccountsLayout
         title={
           <>
-            <Header4>게시판 카테고리 조회</Header4>
+            <Header4>카테고리 편집</Header4>
+            <Button
+              variants="light"
+              color="primary"
+              size="large"
+              isLoading={state.isLoading}
+              onClick={() => {
+                router.push("/category/create");
+              }}
+            >
+              카테고리 추가하기
+            </Button>
           </>
         }
         section1={

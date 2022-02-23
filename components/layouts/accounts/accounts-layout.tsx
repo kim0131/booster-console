@@ -8,8 +8,9 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  margin: auto;
   ${props => props.theme.screen.md} {
-    // max-width: 50rem;
+    max-width: 60rem;
     margin: 3rem 1rem;
     padding: 2.25rem;
     border: 1px solid ${props => props.theme.color.gray[300]};

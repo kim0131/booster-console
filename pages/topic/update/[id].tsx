@@ -90,12 +90,12 @@ const TopiceUpdate: NextPage = () => {
       setState({
         ...state,
         data: {
-          wr_subject: res.data.wr_subject,
-          wr_content: res.data.wr_content,
-          mb_name: res.data.mb_name,
-          board: res.data.board,
-          wr_view: res.data.wr_view,
-          wr_good: res.data.wr_good,
+          wr_subject: res.data.result.wr_subject,
+          wr_content: res.data.result.wr_content,
+          mb_name: res.data.result.mb_name,
+          board: res.data.result.board,
+          wr_view: res.data.result.wr_view,
+          wr_good: res.data.result.wr_good,
         },
       });
     });
