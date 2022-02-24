@@ -36,7 +36,9 @@ interface IStateAccounts {
   searchTerm: string;
   tablesize: number;
 }
-
+const TitleBox = styled.div`
+  width: 60%;
+`;
 const TopicCrate: NextPage = () => {
   const [category, setCategory] = useState([]);
   const { data: session, status } = useSession();
@@ -129,10 +131,10 @@ const TopicCrate: NextPage = () => {
       <AccountsLayout
         title={
           <>
-            <Header4>토픽 생성</Header4>
+            <Header4>글쓰기</Header4>
           </>
         }
-        section1={
+        section4={
           <>
             <Selectbox
               options={category}
@@ -142,17 +144,24 @@ const TopicCrate: NextPage = () => {
               onChange={onChangeSelcet}
               value={state.data.board}
             />
-            <TextField
-              placeholder="사진 첨부 (임시)"
-              name="file_rul"
-              size="large"
-            />
-            <TextField
-              placeholder="제목"
-              name="wr_subject"
-              size="large"
-              onChange={onChangeTopic}
-            />
+            <TitleBox>
+              <TextField
+                placeholder="제목"
+                name="wr_subject"
+                size="medium"
+                width="100%"
+                onChange={onChangeTopic}
+              />
+            </TitleBox>
+            <Button
+              variants="light"
+              color="primary"
+              size="med"
+              isLoading={state.isLoading}
+              // onClick={onClickSubmitTopic}
+            >
+              사진 첨부 (임시)
+            </Button>
           </>
         }
         section2={
@@ -167,7 +176,7 @@ const TopicCrate: NextPage = () => {
             />
           </>
         }
-        section3={
+        buttonContainer={
           <>
             <Button
               variants="light"

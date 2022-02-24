@@ -1,7 +1,8 @@
 export const accountsDescription = {
   accounts: {
-    title: "프로젝트 부스터 관리자 로그인",
-    description: "관리자만 접근할 수 있습니다.",
+    title: "프로젝트 부스터 로그인",
+    description:
+      "프로젝트 부스터는 로켓과 잡담을 위한 스타트업 창업자들의커뮤니티입니다.",
   },
   signup: {
     title: "회원가입",

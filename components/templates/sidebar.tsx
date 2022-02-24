@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Button from "@components/elements/button";
 import Logo from "@components/elements/logo";
 import TextField from "@components/elements/text-field";
@@ -39,8 +40,6 @@ const Container = styled.header`
   ${props => props.theme.screen.md} {
     max-width: 50rem;
     padding: 1.25rem 0;
-    border: 1px solid ${props => props.theme.color.gray[300]};
-    border-radius: ${props => props.theme.rounded.xxl};
   }
 `;
 
@@ -55,7 +54,7 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  gap: 3rem;
+  gap: 1rem;
 `;
 
 const MobileWrapper = styled.div`
@@ -85,31 +84,33 @@ const NavItem = styled.div<IPropsNavItem>`
   position: relative;
   cursor: pointer;
   &:hover {
-    box-shadow: ${props =>
-      props.isRoute
-        ? `inset 0px -4px 0px ${props.theme.color.blue[600]}`
-        : `inset 0px -4px 0px ${props.theme.color.gray[300]}`};
+    color: ${props =>
+      props.isRoute ? `${props.theme.color.blue[600]}` : "none"};
   }
+  color: ${props =>
+    props.isRoute ? `${props.theme.color.blue[600]}` : "none"};
 `;
 
 const NavItem2 = styled.div<IPropsNavItem>`
   padding: 0.25rem 0.75rem;
-  font-size: 0.8rem;
+  font-size: 1rem;
   font-weight: 500;
+
   display: flex;
   align-items: center;
   position: relative;
   cursor: pointer;
   &:hover {
-    box-shadow: ${props =>
-      props.isRoute
-        ? `inset 0px -4px 0px ${props.theme.color.blue[600]}`
-        : `inset 0px -4px 0px ${props.theme.color.gray[300]}`};
+    color: ${props =>
+      props.isRoute ? `${props.theme.color.blue[600]}` : "none"};
   }
-  box-shadow: ${props =>
-    props.isRoute
-      ? `inset 0px -4px 0px ${props.theme.color.blue[200]}`
-      : "none"};
+  color: ${props =>
+    props.isRoute ? `${props.theme.color.blue[600]}` : "none"};
+`;
+
+const BorderBottom = styled.div`
+  width: 100%;
+  border-bottom: 1px black solid;
 `;
 
 const SideBar = () => {
@@ -146,6 +147,14 @@ const SideBar = () => {
       alert("이동할 수 없습니다.");
     }
   };
+  console.log(router.pathname);
+  const CheckRouter = (url: string) => {
+    if (router.pathname.includes(url)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
   return (
     <Container>
       <Wrapper>
@@ -156,7 +165,7 @@ const SideBar = () => {
                 <NavItem
                   key={nav.id}
                   data-value={nav.url}
-                  isRoute={router.pathname === nav.url}
+                  isRoute={CheckRouter(nav.url)}
                   onClick={onClickLink}
                 >
                   {nav.content}
@@ -165,7 +174,7 @@ const SideBar = () => {
                 <NavItem2
                   key={nav.id}
                   data-value={nav.url}
-                  isRoute={router.pathname === nav.url}
+                  isRoute={CheckRouter(nav.url)}
                   onClick={onClickLink}
                 >
                   {nav.content}
@@ -182,7 +191,7 @@ const SideBar = () => {
                 <NavItem
                   key={nav.id}
                   data-value={nav.url}
-                  isRoute={router.pathname === nav.url}
+                  isRoute={CheckRouter(nav.url)}
                   onClick={onClickLink}
                 >
                   {nav.content}
@@ -191,7 +200,7 @@ const SideBar = () => {
                 <NavItem2
                   key={nav.id}
                   data-value={nav.url}
-                  isRoute={router.pathname === nav.url}
+                  isRoute={CheckRouter(nav.url)}
                   onClick={onClickLink}
                 >
                   {nav.content}
@@ -200,6 +209,7 @@ const SideBar = () => {
             )}
           </Nav>
         )}
+        <BorderBottom />
         {isDesktop && (
           <Nav>
             {UserNavigation.map((nav, idx) =>
@@ -207,7 +217,7 @@ const SideBar = () => {
                 <NavItem
                   key={nav.id}
                   data-value={nav.url}
-                  isRoute={router.pathname === nav.url}
+                  isRoute={CheckRouter(nav.url)}
                   onClick={onClickLink}
                 >
                   {nav.content}
@@ -216,7 +226,7 @@ const SideBar = () => {
                 <NavItem2
                   key={nav.id}
                   data-value={nav.url}
-                  isRoute={router.pathname === nav.url}
+                  isRoute={CheckRouter(nav.url)}
                   onClick={onClickLink}
                 >
                   {nav.content}
@@ -232,7 +242,7 @@ const SideBar = () => {
                 <NavItem
                   key={nav.id}
                   data-value={nav.url}
-                  isRoute={router.pathname === nav.url}
+                  isRoute={CheckRouter(nav.url)}
                   onClick={onClickLink}
                 >
                   {nav.content}
@@ -241,7 +251,7 @@ const SideBar = () => {
                 <NavItem2
                   key={nav.id}
                   data-value={nav.url}
-                  isRoute={router.pathname === nav.url}
+                  isRoute={CheckRouter(nav.url)}
                   onClick={onClickLink}
                 >
                   {nav.content}
@@ -257,7 +267,7 @@ const SideBar = () => {
                 <NavItem
                   key={nav.id}
                   data-value={nav.url}
-                  isRoute={router.pathname === nav.url}
+                  isRoute={CheckRouter(nav.url)}
                   onClick={onClickLink}
                 >
                   {nav.content}
@@ -266,7 +276,7 @@ const SideBar = () => {
                 <NavItem2
                   key={nav.id}
                   data-value={nav.url}
-                  isRoute={router.pathname === nav.url}
+                  isRoute={CheckRouter(nav.url)}
                   onClick={onClickLink}
                 >
                   {nav.content}
@@ -282,7 +292,7 @@ const SideBar = () => {
                 <NavItem
                   key={nav.id}
                   data-value={nav.url}
-                  isRoute={router.pathname === nav.url}
+                  isRoute={CheckRouter(nav.url)}
                   onClick={onClickLink}
                 >
                   {nav.content}
@@ -291,7 +301,7 @@ const SideBar = () => {
                 <NavItem2
                   key={nav.id}
                   data-value={nav.url}
-                  isRoute={router.pathname === nav.url}
+                  isRoute={CheckRouter(nav.url)}
                   onClick={onClickLink}
                 >
                   {nav.content}

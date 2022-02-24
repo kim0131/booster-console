@@ -4,7 +4,7 @@ import TextField from "@components/elements/text-field";
 import { Body1, Body2, Header4 } from "@components/elements/types";
 import AccountsLayout from "@components/layouts/accounts/accounts-layout";
 import theme from "@components/styles/theme";
-import { accountsDescription } from "@core/config/description";
+
 import { accountsNavigation } from "@core/config/navigation";
 import { IAccountsData } from "@core/interfaces/accounts";
 import axios from "axios";
@@ -51,9 +51,12 @@ const Topic: NextPage = () => {
 
   useEffect(() => {
     onClickCategoryList();
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
+  useEffect(() => {
+    onClickTopicList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category]);
 
   const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.currentTarget;
@@ -235,7 +238,7 @@ const Topic: NextPage = () => {
                 router.push("/topic/create");
               }}
             >
-              토픽 쓰기
+              글쓰기
             </Button>
           </>
         }

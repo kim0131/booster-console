@@ -3,7 +3,7 @@ interface IPropsSvgIcon {
   size?: number;
   color?: string;
 }
-const SvgIconDocuments = ({
+const SvgIconPhoto = ({
   size = 24,
   color = theme.color.gray[900],
 }: IPropsSvgIcon) => {
@@ -16,17 +16,19 @@ const SvgIconDocuments = ({
       viewBox="0 0 24 24"
     >
       <path
-        d="M8 13a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1ZM9 16a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2H9Z"
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M8.789 5.894A2 2 0 0 1 7 7H4v12h16V7h-3a2 2 0 0 1-1.789-1.106L14.764 5H9.236l-.447.894ZM14.764 3a2 2 0 0 1 1.789 1.106L17 5h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h3l.447-.894A2 2 0 0 1 9.237 3h5.527Z"
         fill={color}
       />
       <path
         fillRule="evenodd"
         clipRule="evenodd"
-        d="M10.828 2a2 2 0 0 0-1.414.586L4.586 7.414A2 2 0 0 0 4 8.828V20a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-7.172ZM18 4h-7.172L6 8.828V20h12V4Z"
+        d="M12 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm0 2a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z"
         fill={color}
       />
     </svg>
   );
 };
 
-export default SvgIconDocuments;
+export default SvgIconPhoto;

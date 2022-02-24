@@ -3,7 +3,7 @@ interface IPropsSvgIcon {
   size?: number;
   color?: string;
 }
-const SvgIconDocuments = ({
+const SvgIconChevronUp = ({
   size = 24,
   color = theme.color.gray[900],
 }: IPropsSvgIcon) => {
@@ -16,17 +16,13 @@ const SvgIconDocuments = ({
       viewBox="0 0 24 24"
     >
       <path
-        d="M8 13a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1ZM9 16a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2H9Z"
-        fill={color}
-      />
-      <path
         fillRule="evenodd"
         clipRule="evenodd"
-        d="M10.828 2a2 2 0 0 0-1.414.586L4.586 7.414A2 2 0 0 0 4 8.828V20a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-7.172ZM18 4h-7.172L6 8.828V20h12V4Z"
+        d="M5.293 15.707a1 1 0 0 0 1.414 0L12 10.414l5.293 5.293a1 1 0 0 0 1.414-1.414l-6-6a1 1 0 0 0-1.414 0l-6 6a1 1 0 0 0 0 1.414Z"
         fill={color}
       />
     </svg>
   );
 };
 
-export default SvgIconDocuments;
+export default SvgIconChevronUp;

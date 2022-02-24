@@ -12,8 +12,6 @@ interface IPropsTable {
 
 const TableLayout = styled.div`
   width: 100%;
-  border-radius: 0.5rem;
-  border-width: 1px;
   --tw-bg-opacity: 0.25;
   padding: 0.75rem;
   --tw-space-y-reverse: 0;
@@ -40,8 +38,34 @@ const ButtonContainer = styled.div`
   border-radius: 0.5rem;
 `;
 
+const THead = styled.thead`
+  border-bottom: 1px black solid;
+  color: #71717a;
+`;
+
 const Td = styled.td`
   text-align: center;
+  border-bottom: 1px lightgray solid;
+  padding: 0.5rem 0rem;
+  justify-content: center;
+`;
+const Flex = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+`;
+const Flex2 = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 0 1rem;
+`;
+const TBody = styled.tbody`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px lightgray solid;
+  padding: 0.5rem 0rem;
 `;
 const columns = [
   {
@@ -111,7 +135,7 @@ const TableTopic = ({ data, size }: IPropsTable) => {
     <>
       <TableLayout>
         <TableContainer {...getTableProps()} className="w-full table-auto">
-          <thead className="border-b border-gray-700">
+          <THead className="border-b border-gray-700">
             {headerGroups.map((headerGroup: any, idx: number) => (
               <tr {...headerGroup.getHeaderGroupProps()} key={idx}>
                 {headerGroup.headers.map((column: any, idx: number) => (
@@ -136,7 +160,7 @@ const TableTopic = ({ data, size }: IPropsTable) => {
                 ))}
               </tr>
             ))}
-          </thead>
+          </THead>
           <tbody {...getTableBodyProps()}>
             {page.map((row: any, idx: number) => {
               prepareRow(row);
@@ -147,7 +171,9 @@ const TableTopic = ({ data, size }: IPropsTable) => {
                   className="bg-gray-800 odd:bg-gray-900 bg-opacity-50 text-center"
                   onClick={() => {
                     let idx = row.original.idx;
-                    router.push(`/topic/update/${idx}`);
+                    router.push(
+                      `/topic/update/${idx}?category=${row.cells[0].value}`,
+                    );
                   }}
                 >
                   {row.cells.map((cell: any, idx: number) => (

@@ -27,7 +27,7 @@ const Container = styled.header`
   box-shadow: ${props => props.theme.shadow.inset.bottom};
   display: flex;
   flex-direction: column;
-  z-index: 10;
+  z-index: 20;
 `;
 
 const Wrapper = styled.div`
@@ -134,6 +134,7 @@ const Header = () => {
       router.push("/login");
       console.log(status);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
   const { isDesktop } = useDesktop();

@@ -3,7 +3,7 @@ interface IPropsSvgIcon {
   size?: number;
   color?: string;
 }
-const SvgIconProfile = ({
+const SvgIconMoreVertical = ({
   size = 24,
   color = theme.color.gray[900],
 }: IPropsSvgIcon) => {
@@ -16,13 +16,11 @@ const SvgIconProfile = ({
       viewBox="0 0 24 24"
     >
       <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M15.773 12.666a6 6 0 1 0-7.546 0C4.617 13.99 2 17.166 2 21a1 1 0 1 0 2 0c0-3.759 3.468-7 8-7s8 3.241 8 7a1 1 0 1 0 2 0c0-3.834-2.617-7.009-6.227-8.334ZM16 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"
+        d="M10 5a2 2 0 1 0 4 0 2 2 0 0 0-4 0ZM12 14a2 2 0 1 1 0-4 2 2 0 0 1 0 4ZM12 21a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z"
         fill={color}
       />
     </svg>
   );
 };
 
-export default SvgIconProfile;
+export default SvgIconMoreVertical;

@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import TextField from "../text-field";
 import Button from "../button";
+import { count } from "console";
 
 // react-table 의 타입 정의가 완벽하게 작동하지 않고 오류를 뿜는다...ㅠ
 interface IPropsTable {
@@ -198,7 +199,18 @@ const TableCategory = ({ data, size }: IPropsTable) => {
                     key={idx}
                     className="p-0.75 text-0.875"
                   >
-                    {column.render("Header")}
+                    {column.Header == `` ? (
+                      <Button
+                        onClick={() => {
+                          router.push("/category?mode=create");
+                        }}
+                      >
+                        +
+                      </Button>
+                    ) : (
+                      column.render("Header")
+                    )}
+
                     <span>
                       {column.isSorted ? (
                         column.isSortedDesc ? (
@@ -215,7 +227,51 @@ const TableCategory = ({ data, size }: IPropsTable) => {
               </tr>
             ))}
           </THead>
+
           <tbody {...getTableBodyProps()}>
+            {Mode == "create" ? (
+              <tr role="row">
+                <Td colSpan={7}>
+                  <Flex>
+                    <Flex2>
+                      이름 :
+                      <TextField
+                        placeholder="카테고리 이름"
+                        name="bo_subject"
+                        type="text"
+                        size="small"
+                        width="100%"
+                        onChange={onChangeAccounts}
+                      />
+                    </Flex2>
+                    <Flex2>
+                      영문 :
+                      <TextField
+                        placeholder="카테고리 영문"
+                        name="bo_table"
+                        size="small"
+                        onChange={onChangeAccounts}
+                      />
+                    </Flex2>
+                    <Button
+                      variants="light"
+                      color="primary"
+                      size="small"
+                      isDisabled={
+                        state.data.bo_subject && state.data.bo_table
+                          ? false
+                          : true
+                      }
+                      onClick={onClickCategory}
+                    >
+                      카테고리 생성
+                    </Button>
+                  </Flex>
+                </Td>
+              </tr>
+            ) : (
+              ""
+            )}
             {page.map((row: any, idx: number) => {
               prepareRow(row);
               return (
@@ -274,51 +330,6 @@ const TableCategory = ({ data, size }: IPropsTable) => {
             })}
           </tbody>
         </TableContainer>
-        <TBody>
-          {Mode == "create" ? (
-            <>
-              <Flex2>
-                이름 :
-                <TextField
-                  placeholder="카테고리 이름"
-                  name="bo_subject"
-                  type="text"
-                  size="small"
-                  width="100%"
-                  onChange={onChangeAccounts}
-                />
-              </Flex2>
-              <Flex2>
-                영문 :
-                <TextField
-                  placeholder="카테고리 영문"
-                  name="bo_table"
-                  size="small"
-                  onChange={onChangeAccounts}
-                />
-              </Flex2>
-              <Button
-                variants="light"
-                color="primary"
-                size="small"
-                isDisabled={
-                  state.data.bo_subject && state.data.bo_table ? false : true
-                }
-                onClick={onClickCategory}
-              >
-                카테고리 생성
-              </Button>
-            </>
-          ) : (
-            <Button
-              onClick={() => {
-                router.push("/category?mode=create");
-              }}
-            >
-              새로만들기
-            </Button>
-          )}
-        </TBody>
       </TableLayout>
 
       <ButtonContainer>

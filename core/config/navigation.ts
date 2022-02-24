@@ -10,21 +10,21 @@ export const UserNavigation = [
   { id: 2, content: "사용자 목록", url: "/user" },
 ];
 export const HomeNavigation = [
-  { id: 0, content: "홈", url: "/" },
-  { id: 1, content: "홈 편집", url: "/" },
+  { id: 0, content: "홈", url: "/user" },
+  { id: 1, content: "홈 편집", url: "/user" },
   { id: 2, content: "카테고리 편집", url: "/category" },
 ];
 export const AdsNavigation = [
-  { id: 0, content: "광고", url: "/" },
-  { id: 1, content: "메뉴", url: "/" },
+  { id: 0, content: "광고", url: "/user" },
+  { id: 1, content: "메뉴", url: "/user" },
 ];
 export const StatisticsNavigation = [
-  { id: 0, content: "통계", url: "/" },
-  { id: 1, content: "메뉴", url: "/" },
+  { id: 0, content: "통계", url: "/user" },
+  { id: 1, content: "메뉴", url: "/user" },
 ];
 export const globalNavigationMore = [
-  { id: 0, content: "공지사항", url: "/" },
-  { id: 1, content: "도움센터", url: "/" },
+  { id: 0, content: "공지사항", url: "/user" },
+  { id: 1, content: "도움센터", url: "/user" },
 ];
 
 export const globalNavigationMy = [

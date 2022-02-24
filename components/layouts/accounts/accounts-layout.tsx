@@ -1,5 +1,5 @@
 import { Body1, Header4 } from "@components/elements/types";
-import { accountsDescription } from "@core/config/description";
+
 import styled from "@emotion/styled";
 
 const Container = styled.div`
@@ -17,7 +17,10 @@ const Container = styled.div`
     border-radius: ${props => props.theme.rounded.xxl};
   }
 `;
-
+const Title = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
 const Block = styled.div`
   display: flex;
   // flex-direction: column;
@@ -28,12 +31,29 @@ const Block2 = styled.div`
   flex-direction: column;
   gap: 0.75rem;
 `;
-
+const Block3 = styled.div`
+  display: flex;
+  background-color: #f4f4f5;
+  gap: 0.75rem;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0.5rem 0.1rem;
+`;
 const Find = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 1.5rem;
+`;
+const TopiclayOut = styled.div`
+  display: flex;
+  height: 100%;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  gap: 1rem;
 `;
 
 interface IPropsAccountsLayout {
@@ -41,7 +61,10 @@ interface IPropsAccountsLayout {
   section1?: React.ReactNode;
   section2?: React.ReactNode;
   section3?: React.ReactNode;
+  section4?: React.ReactNode;
   find?: React.ReactNode;
+  topicContent?: React.ReactNode;
+  buttonContainer?: React.ReactNode;
 }
 
 const AccountsLayout = ({
@@ -49,15 +72,21 @@ const AccountsLayout = ({
   section1,
   section2,
   section3,
+  section4,
   find,
+  topicContent,
+  buttonContainer,
 }: IPropsAccountsLayout) => {
   return (
     <Container>
-      {title && <Block>{title}</Block>}
-      {section1 && <Block>{section1}</Block>}
+      {title && <Title>{title}</Title>}
+      {section1 && <Block3>{section1}</Block3>}
+      {section4 && <Block>{section4}</Block>}
       {section2 && <Block>{section2}</Block>}
       {section3 && <Block2>{section3}</Block2>}
       {find && <Find>{find}</Find>}
+      {topicContent && <TopiclayOut>{topicContent}</TopiclayOut>}
+      {buttonContainer && <ButtonContainer>{buttonContainer}</ButtonContainer>}
     </Container>
   );
 };

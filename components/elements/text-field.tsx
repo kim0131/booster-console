@@ -279,6 +279,7 @@ interface IPropsTextField {
   name?: string;
   value?: string;
   width?: string;
+
   maxLength?: number;
   isDisabled?: boolean;
   isRounded?: boolean;
@@ -306,6 +307,7 @@ const TextField = ({
   isRounded = false,
   prefix,
   suffix,
+
   placeholder,
   type = "text",
   onChange,

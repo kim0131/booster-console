@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 
 interface IPropsTypes {
   isLink?: boolean;
+  isBold?: boolean;
   color?: string;
 }
 
@@ -63,7 +64,8 @@ export const Header5 = styled.h5<IPropsTypes>`
 export const Sub1 = styled.p<IPropsTypes>`
   font-size: ${props => props.theme.fontSize.sub1};
   line-height: ${props => props.theme.lineHeight.sub1};
-  font-weight: ${props => (props.isLink ? "500" : "400")};
+  font-weight: ${props =>
+    props.isBold ? "700" : props.isLink ? "500" : "400"};
   color: ${props => (props.color ? props.color : "inherit")};
   cursor: ${props => (props.isLink ? "pointer" : "text")};
   &:hover,
@@ -74,7 +76,8 @@ export const Sub1 = styled.p<IPropsTypes>`
 export const Sub2 = styled.p<IPropsTypes>`
   font-size: ${props => props.theme.fontSize.sub2};
   line-height: ${props => props.theme.lineHeight.sub2};
-  font-weight: ${props => (props.isLink ? "500" : "400")};
+  font-weight: ${props =>
+    props.isBold ? "700" : props.isLink ? "500" : "400"};
   color: ${props => (props.color ? props.color : "inherit")};
   cursor: ${props => (props.isLink ? "pointer" : "text")};
   &:hover,
@@ -85,7 +88,8 @@ export const Sub2 = styled.p<IPropsTypes>`
 export const Sub3 = styled.p<IPropsTypes>`
   font-size: ${props => props.theme.fontSize.sub3};
   line-height: ${props => props.theme.lineHeight.sub3};
-  font-weight: ${props => (props.isLink ? "500" : "400")};
+  font-weight: ${props =>
+    props.isBold ? "700" : props.isLink ? "500" : "400"};
   color: ${props => (props.color ? props.color : "inherit")};
   cursor: ${props => (props.isLink ? "pointer" : "text")};
   &:hover,
@@ -96,7 +100,8 @@ export const Sub3 = styled.p<IPropsTypes>`
 export const Body1 = styled.p<IPropsTypes>`
   font-size: ${props => props.theme.fontSize.body1};
   line-height: ${props => props.theme.lineHeight.body1};
-  font-weight: ${props => (props.isLink ? "500" : "400")};
+  font-weight: ${props =>
+    props.isBold ? "700" : props.isLink ? "500" : "400"};
   color: ${props => (props.color ? props.color : "inherit")};
   cursor: ${props => (props.isLink ? "pointer" : "text")};
   &:hover,
@@ -107,7 +112,8 @@ export const Body1 = styled.p<IPropsTypes>`
 export const Body2 = styled.p<IPropsTypes>`
   font-size: ${props => props.theme.fontSize.body2};
   line-height: ${props => props.theme.lineHeight.body2};
-  font-weight: ${props => (props.isLink ? "500" : "400")};
+  font-weight: ${props =>
+    props.isBold ? "700" : props.isLink ? "500" : "400"};
   color: ${props => (props.color ? props.color : "inherit")};
   cursor: ${props => (props.isLink ? "pointer" : "text")};
   &:hover,
@@ -118,7 +124,8 @@ export const Body2 = styled.p<IPropsTypes>`
 export const Body3 = styled.p<IPropsTypes>`
   font-size: ${props => props.theme.fontSize.body3};
   line-height: ${props => props.theme.lineHeight.body3};
-  font-weight: ${props => (props.isLink ? "500" : "400")};
+  font-weight: ${props =>
+    props.isBold ? "700" : props.isLink ? "500" : "400"};
   color: ${props => (props.color ? props.color : "inherit")};
   cursor: ${props => (props.isLink ? "pointer" : "text")};
   &:hover,
