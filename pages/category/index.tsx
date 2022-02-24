@@ -2,7 +2,7 @@ import Button from "@components/elements/button";
 import Table from "@components/elements/table/table-category";
 import TextField from "@components/elements/text-field";
 import { Body1, Body2, Header4 } from "@components/elements/types";
-import AccountsLayout from "@components/layouts/accounts/accounts-layout";
+import AccountsLayout from "@components/layouts/accounts/consolelayout";
 import theme from "@components/styles/theme";
 import { accountsDescription } from "@core/config/description";
 import { accountsNavigation } from "@core/config/navigation";
@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import SideBar from "@components/templates/sidebar";
 import { stat } from "fs";
 import TableCategory from "@components/elements/table/table-category";
+import ConsoleLayout from "@components/layouts/accounts/consolelayout";
 
 const Container = styled.header`
   width: 100%;
@@ -153,13 +154,13 @@ const Category: NextPage = () => {
   return (
     <>
       {" "}
-      <AccountsLayout
+      <ConsoleLayout
         title={
           <>
             <Header4>카테고리 편집</Header4>
           </>
         }
-        section1={
+        section4={
           <>
             <TextField
               placeholder="카테고리 검색"
@@ -187,16 +188,16 @@ const Category: NextPage = () => {
             </Button>
           </>
         }
-        // section2={
-        //   <>
-        //     <TextField
-        //       placeholder="테이블 행"
-        //       name="tablesize"
-        //       size="large"
-        //       onChange={onChangTablesize}
-        //     />
-        //   </>
-        // }
+        section2={
+          <>
+            <Button variants="light" color="primary">
+              토픽
+            </Button>
+            <Button variants="light" color="primary">
+              인사이트
+            </Button>
+          </>
+        }
         section3={
           <>
             <TableCategory

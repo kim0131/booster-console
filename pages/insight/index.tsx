@@ -2,7 +2,7 @@ import Button from "@components/elements/button";
 import Table from "@components/elements/table/table-category";
 import TextField from "@components/elements/text-field";
 import { Body1, Body2, Header4 } from "@components/elements/types";
-import AccountsLayout from "@components/layouts/accounts/accounts-layout";
+import AccountsLayout from "@components/layouts/accounts/consolelayout";
 import theme from "@components/styles/theme";
 import { accountsDescription } from "@core/config/description";
 import { accountsNavigation } from "@core/config/navigation";
@@ -14,12 +14,13 @@ import { useRouter } from "next/router";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import SideBar from "@components/templates/sidebar";
+import ConsoleLayout from "@components/layouts/accounts/consolelayout";
 
 const Insight: NextPage = () => {
   return (
     <>
       {" "}
-      <AccountsLayout
+      <ConsoleLayout
         title={
           <>
             <Header4>인사이트 조회</Header4>

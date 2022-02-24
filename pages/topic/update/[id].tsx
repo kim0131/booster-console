@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Button from "@components/elements/button";
 import { Header4 } from "@components/elements/types";
-import AccountsLayout from "@components/layouts/accounts/accounts-layout";
+import AccountsLayout from "@components/layouts/accounts/consolelayout";
 import TopicContentLayout from "@components/layouts/accounts/topic-content-layout";
 import Comment from "@components/templates/comment";
 import styled from "@emotion/styled";

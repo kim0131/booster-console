@@ -4,13 +4,14 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import TextField from "@components/elements/text-field";
 import Button from "@components/elements/button";
-import AccountsLayout from "@components/layouts/accounts/accounts-layout";
+import AccountsLayout from "@components/layouts/accounts/consolelayout";
 import { Body1, Body2, Header4 } from "@components/elements/types";
 import { accountsDescription } from "@core/config/description";
 import React, { useState } from "react";
 import theme from "@components/styles/theme";
 import { IAccountsData } from "@core/interfaces/accounts";
 import { accountsNavigation } from "@core/config/navigation";
+import ConsoleLayout from "@components/layouts/accounts/consolelayout";
 
 interface IStateAccounts {
   data: {
@@ -71,14 +72,14 @@ const Accounts: NextPage = () => {
   };
 
   return (
-    <AccountsLayout
+    <ConsoleLayout
       title={
         <>
           <Header4>{accountsDescription.accounts.title}</Header4>
           <Body1>{accountsDescription.accounts.description}</Body1>
         </>
       }
-      section1={
+      section4={
         <>
           <TextField
             placeholder="아이디를 입력하세요"

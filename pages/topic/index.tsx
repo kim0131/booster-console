@@ -2,7 +2,7 @@ import Button from "@components/elements/button";
 
 import TextField from "@components/elements/text-field";
 import { Body1, Body2, Header4 } from "@components/elements/types";
-import AccountsLayout from "@components/layouts/accounts/accounts-layout";
+import AccountsLayout from "@components/layouts/accounts/consolelayout";
 import theme from "@components/styles/theme";
 
 import { accountsNavigation } from "@core/config/navigation";
@@ -17,6 +17,7 @@ import SideBar from "@components/templates/sidebar";
 import Selectbox from "@components/elements/selectbox";
 import CalendarContainer from "@components/elements/calendar";
 import TableTopic from "@components/elements/table/table-topic";
+import ConsoleLayout from "@components/layouts/accounts/consolelayout";
 interface IStateAccounts {
   data: { [key in string]: string };
   invalid?: string;
@@ -225,7 +226,7 @@ const Topic: NextPage = () => {
   return (
     <>
       {" "}
-      <AccountsLayout
+      <ConsoleLayout
         title={
           <>
             <Header4>토픽 조회</Header4>
@@ -263,9 +264,9 @@ const Topic: NextPage = () => {
               selected={state.endDay}
             />
             <TextField
-              placeholder="토픽 검색"
+              placeholder="검색어"
               name="bo_table"
-              size="large"
+              size="medium"
               onChange={onChangeSearch}
             />
             <Button

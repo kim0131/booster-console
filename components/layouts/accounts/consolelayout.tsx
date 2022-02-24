@@ -7,14 +7,14 @@ const Container = styled.div`
   padding: 3rem 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
   margin: auto;
   ${props => props.theme.screen.md} {
     max-width: 60rem;
     margin: 3rem 1rem;
     padding: 2.25rem;
-    border: 1px solid ${props => props.theme.color.gray[300]};
-    border-radius: ${props => props.theme.rounded.xxl};
+    /* border: 1px solid ${props => props.theme.color.gray[300]};
+    border-radius: ${props => props.theme.rounded.xxl}; */
   }
 `;
 const Title = styled.div`
@@ -67,7 +67,7 @@ interface IPropsAccountsLayout {
   buttonContainer?: React.ReactNode;
 }
 
-const AccountsLayout = ({
+const ConsoleLayout = ({
   title,
   section1,
   section2,
@@ -91,4 +91,4 @@ const AccountsLayout = ({
   );
 };
 
-export default AccountsLayout;
+export default ConsoleLayout;

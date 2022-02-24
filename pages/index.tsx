@@ -6,9 +6,15 @@ import useToast from "@core/hook/use-toast";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
+import ConsoleLayout from "@components/layouts/accounts/consolelayout";
+
 const Home: NextPage = () => {
   const toast = useToast();
-  return <>관리자페이지입니다</>;
+  return (
+    <>
+      <ConsoleLayout title={<>홈</>}></ConsoleLayout>
+    </>
+  );
 };
 
 export default Home;

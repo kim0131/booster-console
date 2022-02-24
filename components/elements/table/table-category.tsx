@@ -71,6 +71,9 @@ const TBody = styled.tbody`
   border-bottom: 1px lightgray solid;
   padding: 0.5rem 0rem;
 `;
+const Th = styled.th`
+  text-align: center;
+`;
 const columns = [
   {
     Header: "InDex",
@@ -194,19 +197,23 @@ const TableCategory = ({ data, size }: IPropsTable) => {
             {headerGroups.map((headerGroup: any, idx: number) => (
               <tr {...headerGroup.getHeaderGroupProps()} key={idx}>
                 {headerGroup.headers.map((column: any, idx: number) => (
-                  <th
+                  <Th
                     {...column.getHeaderProps(column.getSortByToggleProps())}
                     key={idx}
-                    className="p-0.75 text-0.875"
+                    isButton={"yes"}
                   >
                     {column.Header == `` ? (
-                      <Button
-                        onClick={() => {
-                          router.push("/category?mode=create");
-                        }}
-                      >
-                        +
-                      </Button>
+                      <Flex>
+                        <Button
+                          color={"primary"}
+                          size={"small"}
+                          onClick={() => {
+                            router.push("/category?mode=create");
+                          }}
+                        >
+                          추가하기
+                        </Button>
+                      </Flex>
                     ) : (
                       column.render("Header")
                     )}
@@ -222,7 +229,7 @@ const TableCategory = ({ data, size }: IPropsTable) => {
                         ""
                       )}
                     </span>
-                  </th>
+                  </Th>
                 ))}
               </tr>
             ))}
@@ -307,10 +314,13 @@ const TableCategory = ({ data, size }: IPropsTable) => {
                         <Link href={`/category?idx=${row.cells[0].value}`}>
                           <a>
                             <Flex>
-                              <Button onClick={onClickCategoryEdit}>
+                              <Button
+                                size="small"
+                                onClick={onClickCategoryEdit}
+                              >
                                 수정하기
                               </Button>
-                              <Button onClick={onClickCategoryDel}>
+                              <Button size="small" onClick={onClickCategoryDel}>
                                 삭제하기
                               </Button>
                             </Flex>
