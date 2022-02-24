@@ -104,7 +104,6 @@ const Category: NextPage = () => {
   const onClickSearch = async () => {
     let result: any = [];
     let list = await category.filter((item: any) => {
-      // console.log(Object.values(item));
       if (state.searchTerm == "") {
         return item;
       } else {
@@ -127,14 +126,22 @@ const Category: NextPage = () => {
 
     setState({ ...state, isLoading: true });
     await axios.get("/api2/category").then((res: any) => {
-      let list = res.data.result;
-      console.log(res);
+      const list = res.data.result;
+
       list.map((item: any, idx: any) => {
+        if (!list[idx].wr_view) {
+          list[idx].wr_view = 0;
+        }
+        if (!list[idx].wr_good) {
+          list[idx].wr_good = 0;
+        }
         list[idx] = {
           idx: list[idx].idx,
           bo_table: list[idx].bo_table,
           bo_subject: list[idx].bo_subject,
-          view_content: "게시물보기",
+          num_board: list[idx].board,
+          num_view: list[idx].wr_view,
+          num_good: list[idx].wr_good,
           edit_subject: "수정 및 삭제하기",
         };
       });
@@ -150,17 +157,6 @@ const Category: NextPage = () => {
         title={
           <>
             <Header4>카테고리 편집</Header4>
-            <Button
-              variants="light"
-              color="primary"
-              size="large"
-              isLoading={state.isLoading}
-              onClick={() => {
-                router.push("/category/create");
-              }}
-            >
-              카테고리 추가하기
-            </Button>
           </>
         }
         section1={
