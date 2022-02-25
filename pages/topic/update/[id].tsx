@@ -137,8 +137,6 @@ const TopicContent: NextPage = () => {
         TopicContent.create = elapsedTime;
         setTopicContent(TopicContent);
       });
-    } else {
-      getTopiceContent();
     }
   };
   return (

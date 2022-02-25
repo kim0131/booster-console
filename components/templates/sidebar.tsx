@@ -147,7 +147,7 @@ const SideBar = () => {
       alert("이동할 수 없습니다.");
     }
   };
-  console.log(router.pathname);
+
   const CheckRouter = (url: string) => {
     if (router.pathname.includes(url)) {
       return true;

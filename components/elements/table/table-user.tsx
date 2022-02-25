@@ -73,16 +73,20 @@ const TBody = styled.tbody`
 `;
 const columns = [
   {
-    Header: "카테고리",
+    Header: "분류",
     accessor: "category",
   },
   {
-    Header: "제목",
-    accessor: "wr_subject",
+    Header: "아이디",
+    accessor: "mb_id",
   },
   {
-    Header: "작성자",
-    accessor: "mb_name",
+    Header: "이메일",
+    accessor: "mb_email",
+  },
+  {
+    Header: "연락처",
+    accessor: "mb_ph",
   },
   {
     Header: "생성일",
@@ -92,20 +96,8 @@ const columns = [
     Header: "업데이트일",
     accessor: "update",
   },
-  {
-    Header: "조회수",
-    accessor: "view",
-  },
-  {
-    Header: "추천수",
-    accessor: "like",
-  },
-  {
-    Header: "댓글",
-    accessor: "comment",
-  },
 ];
-const TableTopic = ({ data, size }: IPropsTable) => {
+const TableUser = ({ data, size }: IPropsTable) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -236,4 +228,4 @@ const TableTopic = ({ data, size }: IPropsTable) => {
   );
 };
 
-export default TableTopic;
+export default TableUser;

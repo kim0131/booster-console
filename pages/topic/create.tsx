@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { NextPage } from "next";
 import Button from "@components/elements/button";
 import Table from "@components/elements/table/table-category";
@@ -8,10 +9,11 @@ import theme from "@components/styles/theme";
 import axios from "axios";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Selectbox from "@components/elements/selectbox";
 import Textarea from "@components/textarea";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 
 const Container = styled.header`
   width: 100%;
@@ -28,6 +30,18 @@ const Container = styled.header`
   }
 `;
 
+const ImageContainer = styled.div`
+  background-image: ${(props: any) =>
+    props.background ? `url(${props.background})` : ""};
+  width: 30rem;
+  height: auto;
+  border-radius: 1rem;
+  overflow: hidden;
+`;
+const TitleBox = styled.div`
+  width: 60%;
+`;
+
 interface IStateAccounts {
   data: { [key in string]: any };
   invalid?: string;
@@ -36,12 +50,15 @@ interface IStateAccounts {
   searchTerm: string;
   tablesize: number;
 }
-const TitleBox = styled.div`
-  width: 60%;
-`;
 const TopicCrate: NextPage = () => {
   const [category, setCategory] = useState([]);
   const { data: session, status } = useSession();
+  const [image, setImage] = useState<any>({
+    image_file: "",
+    preview_URL: "img/default_image.png",
+  });
+  const hiddenFileInput = React.useRef<any>(null);
+  const [loaded, setLoaded] = useState<any>(false);
   const router = useRouter();
   const [state, setState] = useState<IStateAccounts>({
     data: {
@@ -68,6 +85,7 @@ const TopicCrate: NextPage = () => {
 
   const onClickCategoryList = async () => {
     setState({ ...state, isLoading: true });
+
     await axios.get("/api2/category").then((res: any) => {
       let list = res.data.result;
       list.map((item: any, idx: any) => {
@@ -78,7 +96,6 @@ const TopicCrate: NextPage = () => {
       });
       setCategory(list);
     });
-
     setState({ ...state, isLoading: false, isSearch: false });
   };
 
@@ -102,12 +119,16 @@ const TopicCrate: NextPage = () => {
 
   const onChangeSelcet = (e: any) => {
     const value = e.value;
-
     setState({ ...state, data: { ...state.data, board: value } });
   };
 
   const onClickSubmitTopic = async () => {
     setState({ ...state, isLoading: true });
+    const formData = new FormData();
+    if (image.image_file) {
+      formData.append("file", image.image_file);
+    }
+    console.log(state.data);
     await axios
       .post("/api2/topic/write", {
         wr_subject: state.data.wr_subject,
@@ -119,11 +140,41 @@ const TopicCrate: NextPage = () => {
         wr_datetime: state.data.wr_datetime,
         wr_update: state.data.wr_update,
       })
-      .then(res => {
+      .then(async res => {
+        const id = res.data.result.idx;
+        await axios.post(`/api2/topic/upload/${id}`, formData);
         alert("토픽이 등록되었습니다");
         router.push("/topic");
       });
     setState({ ...state, isLoading: false });
+  };
+
+  const onClickInput = () => {
+    hiddenFileInput.current.click();
+  };
+
+  const onLoadFile = (e: any) => {
+    e.preventDefault();
+    const fileReader = new FileReader();
+    if (e.target.files[0]) {
+      setLoaded("loading");
+      fileReader.readAsDataURL(e.target.files[0]);
+    }
+    fileReader.onload = () => {
+      setImage({
+        image_file: e.target.files[0],
+        preview_URL: fileReader.result,
+      });
+      setLoaded(true);
+    };
+  };
+
+  const deleteImage = () => {
+    setImage({
+      image_file: "",
+      preview_URL: "img/default_image.png",
+    });
+    setLoaded(false);
   };
 
   return (
@@ -158,10 +209,16 @@ const TopicCrate: NextPage = () => {
               color="primary"
               size="med"
               isLoading={state.isLoading}
-              // onClick={onClickSubmitTopic}
+              onClick={onClickInput}
             >
-              사진 첨부 (임시)
+              사진 첨부
             </Button>
+            <input
+              style={{ display: "none" }}
+              type="file"
+              ref={hiddenFileInput}
+              onChange={onLoadFile}
+            />
           </>
         }
         section2={
@@ -174,6 +231,13 @@ const TopicCrate: NextPage = () => {
               row={20}
               onChange={onChangeTopic}
             />
+          </>
+        }
+        section3={
+          <>
+            <ImageContainer>
+              <img src={image.preview_URL} alt="" />
+            </ImageContainer>
           </>
         }
         buttonContainer={

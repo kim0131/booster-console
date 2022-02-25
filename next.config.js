@@ -13,6 +13,10 @@ module.exports = {
         source: '/api2/:path*',
         destination: 'http://localhost:3001/api2/:path*' // Proxy to Backend
       },
+      {
+        source: '/uploads/:path*',
+        destination: 'http://localhost:3001/uploads/:path*' // Proxy to Backend
+      },
 
 
 

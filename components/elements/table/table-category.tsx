@@ -151,7 +151,7 @@ const TableCategory = ({ data, size }: IPropsTable) => {
       });
     }
     setPageSize(size);
-  }, [setPageSize, size]);
+  }, [router]);
 
   const onClickCategoryEdit = async (
     e: React.MouseEvent<HTMLButtonElement>,
@@ -288,7 +288,14 @@ const TableCategory = ({ data, size }: IPropsTable) => {
                   className="bg-gray-800 odd:bg-gray-900 bg-opacity-50 text-center"
                 >
                   {row.cells.map((cell: any, idx: number) => (
-                    <Td key={idx} {...cell.getCellProps()} className="p-0.5">
+                    <Td
+                      key={idx}
+                      {...cell.getCellProps()}
+                      className="p-0.5"
+                      onClick={() => {
+                        console.log(row);
+                      }}
+                    >
                       {row.cells[0].value == categoryId && idx == 1 ? (
                         <TextField
                           placeholder="카테고리 이름"
@@ -330,6 +337,8 @@ const TableCategory = ({ data, size }: IPropsTable) => {
                         <Link href={`/category?idx=${row.cells[0].value}`}>
                           <a>{cell.value}</a>
                         </Link>
+                      ) : idx == 0 ? (
+                        <>{parseInt(row.id) + 1}</>
                       ) : (
                         cell.render("Cell")
                       )}

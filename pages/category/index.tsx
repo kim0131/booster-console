@@ -130,6 +130,7 @@ const Category: NextPage = () => {
       const list = res.data.result;
 
       list.map((item: any, idx: any) => {
+        console.log(item);
         if (!list[idx].wr_view) {
           list[idx].wr_view = 0;
         }

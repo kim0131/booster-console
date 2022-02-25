@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/exhaustive-deps */
 import Badge from "@components/elements/badge";
 import Button from "@components/elements/button";
@@ -106,7 +107,14 @@ const Style = {
     },
   },
 };
-
+const ImageContainer = styled.div`
+  background-image: ${(props: any) =>
+    props.background ? `url(${props.background})` : ""};
+  width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  overflow: hidden;
+`;
 interface IPropsTopicContentLayout {
   children?: React.ReactNode;
   id: string | string[] | undefined;
@@ -122,6 +130,7 @@ const TopicContentLayout = ({ children, id }: IPropsTopicContentLayout) => {
     wr_view: 0,
     create: 0,
     wr_content: "",
+    file_url: "",
   });
 
   useEffect(() => {
@@ -141,7 +150,13 @@ const TopicContentLayout = ({ children, id }: IPropsTopicContentLayout) => {
         TopicContent.category = router.query.category;
         TopicContent.bookmark = false; //추후필요
         TopicContent.create = elapsedTime;
+        if (TopicContent.file_url) {
+          TopicContent.file_url =
+            "/uploads/" + TopicContent.file_url.slice(2, -2);
+        }
+
         setTopicContent(TopicContent);
+        console.log(TopicContent);
       });
     } else {
       getTopiceContent();
@@ -188,6 +203,12 @@ const TopicContentLayout = ({ children, id }: IPropsTopicContentLayout) => {
       </Style.Header.Container>
       <Style.Body.Container>
         <Style.Body.Content>{topicContent.wr_content}</Style.Body.Content>
+        <ImageContainer>
+          <img
+            src={topicContent.file_url ? topicContent.file_url : ""}
+            alt=""
+          />
+        </ImageContainer>
         <Style.Body.Button.Container>
           <Style.Body.Button.Wrapper>
             <Button color="transparent">
