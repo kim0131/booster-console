@@ -31,6 +31,7 @@ const Container = styled.header`
 `;
 
 const ImageContainer = styled.div`
+  position: relative;
   background-image: ${(props: any) =>
     props.background ? `url(${props.background})` : ""};
   width: 30rem;
@@ -40,6 +41,18 @@ const ImageContainer = styled.div`
 `;
 const TitleBox = styled.div`
   width: 60%;
+`;
+
+const DeleteButton = styled.div`
+  position: absolute;
+  top: 0.5rem;
+  right: 1rem;
+  z-index: 99;
+  background-color: #2563eb;
+  color: #ffffff;
+  padding: 0 0.5rem;
+  border-radius: 1rem;
+  cursor: pointer;
 `;
 
 interface IStateAccounts {
@@ -172,7 +185,7 @@ const TopicCrate: NextPage = () => {
   const deleteImage = () => {
     setImage({
       image_file: "",
-      preview_URL: "img/default_image.png",
+      preview_URL: "",
     });
     setLoaded(false);
   };
@@ -213,6 +226,7 @@ const TopicCrate: NextPage = () => {
             >
               사진 첨부
             </Button>
+
             <input
               style={{ display: "none" }}
               type="file"
@@ -237,6 +251,7 @@ const TopicCrate: NextPage = () => {
           <>
             <ImageContainer>
               <img src={image.preview_URL} alt="" />
+              <DeleteButton onClick={deleteImage}>X</DeleteButton>
             </ImageContainer>
           </>
         }
