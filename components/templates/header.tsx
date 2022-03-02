@@ -130,12 +130,11 @@ const Header = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
   useEffect(() => {
-    if (status == "unauthenticated") {
+    if (status == "unauthenticated" && router.route != "/login") {
       router.push("/login");
-      console.log(status);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status]);
+  }, [router]);
 
   const { isDesktop } = useDesktop();
 

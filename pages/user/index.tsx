@@ -19,6 +19,7 @@ import TableTopic from "@components/elements/table/table-topic";
 import Selectbox from "@components/elements/selectbox";
 import { CalendarContainer } from "react-datepicker";
 import TableUser from "@components/elements/table/table-user";
+import PopUp from "@components/popup";
 interface IStateAccounts {
   data: { [key in string]: string | any };
   invalid?: string;
@@ -34,9 +35,9 @@ const selectBox = [
 const User: NextPage = () => {
   const router = useRouter();
   const [user, setUser] = useState([]);
-
   const [searchResult, setSearchResult] = useState([]);
-  const [startDate, setStartDate] = useState(new Date());
+  const [userId, setUserId] = useState<string | string[] | number>();
+  const [openPopUp, setOpenPopUp] = useState<boolean>();
   const [state, setState] = useState<IStateAccounts>({
     data: {
       bo_table: "",
@@ -52,6 +53,9 @@ const User: NextPage = () => {
 
   useEffect(() => {
     onClickUserList();
+    if (router.query.id) {
+      setUserId(router.query.id);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
@@ -100,14 +104,7 @@ const User: NextPage = () => {
     setSearchResult(result2);
     setState({ ...state, isLoading: false, isSearch: true });
   };
-  const getToday = (date: Date) => {
-    var date = new Date(date);
-    var year = date.getFullYear();
-    var month = ("0" + (1 + date.getMonth())).slice(-2);
-    var day = ("0" + date.getDate()).slice(-2);
 
-    return year + "-" + month + "-" + day;
-  };
   const onClickUserList = async () => {
     setState({ ...state, isLoading: true });
 
@@ -141,6 +138,13 @@ const User: NextPage = () => {
       ...state,
       data: { ...state.data, certify: { value: value, label: label } },
     });
+  };
+
+  const onClickOpenPopUp = () => {
+    setOpenPopUp(true);
+  };
+  const onClickClosePopUp = () => {
+    setOpenPopUp(false);
   };
 
   return (
@@ -187,12 +191,21 @@ const User: NextPage = () => {
             </Button>
           </>
         }
-        section2={<></>}
+        section2={
+          <>
+            <PopUp
+              open={openPopUp}
+              id={userId ? userId : 0}
+              close={onClickClosePopUp}
+            />
+          </>
+        }
         section3={
           <>
             <TableUser
               size={state.tablesize ? state.tablesize : 1}
               data={searchResult.length > 0 ? searchResult : user}
+              rowClick={onClickOpenPopUp}
             />
           </>
         }

@@ -105,16 +105,17 @@ const Style = {
         align-items: center;
       `,
     },
+    ImageContainer: styled.div`
+      background-image: ${(props: any) =>
+        props.background ? `url(${props.background})` : ""};
+      width: 100%;
+      height: auto;
+      border-radius: 1rem;
+      overflow: hidden;
+    `,
   },
 };
-const ImageContainer = styled.div`
-  background-image: ${(props: any) =>
-    props.background ? `url(${props.background})` : ""};
-  width: 100%;
-  height: auto;
-  border-radius: 1rem;
-  overflow: hidden;
-`;
+
 interface IPropsTopicContentLayout {
   children?: React.ReactNode;
   id: string | string[] | undefined;
@@ -140,7 +141,6 @@ const TopicContentLayout = ({ children, id }: IPropsTopicContentLayout) => {
   const getTopiceContent = async () => {
     if (id) {
       await axios(`/api2/topic/list/${id}`).then(res => {
-        console.log(res.data);
         const TopicContent = res.data.result;
         const CurrentTime = new Date();
         const ContentTime = new Date(TopicContent.wr_datetime);
@@ -154,9 +154,7 @@ const TopicContentLayout = ({ children, id }: IPropsTopicContentLayout) => {
           TopicContent.file_url =
             "/uploads/" + TopicContent.file_url.slice(2, -2);
         }
-
         setTopicContent(TopicContent);
-        console.log(TopicContent);
       });
     } else {
       getTopiceContent();
@@ -203,12 +201,12 @@ const TopicContentLayout = ({ children, id }: IPropsTopicContentLayout) => {
       </Style.Header.Container>
       <Style.Body.Container>
         <Style.Body.Content>{topicContent.wr_content}</Style.Body.Content>
-        <ImageContainer>
+        <Style.Body.ImageContainer>
           <img
             src={topicContent.file_url ? topicContent.file_url : ""}
             alt=""
           />
-        </ImageContainer>
+        </Style.Body.ImageContainer>
         <Style.Body.Button.Container>
           <Style.Body.Button.Wrapper>
             <Button color="transparent">

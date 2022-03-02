@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { useSortBy, useTable, usePagination } from "react-table";
 import styled from "@emotion/styled";
@@ -6,7 +7,6 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import TextField from "../text-field";
 import Button from "../button";
-import { count } from "console";
 
 // react-table 의 타입 정의가 완벽하게 작동하지 않고 오류를 뿜는다...ㅠ
 interface IPropsTable {
@@ -65,11 +65,11 @@ const Flex2 = styled.div`
   margin: 0 1rem;
 `;
 const TBody = styled.tbody`
-  display: flex;
+  /* display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center; */
   border-bottom: 1px lightgray solid;
-  padding: 0.5rem 0rem;
+  /* padding: 0.5rem 0rem; */
 `;
 const Th = styled.th`
   text-align: center;
@@ -235,7 +235,7 @@ const TableCategory = ({ data, size }: IPropsTable) => {
             ))}
           </THead>
 
-          <tbody {...getTableBodyProps()}>
+          <TBody {...getTableBodyProps()}>
             {Mode == "create" ? (
               <tr role="row">
                 <Td colSpan={7}>
@@ -292,9 +292,7 @@ const TableCategory = ({ data, size }: IPropsTable) => {
                       key={idx}
                       {...cell.getCellProps()}
                       className="p-0.5"
-                      onClick={() => {
-                        console.log(row);
-                      }}
+                      onClick={() => {}}
                     >
                       {row.cells[0].value == categoryId && idx == 1 ? (
                         <TextField
@@ -347,7 +345,7 @@ const TableCategory = ({ data, size }: IPropsTable) => {
                 </tr>
               );
             })}
-          </tbody>
+          </TBody>
         </TableContainer>
       </TableLayout>
 

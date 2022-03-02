@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { ReactEventHandler, useEffect, useState } from "react";
 import { useSortBy, useTable, usePagination } from "react-table";
 import styled from "@emotion/styled";
 import Link from "next/link";
@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 interface IPropsTable {
   data: any;
   size: number;
+  rowClick: any;
 }
 
 const TableLayout = styled.div`
@@ -97,7 +98,7 @@ const columns = [
     accessor: "update",
   },
 ];
-const TableUser = ({ data, size }: IPropsTable) => {
+const TableUser = ({ data, size, rowClick }: IPropsTable) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -167,9 +168,8 @@ const TableUser = ({ data, size }: IPropsTable) => {
                   className="bg-gray-800 odd:bg-gray-900 bg-opacity-50 text-center"
                   onClick={() => {
                     let idx = row.original.idx;
-                    router.push(
-                      `/topic/update/${idx}?category=${row.cells[0].value}`,
-                    );
+                    router.push(`/user?id=${idx}`);
+                    rowClick();
                   }}
                 >
                   {row.cells.map((cell: any, idx: number) => (
