@@ -21,8 +21,12 @@ import Selectbox from "@components/elements/selectbox";
 import { CalendarContainer } from "react-datepicker";
 import TableUser from "@components/elements/table/table-user";
 import PopUp from "@components/userpopup";
-import { getUserCertify } from "@core/config/businesscertify";
-import UserPopUp from "@components/userpopup";
+import {
+  getBusinessRefuse,
+  getUserCertify,
+} from "@core/config/businesscertify";
+import BusinessPopUp from "@components/businesspopup";
+import TableBusiness from "@components/elements/table/table-business";
 interface IStateAccounts {
   data: { [key in string]: string | any };
   invalid?: string;
@@ -35,11 +39,11 @@ const selectBox = [
   { value: "0", label: "미승인" },
   { value: "1", label: "승인심사중" },
   { value: "2", label: "승인거절" },
-  { value: "3", label: "승인" },
+  { value: "4", label: "승인" },
 ];
-const User: NextPage = () => {
+const Business: NextPage = () => {
   const router = useRouter();
-  const [user, setUser] = useState([]);
+  const [business, setBusiness] = useState([]);
   const [searchResult, setSearchResult] = useState([]);
   const [userId, setUserId] = useState<string | string[] | number>();
   const [openPopUp, setOpenPopUp] = useState<boolean>();
@@ -60,9 +64,12 @@ const User: NextPage = () => {
       setUserId(router.query.id);
     } else {
       setOpenPopUp(false);
-      onClickUserList();
     }
   }, [router]);
+
+  useEffect(() => {
+    onClickUserList();
+  }, []);
 
   const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.currentTarget;
@@ -76,7 +83,7 @@ const User: NextPage = () => {
     let result1: any = [];
     let result2: any = [];
 
-    let list = user;
+    let list = business;
 
     //카테고리
     await list.filter((item: any) => {
@@ -120,21 +127,24 @@ const User: NextPage = () => {
 
     await axios.get("/api2/user/list").then(async (res: any) => {
       let list = res.data.result;
-
+      let result: any = [];
       list.map(async (item: any, idx: any) => {
         let stand = list[idx].mb_business_certify.toString().slice(0, 1);
-        list[idx] = {
-          idx: list[idx].idx,
-          category: getUserCertify(stand),
-          mb_id: list[idx].mb_id,
-          mb_email: list[idx].mb_email,
-          datetime: list[idx].mb_datetime.slice(0, 10),
-          // update: list[idx].mb_update.slice(0, 10),
-          update: "",
-          mb_ph: list[idx].mb_ph,
-        };
+        if (stand == 0 || stand == 1 || stand == 2) {
+          result.push({
+            idx: list[idx].idx,
+            category: getUserCertify(list[idx].mb_business_certify),
+            mb_id: list[idx].mb_id,
+            mb_email: list[idx].mb_email,
+            datetime: list[idx].mb_datetime.slice(0, 10),
+
+            refuse: getBusinessRefuse(list[idx].mb_business_certify),
+            mb_ph: list[idx].mb_ph,
+          });
+        }
       });
-      setUser(list);
+
+      setBusiness(result);
     });
     setSearchResult([]);
     setState({ ...state, isLoading: false, isSearch: false });
@@ -155,19 +165,7 @@ const User: NextPage = () => {
   const onClickClosePopUp = () => {
     setOpenPopUp(false);
   };
-  const onClickDeleteuser = async () => {
-    await axios
-      .post(`/api2/user/delete/${userId}`)
-      .then(res => {
-        setOpenPopUp(false);
-        setUserId(undefined);
-        router.push(router.pathname);
-      })
-      .catch(error => {
-        console.log(error);
-        router.push(router.pathname);
-      });
-  };
+
   return (
     <>
       {" "}
@@ -214,19 +212,18 @@ const User: NextPage = () => {
         }
         section2={
           <>
-            <UserPopUp
+            <BusinessPopUp
               open={openPopUp}
               id={userId ? userId : 0}
               close={onClickClosePopUp}
-              onClickDel={onClickDeleteuser}
             />
           </>
         }
         section3={
           <>
-            <TableUser
+            <TableBusiness
               size={state.tablesize ? state.tablesize : 1}
-              data={searchResult.length > 0 ? searchResult : user}
+              data={searchResult.length > 0 ? searchResult : business}
               rowClick={onClickOpenPopUp}
             />
           </>
@@ -236,4 +233,4 @@ const User: NextPage = () => {
   );
 };
 
-export default User;
+export default Business;

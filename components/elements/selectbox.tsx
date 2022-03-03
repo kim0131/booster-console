@@ -15,13 +15,14 @@ const customStyles = {
 const Selectbox = (props: any) => {
   return (
     <Select
-      id=""
+      id={props.id}
       options={props.options}
       isMulti={props.isMulti}
       placeholder={props.placeholder}
       styles={customStyles}
       name={props.name}
       onChange={props.onChange}
+      menuPlacement={props.menuPlacement}
       value={props.options.filter(
         (option: any) => option.value === props.value,
       )}

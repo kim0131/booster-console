@@ -6,7 +6,7 @@ export const InsightNavigation = [
 
 export const UserNavigation = [
   { id: 0, content: "사용자", url: "/login" },
-  { id: 1, content: "회사 인증", url: "/login" },
+  { id: 1, content: "회사 인증", url: "/business" },
   { id: 2, content: "사용자 목록", url: "/user" },
 ];
 export const HomeNavigation = [

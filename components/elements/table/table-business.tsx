@@ -90,15 +90,15 @@ const columns = [
     accessor: "mb_ph",
   },
   {
+    Header: "거절사유",
+    accessor: "refuse",
+  },
+  {
     Header: "생성일",
     accessor: "datetime",
   },
-  {
-    Header: "업데이트일",
-    accessor: "update",
-  },
 ];
-const TableUser = ({ data, size, rowClick }: IPropsTable) => {
+const TableBusiness = ({ data, size, rowClick }: IPropsTable) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -228,4 +228,4 @@ const TableUser = ({ data, size, rowClick }: IPropsTable) => {
   );
 };
 
-export default TableUser;
+export default TableBusiness;

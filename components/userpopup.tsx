@@ -1,9 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { getUserCertify } from "@core/config/businesscertify";
 import styled from "@emotion/styled";
 import axios from "axios";
 import { error } from "console";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
+import { stringify } from "querystring";
 import { useEffect, useState } from "react";
 import { Rings } from "react-loader-spinner";
 import Selectbox from "./elements/selectbox";
@@ -160,16 +162,17 @@ interface IStatePopUp {
   open?: boolean;
   id?: number | string | string[];
   close?: any;
+  onClickDel?: any;
 }
 
-const PopUp = ({ open, close, id }: IStatePopUp) => {
+const UserPopUp = ({ open, close, id, onClickDel }: IStatePopUp) => {
   const router = useRouter();
   const { mode } = router.query;
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const options = [
     { value: 0, label: "미승인" },
-    { value: 1, label: "승인거부" },
-    { value: 2, label: "승인 심사중" },
+    { value: 1, label: "승인심사중" },
+    { value: 2, label: "승인거절" },
     { value: 3, label: "승인완료" },
   ];
 
@@ -222,13 +225,15 @@ const PopUp = ({ open, close, id }: IStatePopUp) => {
     if (open && id) {
       getUserInfo();
     }
+    if (router.query.mode == "open") {
+      open = true;
+    }
   }, [router, id]);
 
   const getUserInfo = async () => {
     setIsLoading(true);
     await axios.get(`/api2/user/${id}`).then(async res => {
       let user = res.data.result;
-
       let business = await axios
         .get(`/api2/business/${user.mb_business_num}`)
         .then(res => {
@@ -237,9 +242,8 @@ const PopUp = ({ open, close, id }: IStatePopUp) => {
           return business;
         })
         .catch(error => {
-          console.log(error);
+          router.push("/user");
         });
-
       user.mb_business_certify = parseInt(user.mb_business_certify); // String을 Int로 변환
       Object.assign(user, business);
       setUserInfo(user);
@@ -268,8 +272,24 @@ const PopUp = ({ open, close, id }: IStatePopUp) => {
       ...businessInfo,
       [name]: value,
     });
-    console.log(businessInfo);
   };
+
+  const onClickUpdateAxios = async () => {
+    await axios
+      .post(`/api2/user/update/${id}`, userInfo)
+      .then(res => {})
+      .catch(error => {
+        console.log(error);
+      });
+    await axios
+      .post(`/api2/business/update/${userInfo.mb_business_num}`, businessInfo)
+      .then(res => {})
+      .catch(error => {
+        console.log(error);
+      });
+    router.push(router.pathname + `?id=${id}&mode=open`);
+  };
+
   return (
     <>
       {open && (
@@ -291,8 +311,11 @@ const PopUp = ({ open, close, id }: IStatePopUp) => {
                       <Section1Header>분류</Section1Header>
                       <Section1Content>
                         <Selectbox
+                          id={"popup"}
                           options={options}
-                          value={userInfo.mb_business_certify}
+                          value={parseInt(
+                            userInfo.mb_business_certify.toString().slice(0, 1),
+                          )}
                           onChange={onChangeSelcet}
                         />
                       </Section1Content>
@@ -436,7 +459,7 @@ const PopUp = ({ open, close, id }: IStatePopUp) => {
                     <Section1Container>
                       <Section1Header>분류</Section1Header>
                       <Section1Content>
-                        {userInfo.mb_business_certify}
+                        {getUserCertify(userInfo.mb_business_certify)}
                       </Section1Content>
                     </Section1Container>
                     <Section1Container>
@@ -542,20 +565,22 @@ const PopUp = ({ open, close, id }: IStatePopUp) => {
             <Footer>
               {mode == "modify" ? (
                 <>
-                  <FooterButton1 onClick={() => {}}>적용하기</FooterButton1>
+                  <FooterButton1 onClick={onClickUpdateAxios}>
+                    적용하기
+                  </FooterButton1>
                   <FooterButton2 onClick={close}>취소</FooterButton2>
                 </>
               ) : (
                 <>
                   <FooterButton1
                     onClick={() => {
-                      const url = router.asPath + "&mode=modify";
+                      const url = router.pathname + `?id=${id}&mode=modify`;
                       router.push(url);
                     }}
                   >
                     수정
                   </FooterButton1>
-                  <FooterButton2 onClick={close}>삭제</FooterButton2>
+                  <FooterButton2 onClick={onClickDel}>삭제</FooterButton2>
                 </>
               )}
             </Footer>
@@ -566,4 +591,4 @@ const PopUp = ({ open, close, id }: IStatePopUp) => {
   );
 };
 
-export default PopUp;
+export default UserPopUp;
