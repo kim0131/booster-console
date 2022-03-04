@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { getUserCertify } from "@core/config/businesscertify";
+import { businessImageUrl } from "@core/config/imgurl";
 import styled from "@emotion/styled";
 import axios from "axios";
 import { error } from "console";
@@ -10,6 +11,10 @@ import { useEffect, useState } from "react";
 import { Rings } from "react-loader-spinner";
 import Selectbox from "./elements/selectbox";
 import TextField from "./elements/text-field";
+
+interface IPropsImageContaier {
+  img: string;
+}
 
 const PopUpContainer = styled.div`
   display: flex;
@@ -158,6 +163,14 @@ const Flex = styled.div`
   width: 100%;
 `;
 
+const ImageContainer = styled.div<IPropsImageContaier>`
+  width: ${props => (props.img ? "100%" : "0")};
+  height: ${props => (props.img ? "100%" : "0")};
+  background-size: contain;
+  background-image: url(${props => props.img});
+  background-repeat: no-repeat;
+`;
+
 interface IStatePopUp {
   open?: boolean;
   id?: number | string | string[];
@@ -205,6 +218,7 @@ const UserPopUp = ({ open, close, id, onClickDel }: IStatePopUp) => {
     business_url: "",
     business_telephone: "",
     mb_idx: 0,
+    business_full_url: "",
   });
   const [businessInfo, setBusinessInfo] = useState({
     business_address1: "",
@@ -220,6 +234,7 @@ const UserPopUp = ({ open, close, id, onClickDel }: IStatePopUp) => {
     business_url: "",
     business_telephone: "",
     mb_idx: 0,
+    business_full_url: "",
   });
   useEffect(() => {
     if (open && id) {
@@ -238,6 +253,12 @@ const UserPopUp = ({ open, close, id, onClickDel }: IStatePopUp) => {
         .get(`/api2/business/${user.mb_business_num}`)
         .then(res => {
           let business = res.data;
+          business.business_full_url = "";
+          if (business.business_url) {
+            business.business_full_url =
+              businessImageUrl + business.business_url.slice(2, -2);
+          }
+          console.log(business);
           setBusinessInfo(business);
           return business;
         })
@@ -368,7 +389,13 @@ const UserPopUp = ({ open, close, id, onClickDel }: IStatePopUp) => {
                       <Section1Content>{userInfo.business_url}</Section1Content>
                     </Section1Container>
                   </Section1>
-                  <Section2>등록된이미지가 없습니다.</Section2>
+                  <Section2>
+                    {businessInfo.business_full_url ? (
+                      <ImageContainer img={businessInfo.business_full_url} />
+                    ) : (
+                      "등록된 이미지가 없습니다."
+                    )}
+                  </Section2>
                   <Section3>
                     <Header>사업자등록증 정보 입력</Header>
                     <Section3Container>
@@ -491,7 +518,19 @@ const UserPopUp = ({ open, close, id, onClickDel }: IStatePopUp) => {
                       <Section1Content>{userInfo.business_url}</Section1Content>
                     </Section1Container>
                   </Section1>
-                  <Section2>등록된이미지가 없습니다.</Section2>
+                  <Section2>
+                    {" "}
+                    <ImageContainer
+                      img={
+                        businessInfo.business_full_url
+                          ? businessInfo.business_full_url
+                          : ""
+                      }
+                    />
+                    {businessInfo.business_full_url
+                      ? ""
+                      : "등록된 이미지가 없습니다."}
+                  </Section2>
                   <Section3>
                     <Header>사업자등록증 정보 입력</Header>
                     <Section3Container>

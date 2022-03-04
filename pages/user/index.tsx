@@ -41,7 +41,10 @@ const User: NextPage = () => {
   const router = useRouter();
   const [user, setUser] = useState([]);
   const [searchResult, setSearchResult] = useState([]);
-  const [userId, setUserId] = useState<string | string[] | number>();
+  const [userId, setUserId] = useState<any>({
+    userid: "",
+    business: "",
+  });
   const [openPopUp, setOpenPopUp] = useState<boolean>();
   const [state, setState] = useState<IStateAccounts>({
     data: {
@@ -57,7 +60,7 @@ const User: NextPage = () => {
   });
   useEffect(() => {
     if (router.query.id) {
-      setUserId(router.query.id);
+      setUserId({ ...userId, userid: router.query.id });
     } else {
       setOpenPopUp(false);
       onClickUserList();
@@ -130,9 +133,14 @@ const User: NextPage = () => {
           mb_email: list[idx].mb_email,
           datetime: list[idx].mb_datetime.slice(0, 10),
           // update: list[idx].mb_update.slice(0, 10),
+          business: list[idx].mb_business_num,
           update: "",
           mb_ph: list[idx].mb_ph,
         };
+
+        if (list[idx].idx == userId.userid) {
+          setUserId({ ...userId, business: list[idx].business });
+        }
       });
       setUser(list);
     });
@@ -157,17 +165,22 @@ const User: NextPage = () => {
   };
   const onClickDeleteuser = async () => {
     await axios
-      .post(`/api2/user/delete/${userId}`)
-      .then(res => {
-        setOpenPopUp(false);
-        setUserId(undefined);
-        router.push(router.pathname);
-      })
+      .post(`/api2/user/delete/${userId.userid}`)
+      .then(res => {})
       .catch(error => {
         console.log(error);
-        router.push(router.pathname);
       });
+    await axios
+      .post(`/api2/business/delete/${userId.business}`)
+      .then(res => {})
+      .catch(error => {
+        console.log(error);
+      });
+    setOpenPopUp(false);
+    setUserId(undefined);
+    router.push(router.pathname);
   };
+
   return (
     <>
       {" "}
@@ -216,7 +229,7 @@ const User: NextPage = () => {
           <>
             <UserPopUp
               open={openPopUp}
-              id={userId ? userId : 0}
+              id={userId.userid ? userId.userid : 0}
               close={onClickClosePopUp}
               onClickDel={onClickDeleteuser}
             />

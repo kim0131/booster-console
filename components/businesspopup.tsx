@@ -1,19 +1,19 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/exhaustive-deps */
-import {
-  getBusinessRefuse,
-  getUserCertify,
-} from "@core/config/businesscertify";
+import { getUserCertify } from "@core/config/businesscertify";
+import { businessImageUrl } from "@core/config/imgurl";
 import styled from "@emotion/styled";
 import axios from "axios";
-import { error } from "console";
-import { NextPage } from "next";
+import { url } from "inspector";
 import { useRouter } from "next/router";
-import { stringify } from "querystring";
 import { useEffect, useState } from "react";
 import { Rings } from "react-loader-spinner";
-import Select from "react-select/dist/declarations/src/Select";
 import Selectbox from "./elements/selectbox";
 import TextField from "./elements/text-field";
+
+interface IPropsImageContaier {
+  img: string;
+}
 
 const PopUpContainer = styled.div`
   display: flex;
@@ -162,6 +162,14 @@ const Flex = styled.div`
   width: 100%;
 `;
 
+const ImageContainer = styled.div<IPropsImageContaier>`
+  width: 100%;
+  height: 100%;
+  background-size: contain;
+  background-image: url(${props => props.img});
+  background-repeat: no-repeat;
+`;
+
 interface IStatePopUp {
   open?: boolean;
   id?: number | string | string[];
@@ -216,6 +224,8 @@ const BusinessPopUp = ({ open, close, id }: IStatePopUp) => {
     business_url: "",
     business_telephone: "",
     mb_idx: 0,
+
+    business_full_url: "",
   });
   const [businessInfo, setBusinessInfo] = useState({
     business_address1: "",
@@ -231,6 +241,8 @@ const BusinessPopUp = ({ open, close, id }: IStatePopUp) => {
     business_url: "",
     business_telephone: "",
     mb_idx: 0,
+
+    business_full_url: "",
   });
   useEffect(() => {
     if (open && id) {
@@ -249,6 +261,12 @@ const BusinessPopUp = ({ open, close, id }: IStatePopUp) => {
         .get(`/api2/business/${user.mb_business_num}`)
         .then(res => {
           let business = res.data;
+          business.business_full_url = "";
+          if (business.business_url) {
+            business.business_full_url =
+              businessImageUrl + business.business_url.slice(2, -2);
+          }
+          console.log(business);
           setBusinessInfo(business);
           return business;
         })
@@ -284,7 +302,7 @@ const BusinessPopUp = ({ open, close, id }: IStatePopUp) => {
       [name]: value,
     });
   };
-
+  // 수정 API
   const onClickUpdateAxios = async () => {
     await axios
       .post(`/api2/user/update/${id}`, {
@@ -313,6 +331,7 @@ const BusinessPopUp = ({ open, close, id }: IStatePopUp) => {
     router.push(router.pathname);
   };
 
+  // 거절 API
   const onClickRefuseAxios = async () => {
     await axios
       .post(`/api2/user/update/${id}`, {
@@ -393,7 +412,15 @@ const BusinessPopUp = ({ open, close, id }: IStatePopUp) => {
                       <Section1Content>{userInfo.business_url}</Section1Content>
                     </Section1Container>
                   </Section1>
-                  <Section2>등록된이미지가 없습니다.</Section2>
+                  <Section2>
+                    <ImageContainer
+                      img={
+                        businessInfo.business_full_url
+                          ? businessInfo.business_full_url
+                          : ""
+                      }
+                    />
+                  </Section2>
                   <Section3>
                     <Header>사업자등록증 정보 입력</Header>
                     <Section3Container>

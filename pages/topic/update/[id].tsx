@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/exhaustive-deps */
 import Button from "@components/elements/button";
 import Selectbox from "@components/elements/selectbox";

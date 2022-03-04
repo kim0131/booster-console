@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 import { NextPage } from "next";
 import Button from "@components/elements/button";
@@ -94,12 +95,10 @@ const TopicCrate: NextPage = () => {
   useEffect(() => {
     onClickCategoryList();
     getUserIp();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
   const onClickCategoryList = async () => {
     setState({ ...state, isLoading: true });
-
     await axios.get("/api2/category").then((res: any) => {
       let list = res.data.result;
       list.map((item: any, idx: any) => {
