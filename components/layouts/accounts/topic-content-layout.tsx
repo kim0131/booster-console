@@ -133,6 +133,7 @@ const TopicContentLayout = ({ children, id }: IPropsTopicContentLayout) => {
     create: 0,
     wr_content: "",
     file_url: "",
+    file_full_url: "",
   });
 
   useEffect(() => {
@@ -152,20 +153,28 @@ const TopicContentLayout = ({ children, id }: IPropsTopicContentLayout) => {
         TopicContent.bookmark = false; //추후필요
         TopicContent.create = elapsedTime;
         if (TopicContent.file_url) {
-          TopicContent.file_url =
+          TopicContent.file_full_url =
             topicImageUrl + TopicContent.file_url.slice(2, -2);
+          TopicContent.file_url = TopicContent.file_url.slice(2, -2);
         }
         setTopicContent(TopicContent);
       });
-    } else {
-      getTopiceContent();
     }
   };
   const onClinkTopicDelete = async () => {
+    await axios
+      .post(`/api2/topic/upload/delete/${id}`, {
+        file_url: topicContent.file_url,
+      })
+      .then(() => {});
     await axios.post(`/api2/topic/delete/${id}`).then(() => {});
     alert("삭제되었습니다.");
     router.push("/topic");
   };
+  const onClinkTopicUpDate = async () => {
+    router.push(`/topic/update/${id}`);
+  };
+  onClinkTopicUpDate;
   return (
     <Style.Container>
       <Style.Header.Container>
@@ -209,7 +218,7 @@ const TopicContentLayout = ({ children, id }: IPropsTopicContentLayout) => {
         <Style.Body.Content>{topicContent.wr_content}</Style.Body.Content>
         <Style.Body.ImageContainer>
           <img
-            src={topicContent.file_url ? topicContent.file_url : ""}
+            src={topicContent.file_url ? topicContent.file_full_url : ""}
             alt=""
           />
         </Style.Body.ImageContainer>
@@ -225,7 +234,7 @@ const TopicContentLayout = ({ children, id }: IPropsTopicContentLayout) => {
             </Button>
           </Style.Body.Button.Wrapper>
           <Style.Body.Button.Wrapper>
-            <Button>수정하기</Button>
+            <Button onClick={onClinkTopicUpDate}>수정하기</Button>
             <Button onClick={onClinkTopicDelete}>삭제하기</Button>
           </Style.Body.Button.Wrapper>
         </Style.Body.Button.Container>

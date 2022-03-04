@@ -175,9 +175,7 @@ const TableTopic = ({ data, size }: IPropsTable) => {
                   className="bg-gray-800 odd:bg-gray-900 bg-opacity-50 text-center"
                   onClick={() => {
                     let idx = row.original.idx;
-                    router.push(
-                      `/topic/update/${idx}?category=${row.cells[0].value}`,
-                    );
+                    router.push(`/topic/${idx}?category=${row.cells[0].value}`);
                   }}
                 >
                   {row.cells.map((cell: any, idx: number) => (
