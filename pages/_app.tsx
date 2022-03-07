@@ -7,7 +7,7 @@ import global from "@components/styles/global";
 import { MordalPortal, ToastPortal } from "@components/templates/portal";
 import useToast from "@core/hook/use-toast";
 import Header from "@components/templates/header";
-import Footer from "@components/templates/footer";
+
 import SideBar from "@components/templates/sidebar";
 import styled from "@emotion/styled";
 
@@ -27,7 +27,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           <SideBar />
           <Component {...pageProps} />
         </Flex>
-        {/* <Footer /> */}
+
         <div>{message}</div>
       </SessionProvider>
     </ThemeProvider>

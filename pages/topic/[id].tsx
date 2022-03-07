@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Button from "@components/elements/button";
+import Loader from "@components/elements/loader";
 import { Header4 } from "@components/elements/types";
 import AccountsLayout from "@components/layouts/accounts/consolelayout";
 import TopicContentLayout from "@components/layouts/accounts/topic-content-layout";
@@ -144,7 +145,7 @@ const TopicContent: NextPage = () => {
       <AccountsLayout
         topicContent={
           <TopicContentLayout id={id}>
-            <Comment />
+            <Comment id={id} />
           </TopicContentLayout>
         }
       />
