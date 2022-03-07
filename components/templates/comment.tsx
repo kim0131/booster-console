@@ -10,6 +10,7 @@ import {
   IconView,
 } from "@components/icons";
 import theme from "@components/styles/theme";
+
 import styled from "@emotion/styled";
 import axios from "axios";
 import { useSession } from "next-auth/react";
@@ -175,22 +176,24 @@ const Loader = ({ size = "medium", color = "white" }: IPropsLoader) => (
 interface IPropsComment {
   children?: React.ReactNode;
   id?: any;
+  count?: number;
 }
 
-const Comment = ({ children }: IPropsComment) => {
+const Comment = ({ id, children, count }: IPropsComment) => {
   const router = useRouter();
-  const { id }: any = router.query;
+
   const [isLoading, setIsLoading] = useState(true);
   const { data: session, status } = useSession();
 
   const [commentdata, setCommentData] = useState({
     wr_content: "",
     mb_id: session?.user?.email,
-    wr_ip: "",
     mb_name: session?.user?.name,
+    wr_ip: "",
     wr_parent: parseInt(id),
     wr_is_comment: 1,
     board: null,
+    replycount: 0,
   });
   const [replydata, setReply] = useState({
     wr_content: "",
@@ -198,6 +201,7 @@ const Comment = ({ children }: IPropsComment) => {
     wr_ip: "",
     mb_name: session?.user?.name,
     wr_parent: parseInt(id),
+    wr_parent2: 0,
     wr_is_comment2: 1,
     board: null,
   });
@@ -214,14 +218,30 @@ const Comment = ({ children }: IPropsComment) => {
     },
   ]);
   useEffect(() => {
-    getUserIp();
-    getComment();
-  }, [router]);
+    if (id) {
+      getUserSet();
+      getComment();
+    } else {
+      router.push(router.asPath);
+    }
+  }, [router, id, session]);
 
-  const getUserIp = async () => {
+  const getUserSet = async () => {
     const res = await axios.get("https://geolocation-db.com/json/");
-    setCommentData({ ...commentdata, wr_ip: res.data.IPv4 });
-    setReply({ ...replydata, wr_ip: res.data.IPv4 });
+    setCommentData({
+      ...commentdata,
+      wr_ip: res.data.IPv4,
+      mb_id: session?.user?.email,
+      mb_name: session?.user?.name,
+      wr_parent: parseInt(id),
+    });
+    setReply({
+      ...replydata,
+      wr_ip: res.data.IPv4,
+      mb_id: session?.user?.email,
+      mb_name: session?.user?.name,
+      wr_parent: parseInt(id),
+    });
   };
 
   const getComment = async () => {
@@ -235,6 +255,10 @@ const Comment = ({ children }: IPropsComment) => {
         const elapsedTime = Math.ceil(
           (CurrentTime.getTime() - ContentTime.getTime()) / (1000 * 3600),
         );
+        const replyCount = await axios.get(
+          `/api2/topic/replycount/${item.idx}`,
+        );
+
         result.push(
           await {
             idx: item.idx,
@@ -245,11 +269,11 @@ const Comment = ({ children }: IPropsComment) => {
             wr_view: item.wr_view,
             wr_good: item.wr_good,
             wr_create: elapsedTime,
+            replycount: replyCount.data.result.length,
             wr_reply: await getCommentIsReply(item.idx),
           },
         );
       }
-
       setComentList(result);
     });
 
@@ -257,7 +281,7 @@ const Comment = ({ children }: IPropsComment) => {
   };
 
   const getCommentIsReply = async (idx: string | number) => {
-    const reply = await axios.get(`/api2/topic/comment/${idx}`);
+    const reply = await axios.get(`/api2/topic/reply/${idx}`);
     if (reply.data.result.length) {
       const result = reply.data.result.map((item: any, idx: any) => {
         return (
@@ -278,14 +302,6 @@ const Comment = ({ children }: IPropsComment) => {
                   <Style.List.Bottom.Badge>
                     <IconLike size={16} color={theme.color.gray[500]} />
                     <Body3 color={theme.color.gray[500]}>{item.wr_good}</Body3>
-                  </Style.List.Bottom.Badge>
-                  <Style.List.Bottom.Badge>
-                    <IconView size={16} color={theme.color.gray[500]} />
-                    <Body3 color={theme.color.gray[500]}>{item.wr_view}</Body3>
-                  </Style.List.Bottom.Badge>
-                  <Style.List.Bottom.Badge>
-                    <IconComment size={16} color={theme.color.gray[500]} />
-                    <Body3 color={theme.color.gray[500]}>23</Body3>
                   </Style.List.Bottom.Badge>
                 </Style.List.Bottom.Info>
                 <Body3 color={theme.color.gray[500]}>
@@ -308,13 +324,14 @@ const Comment = ({ children }: IPropsComment) => {
   const onClickWriteComment = async () => {
     await axios.post(`/api2/topic/write`, commentdata).then(res => {
       alert("댓글이 등록되었습니다");
+      setCommentData({ ...commentdata, wr_content: "" });
       router.push(router.asPath);
     });
   };
   const onClickWriteReply = async () => {
     await axios.post(`/api2/topic/write`, replydata).then(res => {
       alert("댓글이 등록되었습니다");
-      setReply({ ...replydata, wr_parent: 0, wr_content: "" });
+      setReply({ ...replydata, wr_parent2: 0, wr_content: "" });
       router.push(router.asPath);
     });
   };
@@ -322,15 +339,17 @@ const Comment = ({ children }: IPropsComment) => {
     const { name, value } = e.target;
     setCommentData({ ...commentdata, [name]: value });
   };
+
   const onChangeTextareaReply = (e: any) => {
     const { name, value } = e.target;
-    setReply({ ...replydata, [name]: value });
+    setReply({ ...replydata, wr_content: value });
   };
+
   const onClickReply = async (e: any, wr_parent: any) => {
-    if (wr_parent == replydata.wr_parent) {
-      setReply({ ...replydata, wr_parent: 0, wr_content: "" });
+    if (wr_parent == replydata.wr_parent2) {
+      setReply({ ...replydata, wr_parent2: 0, wr_content: "" });
     } else {
-      setReply({ ...replydata, wr_parent: wr_parent, wr_content: "" });
+      setReply({ ...replydata, wr_parent2: wr_parent, wr_content: "" });
     }
   };
 
@@ -338,7 +357,7 @@ const Comment = ({ children }: IPropsComment) => {
     <Style.Container>
       <Style.Comment>
         <Style.AddComment.Container>
-          <Header5>40개의 댓글</Header5>
+          <Header5>{count}개의 댓글</Header5>
           <Style.AddComment.TextArea
             rows={3}
             name={"wr_content"}
@@ -405,7 +424,9 @@ const Comment = ({ children }: IPropsComment) => {
                       </Style.List.Bottom.Badge>
                       <Style.List.Bottom.Badge>
                         <IconComment size={16} color={theme.color.gray[500]} />
-                        <Body3 color={theme.color.gray[500]}>23</Body3>
+                        <Body3 color={theme.color.gray[500]}>
+                          {comment.replycount}
+                        </Body3>
                       </Style.List.Bottom.Badge>
                     </Style.List.Bottom.Info>
                     <Body3 color={theme.color.gray[500]}>
@@ -417,7 +438,7 @@ const Comment = ({ children }: IPropsComment) => {
                     </Body3>
                   </Style.List.Bottom.Container>
                 </Style.List.Container>
-                {replydata.wr_parent == comment.idx ? (
+                {replydata.wr_parent2 == comment.idx ? (
                   <Style.AddComment.Container>
                     <Style.AddComment.TextArea
                       rows={3}

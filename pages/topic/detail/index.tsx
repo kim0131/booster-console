@@ -8,6 +8,7 @@ import Comment from "@components/templates/comment";
 import styled from "@emotion/styled";
 import axios from "axios";
 import { NextPage } from "next";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -109,7 +110,8 @@ const Style = {
 const TopicContent: NextPage = () => {
   const router = useRouter();
   const { id } = router.query;
-
+  const [commentCount, setCount] = useState();
+  const { data: session, status } = useSession();
   const [topicContent, setTopicContent] = useState({
     category: "",
     wr_subject: "",
@@ -121,9 +123,16 @@ const TopicContent: NextPage = () => {
   });
 
   useEffect(() => {
-    getTopiceContent();
-  }, [router]);
+    if (id) {
+      getTopiceContent();
+      getCount(id);
+    }
+  }, [router, id, session]);
 
+  const getCount = async (id: any) => {
+    const res = await axios.get(`/api2/topic/commentcount/${id}`);
+    setCount(res.data.result.length);
+  };
   const getTopiceContent = async () => {
     if (id) {
       await axios(`/api2/topic/list/${id}`).then(res => {
@@ -144,8 +153,8 @@ const TopicContent: NextPage = () => {
     <>
       <AccountsLayout
         topicContent={
-          <TopicContentLayout id={id}>
-            <Comment id={id} />
+          <TopicContentLayout id={id} count={commentCount}>
+            <Comment id={id} count={commentCount} />
           </TopicContentLayout>
         }
       />

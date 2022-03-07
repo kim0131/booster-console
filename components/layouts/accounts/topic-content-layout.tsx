@@ -120,9 +120,14 @@ const Style = {
 interface IPropsTopicContentLayout {
   children?: React.ReactNode;
   id: string | string[] | undefined;
+  count?: number;
 }
 
-const TopicContentLayout = ({ children, id }: IPropsTopicContentLayout) => {
+const TopicContentLayout = ({
+  children,
+  id,
+  count,
+}: IPropsTopicContentLayout) => {
   const router = useRouter();
   const [topicContent, setTopicContent] = useState({
     category: "",
@@ -204,7 +209,7 @@ const TopicContentLayout = ({ children, id }: IPropsTopicContentLayout) => {
             </Style.Header.Bottom.Badge>
             <Style.Header.Bottom.Badge>
               <IconComment size={16} color={theme.color.gray[500]} />
-              <Body3 color={theme.color.gray[500]}>23</Body3>
+              <Body3 color={theme.color.gray[500]}>{count}</Body3>
             </Style.Header.Bottom.Badge>
           </Style.Header.Bottom.Info>
           <Body3 color={theme.color.gray[500]}>
@@ -230,7 +235,7 @@ const TopicContentLayout = ({ children, id }: IPropsTopicContentLayout) => {
             </Button>
             <Button color="transparent">
               <IconComment />
-              23
+              {count}
             </Button>
           </Style.Body.Button.Wrapper>
           <Style.Body.Button.Wrapper>
