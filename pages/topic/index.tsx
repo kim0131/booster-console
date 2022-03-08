@@ -21,6 +21,8 @@ import TableTopic from "@components/elements/table/table-topic";
 import ConsoleLayout from "@components/layouts/accounts/consolelayout";
 import useSWR from "swr";
 import { Topicfetcher } from "@core/swr/topicfetch";
+import { CategorySelectfetcher } from "@core/swr/categoryfetcher";
+
 interface IStateAccounts {
   data: { [key in string]: string };
   invalid?: string;
@@ -34,9 +36,14 @@ interface IStateAccounts {
 
 const Topic: NextPage = () => {
   const router = useRouter();
-  const { data: topic, error } = useSWR(`/api2/topic/list`, Topicfetcher);
+  const { data: topic } = useSWR(`/api2/topic/list`, Topicfetcher);
+  const { data: categoryList } = useSWR(
+    `/api2/category`,
+    CategorySelectfetcher,
+  );
+
   const [topicList, setTopicList] = useState(topic);
-  const [category, setCategory] = useState<any>([]);
+  const [category, setCategory] = useState(categoryList);
   const [searchResult, setSearchResult] = useState([]);
   const [startDate, setStartDate] = useState(new Date());
   const [state, setState] = useState<IStateAccounts>({
@@ -172,16 +179,7 @@ const Topic: NextPage = () => {
   };
 
   const onClickCategoryList = async () => {
-    await axios.get("/api2/category").then((res: any) => {
-      let list = res.data.result;
-      list.map((item: any, idx: any) => {
-        list[idx] = {
-          value: list[idx].idx,
-          label: list[idx].bo_subject,
-        };
-      });
-      setCategory(list);
-    });
+    setCategory(categoryList);
   };
 
   const onChangeSelcet = (e: any) => {
@@ -230,13 +228,15 @@ const Topic: NextPage = () => {
         }
         section1={
           <>
-            <Selectbox
-              options={category}
-              isMulti={false}
-              placeholder={"카테고리"}
-              onChange={onChangeSelcet}
-              value={state.data.board}
-            />
+            {category && (
+              <Selectbox
+                options={category}
+                isMulti={false}
+                placeholder={"카테고리"}
+                onChange={onChangeSelcet}
+                value={state.data.board}
+              />
+            )}
             <CalendarContainer
               name="startDay"
               onChange={onChangeCalendarStartDay}

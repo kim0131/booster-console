@@ -123,14 +123,11 @@ const Category: NextPage = () => {
   };
 
   const onClickCategoryList = async () => {
-    // if(state.searchTerm)
-
     setState({ ...state, isLoading: true });
     await axios.get("/api2/category").then((res: any) => {
       const list = res.data.result;
 
       list.map((item: any, idx: any) => {
-        console.log(item);
         if (!list[idx].wr_view) {
           list[idx].wr_view = 0;
         }
@@ -147,7 +144,6 @@ const Category: NextPage = () => {
           edit_subject: "수정 및 삭제하기",
         };
       });
-
       setCategory(list);
     });
     setState({ ...state, isLoading: false, isSearch: false });

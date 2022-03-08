@@ -111,7 +111,6 @@ const Style = {
 
 const TopicContent: NextPage = () => {
   const router = useRouter();
-
   const { id } = router.query;
   const [commentCount, setCount] = useState();
   const { data: session, status } = useSession();

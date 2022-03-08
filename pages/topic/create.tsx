@@ -15,6 +15,8 @@ import Selectbox from "@components/elements/selectbox";
 import Textarea from "@components/textarea";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { CategorySelectfetcher } from "@core/swr/categoryfetcher";
+import useSWR from "swr";
 
 const Container = styled.header`
   width: 100%;
@@ -68,6 +70,10 @@ interface IStateAccounts {
 const TopicCrate: NextPage = () => {
   const [category, setCategory] = useState([]);
   const { data: session, status } = useSession();
+  const { data: categoryList } = useSWR(
+    `/api2/category`,
+    CategorySelectfetcher,
+  );
   const [image, setImage] = useState<any>({
     image_file: "",
     preview_URL: "img/default_image.png",
@@ -99,16 +105,9 @@ const TopicCrate: NextPage = () => {
 
   const onClickCategoryList = async () => {
     setState({ ...state, isLoading: true });
-    await axios.get("/api2/category").then((res: any) => {
-      let list = res.data.result;
-      list.map((item: any, idx: any) => {
-        list[idx] = {
-          value: list[idx].idx,
-          label: list[idx].bo_subject,
-        };
-      });
-      setCategory(list);
-    });
+
+    setCategory(categoryList);
+
     setState({ ...state, isLoading: false, isSearch: false });
   };
 
@@ -200,14 +199,17 @@ const TopicCrate: NextPage = () => {
         }
         section4={
           <>
-            <Selectbox
-              options={category}
-              isMulti={false}
-              placeholder={"카테고리 선택"}
-              name="board"
-              onChange={onChangeSelcet}
-              value={state.data.board}
-            />
+            {categoryList && (
+              <Selectbox
+                options={categoryList}
+                isMulti={false}
+                placeholder={"카테고리 선택"}
+                name="board"
+                onChange={onChangeSelcet}
+                value={state.data.board}
+              />
+            )}
+
             <TitleBox>
               <TextField
                 placeholder="제목"

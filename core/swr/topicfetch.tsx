@@ -26,6 +26,7 @@ export const Topicfetcher = async (url: string) => {
     const topic = res.data.result;
     for (const item of topic) {
       const count = await axios.get(`/api2/topic/commentcount/${item.idx}`);
+
       topicList.push({
         idx: item.idx,
         category: getCategoryName(item.board),
