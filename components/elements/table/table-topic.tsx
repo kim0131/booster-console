@@ -6,8 +6,8 @@ import { useRouter } from "next/router";
 
 // react-table 의 타입 정의가 완벽하게 작동하지 않고 오류를 뿜는다...ㅠ
 interface IPropsTable {
-  data: any;
-  size: number;
+  data?: any;
+  size?: number;
 }
 
 const TableLayout = styled.div`

@@ -5,12 +5,14 @@ import { Header4 } from "@components/elements/types";
 import AccountsLayout from "@components/layouts/accounts/consolelayout";
 import TopicContentLayout from "@components/layouts/accounts/topic-content-layout";
 import Comment from "@components/templates/comment";
+
 import styled from "@emotion/styled";
 import axios from "axios";
 import { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import useSWR from "swr";
 
 interface IPropsStyle {
   isReply: boolean;
@@ -109,6 +111,7 @@ const Style = {
 
 const TopicContent: NextPage = () => {
   const router = useRouter();
+
   const { id } = router.query;
   const [commentCount, setCount] = useState();
   const { data: session, status } = useSession();
@@ -124,7 +127,6 @@ const TopicContent: NextPage = () => {
 
   useEffect(() => {
     if (id) {
-      getTopiceContent();
       getCount(id);
     }
   }, [router, id, session]);
@@ -133,22 +135,7 @@ const TopicContent: NextPage = () => {
     const res = await axios.get(`/api2/topic/commentcount/${id}`);
     setCount(res.data.result.length);
   };
-  const getTopiceContent = async () => {
-    if (id) {
-      await axios(`/api2/topic/list/${id}`).then(res => {
-        const TopicContent = res.data;
-        const CurrentTime = new Date();
-        const ContentTime = new Date(TopicContent.wr_datetime);
-        const elapsedTime = Math.ceil(
-          (CurrentTime.getTime() - ContentTime.getTime()) / (1000 * 3600),
-        );
-        TopicContent.category = router.query.category;
-        TopicContent.bookmark = false; //추후필요
-        TopicContent.create = elapsedTime;
-        setTopicContent(TopicContent);
-      });
-    }
-  };
+
   return (
     <>
       <AccountsLayout

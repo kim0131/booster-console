@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Button from "@components/elements/button";
 
 import TextField from "@components/elements/text-field";
@@ -18,6 +19,8 @@ import Selectbox from "@components/elements/selectbox";
 import CalendarContainer from "@components/elements/calendar";
 import TableTopic from "@components/elements/table/table-topic";
 import ConsoleLayout from "@components/layouts/accounts/consolelayout";
+import useSWR from "swr";
+import { Topicfetcher } from "@core/swr/topicfetch";
 interface IStateAccounts {
   data: { [key in string]: string };
   invalid?: string;
@@ -31,7 +34,8 @@ interface IStateAccounts {
 
 const Topic: NextPage = () => {
   const router = useRouter();
-  const [topic, setTopic] = useState([]);
+  const { data: topic, error } = useSWR(`/api2/topic/list`, Topicfetcher);
+  const [topicList, setTopicList] = useState(topic);
   const [category, setCategory] = useState<any>([]);
   const [searchResult, setSearchResult] = useState([]);
   const [startDate, setStartDate] = useState(new Date());
@@ -52,12 +56,8 @@ const Topic: NextPage = () => {
 
   useEffect(() => {
     onClickCategoryList();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router]);
-  useEffect(() => {
     onClickTopicList();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category]);
+  }, [router, topic]);
 
   const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.currentTarget;
@@ -146,6 +146,7 @@ const Topic: NextPage = () => {
     setSearchResult(result3);
     setState({ ...state, isLoading: false, isSearch: true });
   };
+
   const getToday = (date: Date) => {
     var date = new Date(date);
     var year = date.getFullYear();
@@ -154,26 +155,10 @@ const Topic: NextPage = () => {
 
     return year + "-" + month + "-" + day;
   };
+
   const onClickTopicList = async () => {
     setState({ ...state, isLoading: true });
-
-    await axios.get("/api2/topic/list").then(async (res: any) => {
-      let list = res.data.result;
-      list.map(async (item: any, idx: any) => {
-        list[idx] = {
-          idx: list[idx].idx,
-          category: getCategoryName(list[idx].board),
-          wr_subject: list[idx].wr_subject,
-          mb_name: list[idx].mb_name,
-          datetime: list[idx].wr_datetime.slice(0, 10),
-          update: list[idx].wr_update.slice(0, 10),
-          view: list[idx].wr_view,
-          like: list[idx].wr_good,
-          comment: "댓글",
-        };
-      });
-      setTopic(list);
-    });
+    setTopicList(topic);
     setSearchResult([]);
     setState({ ...state, isLoading: false, isSearch: false });
   };
@@ -292,10 +277,12 @@ const Topic: NextPage = () => {
         section2={<></>}
         section3={
           <>
-            <TableTopic
-              size={state.tablesize ? state.tablesize : 1}
-              data={searchResult.length > 0 ? searchResult : topic}
-            />
+            {topicList && (
+              <TableTopic
+                size={state.tablesize ? state.tablesize : 1}
+                data={searchResult.length > 0 ? searchResult : topicList}
+              />
+            )}
           </>
         }
       />

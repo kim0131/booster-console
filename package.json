@@ -23,7 +23,7 @@
     "react-loader-spinner": "^6.0.0-0",
     "react-select": "^5.2.2",
     "react-table": "^7.7.0",
-    "swr": "^1.2.1",
+    "swr": "^1.2.2",
     "translate-google-api": "^1.0.4"
   },
   "devDependencies": {
