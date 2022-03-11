@@ -15,6 +15,7 @@ import { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import TopicContent from "../detail";
 
 interface IPropsStyle {
   isReply: boolean;
@@ -98,13 +99,14 @@ const TopicUpdateContent: NextPage = () => {
   useEffect(() => {
     onClickCategoryList();
     getTopiceContent();
+    console.log(state);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const getTopiceContent = async () => {
     await axios(`/api2/topic/list/${id}`)
       .then(res => {
-        const TopicContent = res.data.result;
+        const TopicContent = res.data.result[0];
         TopicContent.category = router.query.category;
         TopicContent.bookmark = false; //추후필요
         TopicContent.file_full_url = "";
@@ -180,9 +182,6 @@ const TopicUpdateContent: NextPage = () => {
         board: state.data.board,
       })
       .then(async res => {
-        // await axios.post(`/api2/topic/upload/${id}`, {
-        //   exist_url: state.data.file_url,
-        // });
         await axios.post(`/api2/topic/upload/${id}`, formData);
         alert("토픽이 등록되었습니다");
         router.push("/topic");

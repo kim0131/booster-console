@@ -133,8 +133,7 @@ const Header = () => {
     if (status == "unauthenticated" && router.route != "/login") {
       router.push("/login");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router]);
+  }, [router, status]);
 
   const { isDesktop } = useDesktop();
 

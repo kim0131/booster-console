@@ -148,7 +148,7 @@ const TopicContentLayout = ({
   const getTopiceContent = async () => {
     if (id) {
       await axios(`/api2/topic/list/${id}`).then(res => {
-        const TopicContent = res.data.result;
+        const TopicContent = res.data.result[0];
         const CurrentTime = new Date();
         const ContentTime = new Date(TopicContent.wr_datetime);
         const elapsedTime = Math.ceil(
@@ -177,7 +177,7 @@ const TopicContentLayout = ({
     router.push("/topic");
   };
   const onClinkTopicUpDate = async () => {
-    router.push(`/topic/update/${id}`);
+    router.push(`/topic/update?id=${id}`);
   };
   onClinkTopicUpDate;
   return (
@@ -223,7 +223,7 @@ const TopicContentLayout = ({
         <Style.Body.Content>{topicContent.wr_content}</Style.Body.Content>
         <Style.Body.ImageContainer>
           <img
-            src={topicContent.file_url ? topicContent.file_full_url : ""}
+            src={topicContent.file_full_url ? topicContent.file_full_url : ""}
             alt=""
           />
         </Style.Body.ImageContainer>
