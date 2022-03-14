@@ -1,5 +1,9 @@
 import axios from "axios";
+import { useCallback, useEffect } from "react";
+import useSWR from "swr";
+
 let category: any = [];
+
 const onClickCategoryList = async () => {
   await axios.get("/api2/category").then((res: any) => {
     let list = res.data.result;
@@ -19,7 +23,7 @@ const getCategoryName = (idx: any) => {
   }
 };
 
-export const Topicfetcher = async (url: string) => {
+const topicfetcher = async (url: string) => {
   await onClickCategoryList();
   let result: any = [];
   await axios.get(url).then(async res => {
@@ -34,10 +38,16 @@ export const Topicfetcher = async (url: string) => {
         // update: item.wr_update.slice(0, 10),
         update: "",
         view: item.wr_view,
-        like: item.wr_good,
+        like: item.likeCnt,
         comment: item.commentCnt,
       });
     });
   });
   return result;
 };
+const useTopicList = () => {
+  const { data: topicList, mutate } = useSWR("/api2/topic/list", topicfetcher);
+  return { topicList, mutate };
+};
+
+export default useTopicList;

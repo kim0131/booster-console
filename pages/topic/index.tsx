@@ -22,6 +22,7 @@ import ConsoleLayout from "@components/layouts/accounts/consolelayout";
 import useSWR from "swr";
 import { Topicfetcher } from "@core/swr/topicfetch";
 import { CategorySelectfetcher } from "@core/swr/categoryfetcher";
+import useTopicList from "@core/hook/use-topicList";
 
 interface IStateAccounts {
   data: { [key in string]: string };
@@ -36,16 +37,14 @@ interface IStateAccounts {
 
 const Topic: NextPage = () => {
   const router = useRouter();
-  const { data: topic } = useSWR(`/api2/topic/list`, Topicfetcher);
+  const { topicList } = useTopicList();
   const { data: categoryList } = useSWR(
     `/api2/category`,
     CategorySelectfetcher,
   );
-
-  const [topicList, setTopicList] = useState(topic);
   const [category, setCategory] = useState(categoryList);
   const [searchResult, setSearchResult] = useState([]);
-  const [startDate, setStartDate] = useState(new Date());
+
   const [state, setState] = useState<IStateAccounts>({
     data: {
       bo_table: "",
@@ -64,7 +63,7 @@ const Topic: NextPage = () => {
   useEffect(() => {
     onClickCategoryList();
     onClickTopicList();
-  }, [router, topic]);
+  }, [router, topicList]);
 
   const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.currentTarget;
@@ -84,7 +83,7 @@ const Topic: NextPage = () => {
     let startString = getToday(state.startDay);
     let endString = getToday(state.endDay);
 
-    let list = topic;
+    let list = topicList;
     //카테고리
     await list.filter((item: any) => {
       if (state.data.board == "") {
@@ -165,7 +164,6 @@ const Topic: NextPage = () => {
 
   const onClickTopicList = async () => {
     setState({ ...state, isLoading: true });
-    setTopicList(topic);
     setSearchResult([]);
     setState({ ...state, isLoading: false, isSearch: false });
   };

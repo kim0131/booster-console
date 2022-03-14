@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
+
 import { NextPage } from "next";
 import Button from "@components/elements/button";
 import Table from "@components/elements/table/table-category";
@@ -10,13 +11,14 @@ import theme from "@components/styles/theme";
 import axios from "axios";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Selectbox from "@components/elements/selectbox";
 import Textarea from "@components/textarea";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { CategorySelectfetcher } from "@core/swr/categoryfetcher";
 import useSWR from "swr";
+import { QuillEditor } from "@components/elements/quillEditor";
 
 const Container = styled.header`
   width: 100%;
@@ -67,7 +69,10 @@ interface IStateAccounts {
   searchTerm: string;
   tablesize: number;
 }
-const TopicCrate: NextPage = () => {
+const InsightCrate: NextPage = () => {
+  const quillRef = useRef(); //🌈
+  const [htmlContent, setHtmlContent] = useState(""); //🌈
+
   const [category, setCategory] = useState([]);
   const { data: session, status } = useSession();
   const { data: categoryList } = useSWR(
@@ -76,11 +81,13 @@ const TopicCrate: NextPage = () => {
   );
   const [image, setImage] = useState<any>({
     image_file: "",
-    preview_URL: "img/default_image.png",
+    preview_URL: "",
   });
   const hiddenFileInput = React.useRef<any>(null);
   const [loaded, setLoaded] = useState<any>(false);
   const router = useRouter();
+
+  const [contents, setContents] = useState("");
   const [state, setState] = useState<IStateAccounts>({
     data: {
       wr_subject: "",
@@ -116,8 +123,9 @@ const TopicCrate: NextPage = () => {
     setState({ ...state, data: { ...state.data, wr_ip: res.data.IPv4 } });
   };
 
-  const onChangeTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeinsight = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.currentTarget;
+    console.log(state.data);
     setState({
       ...state,
       data: {
@@ -127,6 +135,13 @@ const TopicCrate: NextPage = () => {
         mb_name: session?.user?.name,
       },
     });
+    setState({
+      ...state,
+      data: {
+        ...state.data,
+        wr_content: contents,
+      },
+    });
   };
 
   const onChangeSelcet = (e: any) => {
@@ -134,31 +149,30 @@ const TopicCrate: NextPage = () => {
     setState({ ...state, data: { ...state.data, board: value } });
   };
 
-  const onClickSubmitTopic = async () => {
-    setState({ ...state, isLoading: true });
+  const onClickSubmitinsight = async () => {
     const formData = new FormData();
     if (image.image_file) {
       formData.append("file", image.image_file);
     }
     console.log(state.data);
     await axios
-      .post("/api2/topic/write", {
+      .post("/api2/insight/write", {
         wr_subject: state.data.wr_subject,
-        wr_content: state.data.wr_content,
+        wr_content: contents,
         wr_ip: state.data.wr_ip,
         mb_id: state.data.mb_id,
         mb_name: state.data.mb_name,
         board: state.data.board,
-        wr_datetime: state.data.wr_datetime,
-        wr_update: state.data.wr_update,
       })
       .then(async res => {
         const id = res.data.result.idx;
-        await axios.post(`/api2/topic/upload/${id}`, formData);
-        alert("토픽이 등록되었습니다");
-        router.push("/topic");
+        await axios.post(`/api2/insight/upload/${id}`, formData);
+        alert("인사이트이 등록되었습니다");
+        router.push("/insight");
+      })
+      .catch(error => {
+        console.log(error);
       });
-    setState({ ...state, isLoading: false });
   };
 
   const onClickInput = () => {
@@ -216,7 +230,7 @@ const TopicCrate: NextPage = () => {
                 name="wr_subject"
                 size="medium"
                 width="100%"
-                onChange={onChangeTopic}
+                onChange={onChangeinsight}
               />
             </TitleBox>
             <Button
@@ -239,14 +253,15 @@ const TopicCrate: NextPage = () => {
         }
         section2={
           <>
-            <Textarea
+            {/* <Textarea
               placeholder="내용"
               name="wr_content"
               size="large"
               col={100}
               row={20}
-              onChange={onChangeTopic}
-            />
+              onChange={onChangeinsight}
+            /> */}
+            <QuillEditor content={contents} onChange={setContents} />
           </>
         }
         section3={
@@ -264,7 +279,7 @@ const TopicCrate: NextPage = () => {
               color="primary"
               size="large"
               isLoading={state.isLoading}
-              onClick={onClickSubmitTopic}
+              onClick={onClickSubmitinsight}
             >
               등록
             </Button>
@@ -274,7 +289,7 @@ const TopicCrate: NextPage = () => {
               size="large"
               isLoading={state.isLoading}
               onClick={() => {
-                router.push("/topic");
+                router.push("/insight");
               }}
             >
               취소
@@ -286,4 +301,4 @@ const TopicCrate: NextPage = () => {
   );
 };
 
-export default TopicCrate;
+export default InsightCrate;

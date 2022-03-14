@@ -105,7 +105,7 @@ const columns = [
     accessor: "comment",
   },
 ];
-const TableTopic = ({ data, size }: IPropsTable) => {
+const TableInsight = ({ data, size }: IPropsTable) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -176,7 +176,7 @@ const TableTopic = ({ data, size }: IPropsTable) => {
                   onClick={() => {
                     let idx = row.original.idx;
                     router.push(
-                      `/topic/detail?id=${idx}&category=${row.cells[0].value}`,
+                      `/insight/detail?id=${idx}&category=${row.cells[0].value}`,
                     );
                   }}
                 >
@@ -236,4 +236,4 @@ const TableTopic = ({ data, size }: IPropsTable) => {
   );
 };
 
-export default TableTopic;
+export default TableInsight;

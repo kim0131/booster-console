@@ -1,22 +1,26 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
-import { NextPage } from "next";
+/* eslint-disable react-hooks/exhaustive-deps */
 import Button from "@components/elements/button";
-import Table from "@components/elements/table/table-category";
-import TextField from "@components/elements/text-field";
-import { Body1, Body2, Header4 } from "@components/elements/types";
-import AccountsLayout from "@components/layouts/accounts/consolelayout";
-import theme from "@components/styles/theme";
-import axios from "axios";
-import { useRouter } from "next/router";
-import styled from "@emotion/styled";
-import React, { useEffect, useState } from "react";
 import Selectbox from "@components/elements/selectbox";
+import TextField from "@components/elements/text-field";
+import { Header4 } from "@components/elements/types";
+import AccountsLayout from "@components/layouts/accounts/consolelayout";
+import TopicContentLayout from "@components/layouts/accounts/topic-content-layout";
+import Comment from "@components/templates/comment";
 import Textarea from "@components/textarea";
+import { insightImageUrl, topicImageUrl } from "@core/config/imgurl";
+import { useInsightDetail } from "@core/hook/use-insightDetail";
+import styled from "@emotion/styled";
+import axios from "axios";
+import { NextPage } from "next";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
-import { CategorySelectfetcher } from "@core/swr/categoryfetcher";
-import useSWR from "swr";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
+import TopicContent from "../detail";
+
+interface IPropsStyle {
+  isReply: boolean;
+}
 
 const Container = styled.header`
   width: 100%;
@@ -63,57 +67,73 @@ interface IStateAccounts {
   data: { [key in string]: any };
   invalid?: string;
   isSearch: boolean;
-  isLoading: boolean;
   searchTerm: string;
   tablesize: number;
 }
-const TopicCrate: NextPage = () => {
+const InsightUpdateContent: NextPage = () => {
+  const router = useRouter();
+  const { id } = router.query;
   const [category, setCategory] = useState([]);
+  const { insightDetail } = useInsightDetail(id);
   const { data: session, status } = useSession();
-  const { data: categoryList } = useSWR(
-    `/api2/category`,
-    CategorySelectfetcher,
-  );
   const [image, setImage] = useState<any>({
     image_file: "",
-    preview_URL: "img/default_image.png",
+    preview_URL: "",
   });
   const hiddenFileInput = React.useRef<any>(null);
-  const [loaded, setLoaded] = useState<any>(false);
-  const router = useRouter();
+
   const [state, setState] = useState<IStateAccounts>({
     data: {
       wr_subject: "",
       wr_content: "",
-      wr_ip: "",
-      mb_id: "",
       mb_name: "",
       board: "",
-      wr_datetime: new Date(),
-      wr_update: new Date(),
+      file_url: "",
     },
     invalid: "",
     isSearch: false,
-    isLoading: false,
     searchTerm: "",
     tablesize: 10,
   });
+
   useEffect(() => {
-    onClickCategoryList();
-    getUserIp();
-  }, [session]);
+    console.log(1);
+    if (insightDetail) {
+      getTopiceContent();
+    }
+  }, [id, insightDetail]);
 
-  const onClickCategoryList = async () => {
-    setState({ ...state, isLoading: true });
+  const getTopiceContent = async () => {
+    await onClickCategoryList();
+    setImage({
+      image_file: "",
+      preview_URL: insightDetail.file_full_url,
+    });
 
-    setCategory(categoryList);
-
-    setState({ ...state, isLoading: false, isSearch: false });
+    setState({
+      ...state,
+      data: {
+        ...state.data,
+        wr_subject: insightDetail.wr_subject,
+        wr_content: insightDetail.wr_content,
+        board: insightDetail.board,
+        file_url: insightDetail.file_url,
+      },
+    });
   };
 
-  const getUserIp = async () => {
-    const res = await axios.get("/json/");
-    setState({ ...state, data: { ...state.data, wr_ip: res.data.IPv4 } });
+  const onClickCategoryList = async () => {
+    await axios.get("/api2/category").then((res: any) => {
+      let list = res.data.result;
+      list.map((item: any, idx: any) => {
+        list[idx] = {
+          value: list[idx].idx,
+          label: list[idx].bo_subject,
+        };
+      });
+      setCategory(list);
+    });
+    setState({ ...state, isSearch: false });
   };
 
   const onChangeTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -135,30 +155,24 @@ const TopicCrate: NextPage = () => {
   };
 
   const onClickSubmitTopic = async () => {
-    setState({ ...state, isLoading: true });
     const formData = new FormData();
     if (image.image_file) {
       formData.append("file", image.image_file);
+      formData.append("exist_url", state.data.file_url);
     }
     console.log(state.data);
+    console.log(image);
     await axios
-      .post("/api2/topic/write", {
+      .post(`/api2/insight/update/${id}`, {
         wr_subject: state.data.wr_subject,
         wr_content: state.data.wr_content,
-        wr_ip: state.data.wr_ip,
-        mb_id: state.data.mb_id,
-        mb_name: state.data.mb_name,
         board: state.data.board,
-        wr_datetime: state.data.wr_datetime,
-        wr_update: state.data.wr_update,
       })
       .then(async res => {
-        const id = res.data.result.idx;
-        await axios.post(`/api2/topic/upload/${id}`, formData);
+        await axios.post(`/api2/insight/upload/${id}`, formData);
         alert("토픽이 등록되었습니다");
-        router.push("/topic");
+        router.push("/insight");
       });
-    setState({ ...state, isLoading: false });
   };
 
   const onClickInput = () => {
@@ -169,15 +183,14 @@ const TopicCrate: NextPage = () => {
     e.preventDefault();
     const fileReader = new FileReader();
     if (e.target.files[0]) {
-      setLoaded("loading");
       fileReader.readAsDataURL(e.target.files[0]);
     }
     fileReader.onload = () => {
+      e.target.files[0].exist_url = state.data.file_url;
       setImage({
         image_file: e.target.files[0],
         preview_URL: fileReader.result,
       });
-      setLoaded(true);
     };
   };
 
@@ -186,7 +199,6 @@ const TopicCrate: NextPage = () => {
       image_file: "",
       preview_URL: "",
     });
-    setLoaded(false);
   };
 
   return (
@@ -194,28 +206,27 @@ const TopicCrate: NextPage = () => {
       <AccountsLayout
         title={
           <>
-            <Header4>글쓰기</Header4>
+            <Header4>인사이트 수정하기</Header4>
           </>
         }
         section4={
           <>
-            {categoryList && (
-              <Selectbox
-                options={categoryList}
-                isMulti={false}
-                placeholder={"카테고리 선택"}
-                name="board"
-                onChange={onChangeSelcet}
-                value={state.data.board}
-              />
-            )}
-
+            <Selectbox
+              options={category}
+              isMulti={false}
+              placeholder={"카테고리 선택"}
+              name="board"
+              onChange={onChangeSelcet}
+              value={state.data.board}
+              id={"select"}
+            />
             <TitleBox>
               <TextField
                 placeholder="제목"
                 name="wr_subject"
                 size="medium"
                 width="100%"
+                value={state.data.wr_subject}
                 onChange={onChangeTopic}
               />
             </TitleBox>
@@ -223,7 +234,6 @@ const TopicCrate: NextPage = () => {
               variants="light"
               color="primary"
               size="med"
-              isLoading={state.isLoading}
               onClick={onClickInput}
             >
               사진 첨부
@@ -242,6 +252,7 @@ const TopicCrate: NextPage = () => {
             <Textarea
               placeholder="내용"
               name="wr_content"
+              value={state.data.wr_content}
               size="large"
               col={100}
               row={20}
@@ -263,16 +274,14 @@ const TopicCrate: NextPage = () => {
               variants="light"
               color="primary"
               size="large"
-              isLoading={state.isLoading}
               onClick={onClickSubmitTopic}
             >
-              등록
+              수정하기
             </Button>
             <Button
               variants="light"
               color="primary"
               size="large"
-              isLoading={state.isLoading}
               onClick={() => {
                 router.push("/topic");
               }}
@@ -286,4 +295,4 @@ const TopicCrate: NextPage = () => {
   );
 };
 
-export default TopicCrate;
+export default InsightUpdateContent;

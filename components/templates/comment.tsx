@@ -1,5 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Button from "@components/elements/button";
+import Dropdown from "@components/elements/dropdown";
+import Pagination from "@components/elements/pagination";
 // import Pagination from "@components/elements/pagination";
 import { Body3, Header5 } from "@components/elements/types";
 import {
@@ -10,12 +12,13 @@ import {
   IconView,
 } from "@components/icons";
 import theme from "@components/styles/theme";
-
+import { useTopicComment } from "@core/hook/use-comment";
 import styled from "@emotion/styled";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import useSWR from "swr";
 
 interface IPropsStyle {
   isReply: boolean;
@@ -110,6 +113,29 @@ const Style = {
       `,
     },
   },
+  SubMore: styled.div`
+    height: 3.5rem;
+    padding: 0 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    box-shadow: none;
+    outline: 0;
+    & > div {
+      display: none;
+    }
+    &:hover,
+    &:focus,
+    &:active {
+      outline: 0;
+      & > div {
+        display: block;
+      }
+    }
+  `,
 };
 // Style
 
@@ -181,10 +207,12 @@ interface IPropsComment {
 
 const Comment = ({ id, children, count }: IPropsComment) => {
   const router = useRouter();
-
-  const [isLoading, setIsLoading] = useState(true);
   const { data: session, status } = useSession();
-
+  const [comments, setComments] = useState([]);
+  const { commentsList } = useTopicComment(id);
+  const [totalCount, setTotalCount] = useState(0);
+  const [line, setLine] = useState(5);
+  const [currentPage, setcurrentPage] = useState(1);
   const [commentdata, setCommentData] = useState({
     wr_content: "",
     mb_id: session?.user?.email,
@@ -205,29 +233,63 @@ const Comment = ({ id, children, count }: IPropsComment) => {
     wr_is_comment2: 1,
     board: null,
   });
-  const [commentList, setComentList] = useState([
-    {
-      idx: "",
-      wr_is_comment: "",
-      wr_is_comment2: "",
-      wr_content: "",
-      mb_name: "",
-      wr_view: "",
-      wr_good: "",
-      wr_create: "",
-    },
-  ]);
+
   useEffect(() => {
-    if (id) {
-      getUserSet();
-      getComment();
-    } else {
-      router.push(router.asPath);
+    getUserSet();
+  }, [router]);
+
+  useEffect(() => {
+    sliccComment();
+  }, [currentPage, commentsList]);
+
+  const sliccComment = () => {
+    if (commentsList) {
+      const result = commentsList.slice(
+        (currentPage - 1) * line,
+        currentPage * line,
+      );
+      setComments(result);
     }
-  }, [router, id, session]);
+  };
+
+  const onClickLink = async (
+    e: React.MouseEvent<HTMLButtonElement | HTMLDivElement | SVGElement>,
+  ) => {
+    e.preventDefault();
+    const idx: any = e.currentTarget.dataset.value;
+    const content: string | null = e.currentTarget.textContent;
+
+    if (content == "댓글달기") {
+      if (idx == replydata.wr_parent2) {
+        setReply({ ...replydata, wr_parent2: 0, wr_content: "" });
+      } else {
+        setReply({ ...replydata, wr_parent2: parseInt(idx), wr_content: "" });
+      }
+    }
+    if (content == "삭제하기") {
+      let result = confirm("정말 삭제하시겠습니까?");
+      if (result) {
+        await axios.post(`/api2/topic/delete/${idx}`).then(res => {
+          alert("삭제되었습니다");
+          router.push(router.asPath);
+        });
+      }
+    }
+  };
+  const onClickPagenation = (e: any) => {
+    const value = parseInt(e.currentTarget.textContent);
+    setcurrentPage(value);
+  };
+
+  const onClickMoveFront = () => {
+    setcurrentPage(1);
+  };
+  const onClickMoveEnd = () => {
+    setcurrentPage(Math.ceil(totalCount / line));
+  };
 
   const getUserSet = async () => {
-    const res = await axios.get("https://geolocation-db.com/json/");
+    const res = await axios.get("/json/"); //IP 얻어오는 것
     setCommentData({
       ...commentdata,
       wr_ip: res.data.IPv4,
@@ -244,83 +306,6 @@ const Comment = ({ id, children, count }: IPropsComment) => {
     });
   };
 
-  const getComment = async () => {
-    setIsLoading(true);
-    await axios.get(`/api2/topic/comment/${id}`).then(async res => {
-      const comment = res.data.result;
-      const result: any = [];
-      for (const item of comment) {
-        const CurrentTime = new Date();
-        const ContentTime = new Date(item.wr_datetime);
-        const elapsedTime = Math.ceil(
-          (CurrentTime.getTime() - ContentTime.getTime()) / (1000 * 3600),
-        );
-        const replyCount = await axios.get(
-          `/api2/topic/replycount/${item.idx}`,
-        );
-
-        result.push(
-          await {
-            idx: item.idx,
-            wr_is_comment: item.wr_is_comment,
-            wr_is_comment2: item.wr_is_comment2,
-            wr_content: item.wr_content,
-            mb_name: item.mb_name,
-            wr_view: item.wr_view,
-            wr_good: item.wr_good,
-            wr_create: elapsedTime,
-            replycount: replyCount.data.result.length,
-            wr_reply: await getCommentIsReply(item.idx),
-          },
-        );
-      }
-      setComentList(result);
-    });
-
-    setIsLoading(false);
-  };
-
-  const getCommentIsReply = async (idx: string | number) => {
-    const reply = await axios.get(`/api2/topic/reply/${idx}`);
-    if (reply.data.result.length) {
-      const result = reply.data.result.map((item: any, idx: any) => {
-        return (
-          <>
-            <Style.List.Container isReply={true}>
-              <Style.List.Header>
-                <Style.List.Content>{item.wr_content}</Style.List.Content>
-                <Style.List.Button>
-                  <IconMoreVertical size={20} color={theme.color.gray[500]} />
-                </Style.List.Button>
-              </Style.List.Header>
-              <Style.List.Bottom.Container>
-                <Style.List.Bottom.Info>
-                  <Style.List.Bottom.Badge>
-                    <IconProfile size={16} color={theme.color.gray[500]} />
-                    <Body3 color={theme.color.gray[500]}>{item.mb_name}</Body3>
-                  </Style.List.Bottom.Badge>
-                  <Style.List.Bottom.Badge>
-                    <IconLike size={16} color={theme.color.gray[500]} />
-                    <Body3 color={theme.color.gray[500]}>{item.wr_good}</Body3>
-                  </Style.List.Bottom.Badge>
-                </Style.List.Bottom.Info>
-                <Body3 color={theme.color.gray[500]}>
-                  {item.create > 24
-                    ? `${Math.ceil(item.create / 24)}일전`
-                    : item.create > 0
-                    ? `${item.create}시간전`
-                    : `방금전`}
-                </Body3>
-              </Style.List.Bottom.Container>
-            </Style.List.Container>
-          </>
-        );
-      });
-      return result;
-    } else {
-      return [];
-    }
-  };
   const onClickWriteComment = async () => {
     await axios.post(`/api2/topic/write`, commentdata).then(res => {
       alert("댓글이 등록되었습니다");
@@ -349,7 +334,11 @@ const Comment = ({ id, children, count }: IPropsComment) => {
     if (wr_parent == replydata.wr_parent2) {
       setReply({ ...replydata, wr_parent2: 0, wr_content: "" });
     } else {
-      setReply({ ...replydata, wr_parent2: wr_parent, wr_content: "" });
+      setReply({
+        ...replydata,
+        wr_parent2: parseInt(wr_parent),
+        wr_content: "",
+      });
     }
   };
 
@@ -357,7 +346,7 @@ const Comment = ({ id, children, count }: IPropsComment) => {
     <Style.Container>
       <Style.Comment>
         <Style.AddComment.Container>
-          <Header5>{count}개의 댓글</Header5>
+          <Header5>{commentsList && commentsList.length}개의 댓글</Header5>
           <Style.AddComment.TextArea
             rows={3}
             name={"wr_content"}
@@ -376,31 +365,48 @@ const Comment = ({ id, children, count }: IPropsComment) => {
           </Style.AddComment.Button>
         </Style.AddComment.Container>
 
-        {commentList.length > 0 && isLoading == false ? (
-          commentList.map((comment: any) => {
+        {comments &&
+          comments.map((comment: any) => {
             return (
-              <>
+              <React.Fragment key={comment.idx}>
                 <Style.List.Container
-                  isReply={false}
-                  onClick={() => {
-                    getCommentIsReply(comment.idx);
-                  }}
-                  id={comment.idx}
+                  isReply={comment.wr_is_comment2 ? true : false}
                 >
                   <Style.List.Header>
                     <Style.List.Content>
                       {comment.wr_content}
                     </Style.List.Content>
-                    <Style.List.Button
-                      onClick={e => {
-                        onClickReply(e, comment.idx);
-                      }}
-                    >
-                      <IconMoreVertical
-                        size={20}
-                        color={theme.color.gray[500]}
-                      />
-                    </Style.List.Button>
+                    <Style.SubMore>
+                      <IconMoreVertical />
+                      {!comment.wr_is_comment2 ? (
+                        <Dropdown
+                          menu={[
+                            {
+                              id: 0,
+                              content: "댓글달기",
+                              url: comment.idx,
+                            },
+                            {
+                              id: 1,
+                              content: "삭제하기",
+                              url: comment.idx,
+                            },
+                          ]}
+                          onClick={onClickLink}
+                        />
+                      ) : (
+                        <Dropdown
+                          menu={[
+                            {
+                              id: 1,
+                              content: "삭제하기",
+                              url: comment.idx,
+                            },
+                          ]}
+                          onClick={onClickLink}
+                        />
+                      )}
+                    </Style.SubMore>
                   </Style.List.Header>
                   <Style.List.Bottom.Container>
                     <Style.List.Bottom.Info>
@@ -430,15 +436,16 @@ const Comment = ({ id, children, count }: IPropsComment) => {
                       </Style.List.Bottom.Badge>
                     </Style.List.Bottom.Info>
                     <Body3 color={theme.color.gray[500]}>
-                      {comment.create > 24
-                        ? `${Math.ceil(comment.create / 24)}일전`
-                        : comment.create > 0
-                        ? `${comment.create}시간전`
+                      {comment.wr_create > 24
+                        ? `${Math.ceil(comment.wr_create / 24)}일전`
+                        : comment.wr_create > 0
+                        ? `${comment.wr_create}시간전`
                         : `방금전`}
                     </Body3>
                   </Style.List.Bottom.Container>
                 </Style.List.Container>
-                {replydata.wr_parent2 == comment.idx ? (
+                {replydata.wr_parent2 == comment.idx &&
+                !comment.wr_is_comment2 ? (
                   <Style.AddComment.Container>
                     <Style.AddComment.TextArea
                       rows={3}
@@ -466,18 +473,19 @@ const Comment = ({ id, children, count }: IPropsComment) => {
                 ) : (
                   ""
                 )}
-
-                {comment.wr_reply.map((item: any) => {
-                  return item;
-                })}
-              </>
+              </React.Fragment>
             );
-          })
-        ) : (
-          <Loader color={"black"} />
-        )}
+          })}
+        {!commentsList && <Loader color={"gray"} size={"large"} />}
       </Style.Comment>
-      {/* <Pagination /> */}
+      <Pagination
+        totalContent={totalCount}
+        line={line}
+        currentPage={currentPage}
+        onClick={onClickPagenation}
+        MoveFront={onClickMoveFront}
+        MoveEnd={onClickMoveEnd}
+      />
     </Style.Container>
   );
 };
