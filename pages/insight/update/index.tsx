@@ -9,6 +9,7 @@ import TopicContentLayout from "@components/layouts/accounts/topic-content-layou
 import Comment from "@components/templates/comment";
 import Textarea from "@components/textarea";
 import { insightImageUrl, topicImageUrl } from "@core/config/imgurl";
+import useCategorySelect from "@core/hook/use-categorySeclect";
 import { useInsightDetail } from "@core/hook/use-insightDetail";
 import styled from "@emotion/styled";
 import axios from "axios";
@@ -73,8 +74,9 @@ interface IStateAccounts {
 const InsightUpdateContent: NextPage = () => {
   const router = useRouter();
   const { id } = router.query;
-  const [category, setCategory] = useState([]);
+  const { categorySelect } = useCategorySelect("insight");
   const { insightDetail } = useInsightDetail(id);
+
   const { data: session, status } = useSession();
   const [image, setImage] = useState<any>({
     image_file: "",
@@ -103,7 +105,6 @@ const InsightUpdateContent: NextPage = () => {
   }, [id, insightDetail]);
 
   const getInsightContent = async () => {
-    await onClickCategoryList();
     setImage({
       image_file: insightDetail.file_url,
       preview_URL: insightDetail.file_full_url,
@@ -121,20 +122,6 @@ const InsightUpdateContent: NextPage = () => {
     });
   };
 
-  const onClickCategoryList = async () => {
-    await axios.get("/api2/category").then((res: any) => {
-      let list = res.data.result;
-      list.map((item: any, idx: any) => {
-        list[idx] = {
-          value: list[idx].idx,
-          label: list[idx].bo_subject,
-        };
-      });
-      setCategory(list);
-    });
-    setState({ ...state, isSearch: false });
-  };
-
   const onChangeInsight = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.currentTarget;
     setState({
@@ -150,7 +137,7 @@ const InsightUpdateContent: NextPage = () => {
 
   const onChangeSelcet = (e: any) => {
     const value = e.value;
-    setState({ ...state, data: { ...state.data, board: value } });
+    setState({ ...state, data: { ...state.data, board: parseInt(value) } });
   };
 
   const onClickSubmitInsight = async () => {
@@ -159,7 +146,7 @@ const InsightUpdateContent: NextPage = () => {
       formData.append("file", image.image_file);
       formData.append("exist_url", state.data.file_url);
     }
-
+    console.log(state.data.board);
     await axios
       .post(`/api2/insight/update/${id}`, {
         wr_subject: state.data.wr_subject,
@@ -211,15 +198,17 @@ const InsightUpdateContent: NextPage = () => {
         }
         section4={
           <>
-            <Selectbox
-              options={category}
-              isMulti={false}
-              placeholder={"카테고리 선택"}
-              name="board"
-              onChange={onChangeSelcet}
-              value={state.data.board}
-              id={"select"}
-            />
+            {categorySelect && (
+              <Selectbox
+                options={categorySelect}
+                isMulti={false}
+                placeholder={"카테고리 선택"}
+                name="board"
+                onChange={onChangeSelcet}
+                value={state.data.board}
+                id={"select"}
+              />
+            )}
             <TitleBox>
               <TextField
                 placeholder="제목"

@@ -2,7 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { NextPage } from "next";
 import Button from "@components/elements/button";
-import Table from "@components/elements/table/table-category";
+
 import TextField from "@components/elements/text-field";
 import { Body1, Body2, Header4 } from "@components/elements/types";
 import AccountsLayout from "@components/layouts/accounts/consolelayout";
@@ -14,9 +14,8 @@ import React, { useEffect, useState } from "react";
 import Selectbox from "@components/elements/selectbox";
 import Textarea from "@components/textarea";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
-import { CategorySelectfetcher } from "@core/swr/categoryfetcher";
-import useSWR from "swr";
+
+import useCategorySelect from "@core/hook/use-categorySeclect";
 
 const Container = styled.header`
   width: 100%;
@@ -70,10 +69,8 @@ interface IStateAccounts {
 const TopicCrate: NextPage = () => {
   const [category, setCategory] = useState([]);
   const { data: session, status } = useSession();
-  const { data: categoryList } = useSWR(
-    `/api2/category`,
-    CategorySelectfetcher,
-  );
+  const { categorySelect } = useCategorySelect("topic");
+
   const [image, setImage] = useState<any>({
     image_file: "",
     preview_URL: "img/default_image.png",
@@ -106,7 +103,7 @@ const TopicCrate: NextPage = () => {
   const onClickCategoryList = async () => {
     setState({ ...state, isLoading: true });
 
-    setCategory(categoryList);
+    setCategory(categorySelect);
 
     setState({ ...state, isLoading: false, isSearch: false });
   };
@@ -199,9 +196,9 @@ const TopicCrate: NextPage = () => {
         }
         section4={
           <>
-            {categoryList && (
+            {categorySelect && (
               <Selectbox
-                options={categoryList}
+                options={categorySelect}
                 isMulti={false}
                 placeholder={"카테고리 선택"}
                 name="board"

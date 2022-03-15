@@ -10,6 +10,8 @@ export const getUserCertify = (value: string | number) => {
       return "승인거절";
     case "3":
       return "승인";
+    case "4":
+      return "업데이트";
     default:
       return "미승인";
   }

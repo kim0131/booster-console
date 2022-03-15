@@ -124,7 +124,7 @@ const Business: NextPage = () => {
       let result: any = [];
       list.map(async (item: any, idx: any) => {
         let stand = list[idx].mb_business_certify.toString().slice(0, 1);
-        if (stand == 0 || stand == 1 || stand == 2) {
+        if (stand == 0 || stand == 1 || stand == 2 || stand == 4) {
           result.push({
             idx: list[idx].idx,
             category: getUserCertify(list[idx].mb_business_certify),

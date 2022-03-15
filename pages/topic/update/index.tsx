@@ -9,6 +9,7 @@ import TopicContentLayout from "@components/layouts/accounts/topic-content-layou
 import Comment from "@components/templates/comment";
 import Textarea from "@components/textarea";
 import { topicImageUrl } from "@core/config/imgurl";
+import useCategorySelect from "@core/hook/use-categorySeclect";
 import { useTopicDetail } from "@core/hook/use-topicdetail";
 import styled from "@emotion/styled";
 import axios from "axios";
@@ -74,7 +75,8 @@ interface IStateAccounts {
 const TopicUpdateContent: NextPage = () => {
   const router = useRouter();
   const { id } = router.query;
-  const [category, setCategory] = useState([]);
+  const { categorySelect } = useCategorySelect("topic");
+  const [category, setCategory] = useState(categorySelect);
   const { data: session, status } = useSession();
   const { topicDetail } = useTopicDetail(id);
   const [image, setImage] = useState<any>({
@@ -107,7 +109,6 @@ const TopicUpdateContent: NextPage = () => {
   }, [id, topicDetail]);
 
   const getTopiceContent = async () => {
-    await onClickCategoryList();
     setState({
       ...state,
       data: {
@@ -122,21 +123,6 @@ const TopicUpdateContent: NextPage = () => {
       image_file: topicDetail.file_url,
       preview_URL: topicDetail.file_full_url,
     });
-  };
-
-  const onClickCategoryList = async () => {
-    setState({ ...state, isLoading: true });
-    await axios.get("/api2/category").then((res: any) => {
-      let list = res.data.result;
-      list.map((item: any, idx: any) => {
-        list[idx] = {
-          value: list[idx].idx,
-          label: list[idx].bo_subject,
-        };
-      });
-      setCategory(list);
-    });
-    setState({ ...state, isLoading: false, isSearch: false });
   };
 
   const onChangeTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -217,14 +203,16 @@ const TopicUpdateContent: NextPage = () => {
         }
         section4={
           <>
-            <Selectbox
-              options={category}
-              isMulti={false}
-              placeholder={"카테고리 선택"}
-              name="board"
-              onChange={onChangeSelcet}
-              value={state.data.board}
-            />
+            {categorySelect && (
+              <Selectbox
+                options={categorySelect}
+                isMulti={false}
+                placeholder={"카테고리 선택"}
+                name="board"
+                onChange={onChangeSelcet}
+                value={state.data.board}
+              />
+            )}
             <TitleBox>
               <TextField
                 placeholder="제목"

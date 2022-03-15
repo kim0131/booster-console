@@ -5,6 +5,7 @@ import { Header4 } from "@components/elements/types";
 import AccountsLayout from "@components/layouts/accounts/consolelayout";
 import TopicContentLayout from "@components/layouts/accounts/topic-content-layout";
 import Comment from "@components/templates/comment";
+import useCategorySelect from "@core/hook/use-categorySeclect";
 
 import styled from "@emotion/styled";
 import axios from "axios";

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Button from "@components/elements/button";
 import Table from "@components/elements/table/table-category";
 import TextField from "@components/elements/text-field";
@@ -17,6 +18,7 @@ import SideBar from "@components/templates/sidebar";
 import { stat } from "fs";
 import TableCategory from "@components/elements/table/table-category";
 import ConsoleLayout from "@components/layouts/accounts/consolelayout";
+import useCategoryList from "@core/hook/use-catagorylist";
 
 const Container = styled.header`
   width: 100%;
@@ -44,7 +46,8 @@ interface IStateAccounts {
 
 const Category: NextPage = () => {
   const router = useRouter();
-  const [category, setCategory] = useState([]);
+  const [sector, setSector] = useState("topic");
+  const { categoryList } = useCategoryList();
   const [searchResult, setSearchResult] = useState([]);
   const [state, setState] = useState<IStateAccounts>({
     data: {
@@ -57,10 +60,12 @@ const Category: NextPage = () => {
     searchTerm: "",
     tablesize: 10,
   });
+
   useEffect(() => {
-    onClickCategoryList();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router]);
+    if (categoryList) {
+      onClickCategoryList(sector);
+    }
+  }, [sector, categoryList]);
 
   const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.currentTarget;
@@ -70,41 +75,9 @@ const Category: NextPage = () => {
     });
   };
 
-  const onChangeAccounts = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, name } = e.currentTarget;
-    setState({
-      ...state,
-      data: {
-        ...state.data,
-        [name]: value,
-      },
-      invalid: "",
-    });
-  };
-
-  const onChangTablesize = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, name } = e.currentTarget;
-    setState({
-      ...state,
-
-      [name]: value,
-    });
-  };
-
-  const onClickCategory = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    setState({ ...state, isLoading: true });
-    await axios.post("/api2/category/create", {
-      bo_subject: state.data.bo_subject,
-      bo_table: state.data.bo_table,
-    });
-    onClickCategoryList();
-    setState({ ...state, isLoading: false });
-  };
-
   const onClickSearch = async () => {
     let result: any = [];
-    let list = await category.filter((item: any) => {
+    await categoryList.filter((item: any) => {
       if (state.searchTerm == "") {
         return item;
       } else {
@@ -117,93 +90,97 @@ const Category: NextPage = () => {
         });
       }
     });
-
     setSearchResult(result);
     setState({ ...state, isLoading: false, isSearch: true });
   };
 
-  const onClickCategoryList = async () => {
-    setState({ ...state, isLoading: true });
-    await axios.get("/api2/category").then((res: any) => {
-      const list = res.data.result;
-
-      list.map((item: any, idx: any) => {
-        if (!list[idx].wr_view) {
-          list[idx].wr_view = 0;
+  const onClickCategoryList = async (sector: string) => {
+    let result: any = [];
+    await categoryList.filter((item: any) => {
+      Object.values(item).filter((content: any) => {
+        if (typeof content == "string") {
+          if (content.includes(sector)) {
+            result.push(item);
+          }
         }
-        if (!list[idx].wr_good) {
-          list[idx].wr_good = 0;
-        }
-        list[idx] = {
-          idx: list[idx].idx,
-          bo_table: list[idx].bo_table,
-          bo_subject: list[idx].bo_subject,
-          num_board: list[idx].board,
-          num_view: list[idx].wr_view,
-          num_good: list[idx].wr_good,
-          edit_subject: "수정 및 삭제하기",
-        };
       });
-      setCategory(list);
     });
-    setState({ ...state, isLoading: false, isSearch: false });
+    setSearchResult(result);
+    setState({ ...state, searchTerm: "", isLoading: false, isSearch: true });
   };
   return (
     <>
-      {" "}
-      <ConsoleLayout
-        title={
-          <>
-            <Header4>카테고리 편집</Header4>
-          </>
-        }
-        section4={
-          <>
-            <TextField
-              placeholder="카테고리 검색"
-              name="bo_table"
-              size="large"
-              onChange={onChangeSearch}
-            />
-            <Button
-              variants="light"
-              color="primary"
-              size="large"
-              isLoading={state.isLoading}
-              onClick={onClickSearch}
-            >
-              검색
-            </Button>
-            <Button
-              variants="light"
-              color="primary"
-              size="large"
-              isLoading={state.isLoading}
-              onClick={onClickCategoryList}
-            >
-              전체조회
-            </Button>
-          </>
-        }
-        section2={
-          <>
-            <Button variants="light" color="primary">
-              토픽
-            </Button>
-            <Button variants="light" color="primary">
-              인사이트
-            </Button>
-          </>
-        }
-        section3={
-          <>
-            <TableCategory
-              size={state.tablesize ? state.tablesize : 1}
-              data={state.isSearch ? searchResult : category}
-            />
-          </>
-        }
-      />
+      {categoryList && (
+        <ConsoleLayout
+          title={
+            <>
+              <Header4>카테고리 편집</Header4>
+            </>
+          }
+          section4={
+            <>
+              <TextField
+                placeholder="카테고리 검색"
+                name="bo_table"
+                size="large"
+                onChange={onChangeSearch}
+                value={state.searchTerm}
+              />
+              <Button
+                variants="light"
+                color="primary"
+                size="large"
+                isLoading={state.isLoading}
+                onClick={onClickSearch}
+              >
+                검색
+              </Button>
+              <Button
+                variants="light"
+                color="primary"
+                size="large"
+                isLoading={state.isLoading}
+                onClick={() => onClickCategoryList(sector)}
+              >
+                전체조회
+              </Button>
+            </>
+          }
+          section2={
+            <>
+              <Button
+                variants="light"
+                color={sector == "topic" ? "primary" : ""}
+                onClick={() => {
+                  setSector("topic");
+                  onClickCategoryList("topic");
+                }}
+              >
+                토픽
+              </Button>
+              <Button
+                variants="light"
+                color={sector == "insight" ? "primary" : ""}
+                onClick={() => {
+                  setSector("insight");
+                  onClickCategoryList("insight");
+                }}
+              >
+                인사이트
+              </Button>
+            </>
+          }
+          section3={
+            <>
+              <TableCategory
+                size={state.tablesize ? state.tablesize : 1}
+                data={state.isSearch ? searchResult : categoryList}
+                sector={sector}
+              />
+            </>
+          }
+        />
+      )}
     </>
   );
 };

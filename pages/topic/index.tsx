@@ -3,26 +3,15 @@ import Button from "@components/elements/button";
 
 import TextField from "@components/elements/text-field";
 import { Body1, Body2, Header4 } from "@components/elements/types";
-import AccountsLayout from "@components/layouts/accounts/consolelayout";
-import theme from "@components/styles/theme";
-
-import { accountsNavigation } from "@core/config/navigation";
-import { IAccountsData } from "@core/interfaces/accounts";
-import axios from "axios";
 import { NextPage } from "next";
-import { useSession } from "next-auth/react";
 import { Router, useRouter } from "next/router";
-import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
-import SideBar from "@components/templates/sidebar";
 import Selectbox from "@components/elements/selectbox";
 import CalendarContainer from "@components/elements/calendar";
 import TableTopic from "@components/elements/table/table-topic";
 import ConsoleLayout from "@components/layouts/accounts/consolelayout";
-import useSWR from "swr";
-import { Topicfetcher } from "@core/swr/topicfetch";
-import { CategorySelectfetcher } from "@core/swr/categoryfetcher";
 import useTopicList from "@core/hook/use-topicList";
+import useCategorySelect from "@core/hook/use-categorySeclect";
 
 interface IStateAccounts {
   data: { [key in string]: string };
@@ -38,11 +27,8 @@ interface IStateAccounts {
 const Topic: NextPage = () => {
   const router = useRouter();
   const { topicList } = useTopicList();
-  const { data: categoryList } = useSWR(
-    `/api2/category`,
-    CategorySelectfetcher,
-  );
-  const [category, setCategory] = useState(categoryList);
+  const { categorySelect } = useCategorySelect("topic");
+  const [category, setCategory] = useState(categorySelect);
   const [searchResult, setSearchResult] = useState([]);
 
   const [state, setState] = useState<IStateAccounts>({
@@ -177,7 +163,7 @@ const Topic: NextPage = () => {
   };
 
   const onClickCategoryList = async () => {
-    setCategory(categoryList);
+    setCategory(categorySelect);
   };
 
   const onChangeSelcet = (e: any) => {

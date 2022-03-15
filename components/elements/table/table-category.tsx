@@ -12,6 +12,7 @@ import Button from "../button";
 interface IPropsTable {
   data: any;
   size: number;
+  sector: string;
 }
 
 const TableLayout = styled.div`
@@ -88,6 +89,10 @@ const columns = [
     accessor: "bo_table",
   },
   {
+    Header: "구분",
+    accessor: "sector",
+  },
+  {
     Header: "게시글 수",
     accessor: "num_board",
   },
@@ -104,7 +109,7 @@ const columns = [
     accessor: "edit_subject",
   },
 ];
-const TableCategory = ({ data, size }: IPropsTable) => {
+const TableCategory = ({ data, size, sector }: IPropsTable) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -174,15 +179,18 @@ const TableCategory = ({ data, size }: IPropsTable) => {
       },
     });
   };
+
   const onClickCategory = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     await axios.post("/api2/category/create", {
       bo_subject: state.data.bo_subject,
       bo_table: state.data.bo_table,
+      sector: sector,
     });
     router.push("/category");
   };
+
   const onClickCategoryDel = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     await axios.post(`/api2/category/delete/${categoryId}`);

@@ -8,13 +8,12 @@ import { Router, useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Selectbox from "@components/elements/selectbox";
 import CalendarContainer from "@components/elements/calendar";
-import Tableinsight from "@components/elements/table/table-insight";
+
 import ConsoleLayout from "@components/layouts/accounts/consolelayout";
-import useSWR from "swr";
-import { CategorySelectfetcher } from "@core/swr/categoryfetcher";
-import useinsightList from "@core/hook/use-insightList";
+
 import useInsightList from "@core/hook/use-insightList";
 import TableInsight from "@components/elements/table/table-insight";
+import useCategorySelect from "@core/hook/use-categorySeclect";
 
 interface IStateAccounts {
   data: { [key in string]: string };
@@ -30,12 +29,9 @@ interface IStateAccounts {
 const Insight: NextPage = () => {
   const router = useRouter();
   const { insightList } = useInsightList();
-  console.log(insightList);
-  const { data: categoryList } = useSWR(
-    `/api2/category`,
-    CategorySelectfetcher,
-  );
-  const [category, setCategory] = useState(categoryList);
+  const { categorySelect } = useCategorySelect("insight");
+
+  const [category, setCategory] = useState(categorySelect);
   const [searchResult, setSearchResult] = useState([]);
   const [state, setState] = useState<IStateAccounts>({
     data: {
@@ -169,7 +165,7 @@ const Insight: NextPage = () => {
   };
 
   const onClickCategoryList = async () => {
-    setCategory(categoryList);
+    setCategory(categorySelect);
   };
 
   const onChangeSelcet = (e: any) => {
