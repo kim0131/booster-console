@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/exhaustive-deps */
 import Button from "@components/elements/button";
+import { QuillEditor } from "@components/elements/quillEditor";
 import Selectbox from "@components/elements/selectbox";
 import TextField from "@components/elements/text-field";
 import { Header4 } from "@components/elements/types";
@@ -42,7 +43,7 @@ const ImageContainer = styled.div`
   position: relative;
   background-image: ${(props: any) =>
     props.background ? `url(${props.background})` : ""};
-  width: 30rem;
+  width: auto;
   height: auto;
   border-radius: 1rem;
   overflow: hidden;
@@ -76,7 +77,7 @@ const InsightUpdateContent: NextPage = () => {
   const { id } = router.query;
   const { categorySelect } = useCategorySelect("insight");
   const { insightDetail } = useInsightDetail(id);
-
+  const [contents, setContents] = useState("");
   const { data: session, status } = useSession();
   const [image, setImage] = useState<any>({
     image_file: "",
@@ -115,11 +116,12 @@ const InsightUpdateContent: NextPage = () => {
       data: {
         ...state.data,
         wr_subject: insightDetail.wr_subject,
-        wr_content: insightDetail.wr_content,
+        wr_content: contents,
         board: insightDetail.board,
         file_url: insightDetail.file_url,
       },
     });
+    setContents(insightDetail.wr_content);
   };
 
   const onChangeInsight = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -150,7 +152,7 @@ const InsightUpdateContent: NextPage = () => {
     await axios
       .post(`/api2/insight/update/${id}`, {
         wr_subject: state.data.wr_subject,
-        wr_content: state.data.wr_content,
+        wr_content: contents,
         board: state.data.board,
       })
       .then(async res => {
@@ -225,7 +227,7 @@ const InsightUpdateContent: NextPage = () => {
               size="med"
               onClick={onClickInput}
             >
-              사진 첨부
+              썸네일 첨부
             </Button>
 
             <input
@@ -238,23 +240,15 @@ const InsightUpdateContent: NextPage = () => {
         }
         section2={
           <>
-            <Textarea
-              placeholder="내용"
-              name="wr_content"
-              value={state.data.wr_content}
-              size="large"
-              col={100}
-              row={20}
-              onChange={onChangeInsight}
-            />
-          </>
-        }
-        section3={
-          <>
             <ImageContainer>
               <img src={image.preview_URL} alt="" />
               <DeleteButton onClick={deleteImage}>X</DeleteButton>
             </ImageContainer>
+          </>
+        }
+        quillFiled={
+          <>
+            <QuillEditor content={contents} onChange={setContents} />
           </>
         }
         buttonContainer={

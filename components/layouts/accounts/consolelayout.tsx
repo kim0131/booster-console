@@ -56,12 +56,17 @@ const ButtonContainer = styled.div`
   gap: 1rem;
 `;
 
+const QuillFiled = styled.div`
+  height: auto;
+`;
+
 interface IPropsAccountsLayout {
   title?: React.ReactNode;
   section1?: React.ReactNode;
   section2?: React.ReactNode;
   section3?: React.ReactNode;
   section4?: React.ReactNode;
+  quillFiled?: React.ReactNode;
   find?: React.ReactNode;
   topicContent?: React.ReactNode;
   buttonContainer?: React.ReactNode;
@@ -73,6 +78,7 @@ const ConsoleLayout = ({
   section2,
   section3,
   section4,
+  quillFiled,
   find,
   topicContent,
   buttonContainer,
@@ -84,6 +90,7 @@ const ConsoleLayout = ({
       {section4 && <Block>{section4}</Block>}
       {section2 && <Block>{section2}</Block>}
       {section3 && <Block2>{section3}</Block2>}
+      {quillFiled && <QuillFiled>{quillFiled}</QuillFiled>}
       {find && <Find>{find}</Find>}
       {topicContent && <TopiclayOut>{topicContent}</TopiclayOut>}
       {buttonContainer && <ButtonContainer>{buttonContainer}</ButtonContainer>}

@@ -6,6 +6,7 @@ import AccountsLayout from "@components/layouts/accounts/consolelayout";
 import InsightContentLayout from "@components/layouts/accounts/insight-content-layout";
 import TopicContentLayout from "@components/layouts/accounts/topic-content-layout";
 import Comment from "@components/templates/comment";
+import InsightComment from "@components/templates/insight-comment";
 
 import styled from "@emotion/styled";
 import axios from "axios";
@@ -116,17 +117,6 @@ const InsightContent: NextPage = () => {
   const [commentCount, setCount] = useState();
   const { data: session, status } = useSession();
 
-  useEffect(() => {
-    if (id) {
-      getCount(id);
-    }
-  }, [router, id, session]);
-
-  const getCount = async (id: any) => {
-    const res = await axios.get(`/api2/topic/commentcount/${id}`);
-    setCount(res.data.result.length);
-  };
-
   return (
     <>
       <AccountsLayout
@@ -134,7 +124,7 @@ const InsightContent: NextPage = () => {
           <>
             {id && (
               <InsightContentLayout id={id} count={commentCount}>
-                {/* <Comment id={id} count={commentCount} /> */}
+                <InsightComment id={id} />
               </InsightContentLayout>
             )}
           </>

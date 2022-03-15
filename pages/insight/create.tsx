@@ -234,7 +234,7 @@ const InsightCrate: NextPage = () => {
               isLoading={state.isLoading}
               onClick={onClickInput}
             >
-              사진 첨부
+              썸네일 첨부
             </Button>
 
             <input
@@ -245,20 +245,12 @@ const InsightCrate: NextPage = () => {
             />
           </>
         }
-        section2={
+        quillFiled={
           <>
-            {/* <Textarea
-              placeholder="내용"
-              name="wr_content"
-              size="large"
-              col={100}
-              row={20}
-              onChange={onChangeinsight}
-            /> */}
             <QuillEditor content={contents} onChange={setContents} />
           </>
         }
-        section3={
+        section2={
           <>
             <ImageContainer>
               <img src={image.preview_URL} alt="" />

@@ -5,6 +5,7 @@ import { Header4 } from "@components/elements/types";
 import AccountsLayout from "@components/layouts/accounts/consolelayout";
 import TopicContentLayout from "@components/layouts/accounts/topic-content-layout";
 import Comment from "@components/templates/comment";
+import TopicComment from "@components/templates/topic-comment";
 import useCategorySelect from "@core/hook/use-categorySeclect";
 
 import styled from "@emotion/styled";
@@ -114,34 +115,13 @@ const TopicContent: NextPage = () => {
   const router = useRouter();
   const { id } = router.query;
   const [commentCount, setCount] = useState();
-  const { data: session, status } = useSession();
-  const [topicContent, setTopicContent] = useState({
-    category: "",
-    wr_subject: "",
-    mb_name: "",
-    wr_good: "",
-    wr_view: 0,
-    create: 0,
-    wr_content: "",
-  });
-
-  useEffect(() => {
-    if (id) {
-      getCount(id);
-    }
-  }, [router, id, session]);
-
-  const getCount = async (id: any) => {
-    const res = await axios.get(`/api2/topic/commentcount/${id}`);
-    setCount(res.data.result.length);
-  };
 
   return (
     <>
       <AccountsLayout
         topicContent={
           <TopicContentLayout id={id} count={commentCount}>
-            <Comment id={id} count={commentCount} />
+            <TopicComment id={id} />
           </TopicContentLayout>
         }
       />
