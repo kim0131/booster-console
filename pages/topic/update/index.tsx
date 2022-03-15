@@ -9,6 +9,7 @@ import TopicContentLayout from "@components/layouts/accounts/topic-content-layou
 import Comment from "@components/templates/comment";
 import Textarea from "@components/textarea";
 import { topicImageUrl } from "@core/config/imgurl";
+import { useTopicDetail } from "@core/hook/use-topicdetail";
 import styled from "@emotion/styled";
 import axios from "axios";
 import { NextPage } from "next";
@@ -75,6 +76,7 @@ const TopicUpdateContent: NextPage = () => {
   const { id } = router.query;
   const [category, setCategory] = useState([]);
   const { data: session, status } = useSession();
+  const { topicDetail } = useTopicDetail(id);
   const [image, setImage] = useState<any>({
     image_file: "",
     preview_URL: "",
@@ -97,41 +99,29 @@ const TopicUpdateContent: NextPage = () => {
   });
 
   useEffect(() => {
-    onClickCategoryList();
-    getTopiceContent();
-    console.log(state);
+    if (topicDetail) {
+      getTopiceContent();
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, topicDetail]);
 
   const getTopiceContent = async () => {
-    await axios(`/api2/topic/list/${id}`)
-      .then(res => {
-        const TopicContent = res.data.result[0];
-        TopicContent.category = router.query.category;
-        TopicContent.bookmark = false; //추후필요
-        TopicContent.file_full_url = "";
-        if (TopicContent.file_url) {
-          TopicContent.file_url = TopicContent.file_url.slice(2, -2);
-          TopicContent.file_full_url = topicImageUrl + TopicContent.file_url;
-        }
-        setState({
-          ...state,
-          data: {
-            ...state.data,
-            wr_subject: TopicContent.wr_subject,
-            wr_content: TopicContent.wr_content,
-            board: TopicContent.board,
-            file_url: TopicContent.file_url,
-          },
-        });
-        setImage({
-          image_file: "",
-          preview_URL: TopicContent.file_full_url,
-        });
-      })
-      .catch(error => {
-        getTopiceContent();
-      });
+    await onClickCategoryList();
+    setState({
+      ...state,
+      data: {
+        ...state.data,
+        wr_subject: topicDetail.wr_subject,
+        wr_content: topicDetail.wr_content,
+        board: topicDetail.board,
+        file_url: topicDetail.file_url,
+      },
+    });
+    setImage({
+      image_file: topicDetail.file_url,
+      preview_URL: topicDetail.file_full_url,
+    });
   };
 
   const onClickCategoryList = async () => {
@@ -168,8 +158,6 @@ const TopicUpdateContent: NextPage = () => {
   };
 
   const onClickSubmitTopic = async () => {
-    setState({ ...state, isLoading: true });
-
     const formData = new FormData();
     if (image.image_file) {
       formData.append("file", image.image_file);
@@ -182,11 +170,12 @@ const TopicUpdateContent: NextPage = () => {
         board: state.data.board,
       })
       .then(async res => {
-        await axios.post(`/api2/topic/upload/${id}`, formData);
-        alert("토픽이 등록되었습니다");
+        if (image.image_file != state.data.file_url) {
+          await axios.post(`/api2/topic/upload/${id}`, formData);
+        }
+        alert("토픽이 수정되었습니다");
         router.push("/topic");
       });
-    setState({ ...state, isLoading: false });
   };
 
   const onClickInput = () => {

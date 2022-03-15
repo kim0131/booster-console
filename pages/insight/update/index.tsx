@@ -97,16 +97,15 @@ const InsightUpdateContent: NextPage = () => {
   });
 
   useEffect(() => {
-    console.log(1);
     if (insightDetail) {
-      getTopiceContent();
+      getInsightContent();
     }
   }, [id, insightDetail]);
 
-  const getTopiceContent = async () => {
+  const getInsightContent = async () => {
     await onClickCategoryList();
     setImage({
-      image_file: "",
+      image_file: insightDetail.file_url,
       preview_URL: insightDetail.file_full_url,
     });
 
@@ -136,7 +135,7 @@ const InsightUpdateContent: NextPage = () => {
     setState({ ...state, isSearch: false });
   };
 
-  const onChangeTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeInsight = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.currentTarget;
     setState({
       ...state,
@@ -154,14 +153,13 @@ const InsightUpdateContent: NextPage = () => {
     setState({ ...state, data: { ...state.data, board: value } });
   };
 
-  const onClickSubmitTopic = async () => {
+  const onClickSubmitInsight = async () => {
     const formData = new FormData();
     if (image.image_file) {
       formData.append("file", image.image_file);
       formData.append("exist_url", state.data.file_url);
     }
-    console.log(state.data);
-    console.log(image);
+
     await axios
       .post(`/api2/insight/update/${id}`, {
         wr_subject: state.data.wr_subject,
@@ -169,8 +167,10 @@ const InsightUpdateContent: NextPage = () => {
         board: state.data.board,
       })
       .then(async res => {
-        await axios.post(`/api2/insight/upload/${id}`, formData);
-        alert("토픽이 등록되었습니다");
+        if (image.image_file != state.data.file_url) {
+          await axios.post(`/api2/insight/upload/${id}`, formData);
+        }
+        alert("인사이트가 수정되었습니다");
         router.push("/insight");
       });
   };
@@ -227,7 +227,7 @@ const InsightUpdateContent: NextPage = () => {
                 size="medium"
                 width="100%"
                 value={state.data.wr_subject}
-                onChange={onChangeTopic}
+                onChange={onChangeInsight}
               />
             </TitleBox>
             <Button
@@ -256,7 +256,7 @@ const InsightUpdateContent: NextPage = () => {
               size="large"
               col={100}
               row={20}
-              onChange={onChangeTopic}
+              onChange={onChangeInsight}
             />
           </>
         }
@@ -274,7 +274,7 @@ const InsightUpdateContent: NextPage = () => {
               variants="light"
               color="primary"
               size="large"
-              onClick={onClickSubmitTopic}
+              onClick={onClickSubmitInsight}
             >
               수정하기
             </Button>
