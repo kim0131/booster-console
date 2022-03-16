@@ -6,7 +6,9 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 export const QuillEditor = ({ content, onChange }: any) => {
-  const QuillRef = useRef<ReactQuill>();
+  let ReactQuill =
+    typeof window === "object" ? require("react-quill") : () => false;
+  const QuillRef = useRef<any>();
 
   // 이미지를 업로드 하기 위한 함수
   const imageHandler = () => {
@@ -77,7 +79,7 @@ export const QuillEditor = ({ content, onChange }: any) => {
   return (
     <>
       <ReactQuill
-        ref={element => {
+        ref={(element: any) => {
           if (element !== null) {
             QuillRef.current = element;
           }
