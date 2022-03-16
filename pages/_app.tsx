@@ -10,7 +10,10 @@ import Header from "@components/templates/header";
 
 import SideBar from "@components/templates/sidebar";
 import styled from "@emotion/styled";
-
+import { useEffect } from "react";
+import * as gtag from "../lib/gtag";
+import { useRouter } from "next/router";
+const isProduction = process.env.NODE_ENV === "production";
 const Flex = styled.div`
   display: flex;
   justify-content: center;
@@ -18,7 +21,16 @@ const Flex = styled.div`
 
 function MyApp({ Component, pageProps }: AppProps) {
   const { message } = useToast();
-
+  const router = useRouter();
+  useEffect(() => {
+    const handleRouteChange = (url: URL) => {
+      if (isProduction) gtag.pageview(url);
+    };
+    router.events.on("routeChangeComplete", handleRouteChange);
+    return () => {
+      router.events.off("routeChangeComplete", handleRouteChange);
+    };
+  }, [router.events]);
   return (
     <ThemeProvider theme={theme}>
       <SessionProvider>

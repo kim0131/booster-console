@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "next dev -p 4000",
     "build": "next build",
-    "start": "export PORT=4000 next start",
+    "start": "export PORT=4000 && next start",
     "lint": "next lint"
   },
   "dependencies": {
@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "@emotion/babel-plugin": "^11.7.2",
+    "@types/gtag.js": "^0.0.9",
     "@types/node": "17.0.17",
     "@types/react": "17.0.39",
     "@types/react-calendar": "^3.4.5",
