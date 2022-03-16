@@ -34,6 +34,6 @@ export const getBusinessRefuse = (value: string | number) => {
     case "26":
       return "기타사유4";
     default:
-      return "미승인";
+      return "";
   }
 };

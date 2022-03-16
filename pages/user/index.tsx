@@ -23,8 +23,9 @@ import TableUser from "@components/elements/table/table-user";
 import PopUp from "@components/userpopup";
 import { getUserCertify } from "@core/config/businesscertify";
 import UserPopUp from "@components/userpopup";
+import useUserList from "@core/hook/use-userList";
 interface IStateAccounts {
-  data: { [key in string]: string | any };
+  board: string;
   invalid?: string;
   isSearch: boolean;
   isLoading: boolean;
@@ -36,10 +37,11 @@ const selectBox = [
   { value: "1", label: "승인심사중" },
   { value: "2", label: "승인거절" },
   { value: "3", label: "승인" },
+  { value: "4", label: "업데이트" },
 ];
 const User: NextPage = () => {
   const router = useRouter();
-  const [user, setUser] = useState([]);
+  const { userList } = useUserList();
   const [searchResult, setSearchResult] = useState([]);
   const [userId, setUserId] = useState<any>({
     userid: "",
@@ -47,11 +49,7 @@ const User: NextPage = () => {
   });
   const [openPopUp, setOpenPopUp] = useState<boolean>();
   const [state, setState] = useState<IStateAccounts>({
-    data: {
-      bo_table: "",
-      bo_subject: "",
-      certify: { value: "", lable: "" },
-    },
+    board: "",
     invalid: "",
     isSearch: false,
     isLoading: false,
@@ -79,13 +77,13 @@ const User: NextPage = () => {
     let result1: any = [];
     let result2: any = [];
 
-    let list = user;
+    let list = userList;
 
     //카테고리
     await list.filter((item: any) => {
-      if (!state.data.board) {
+      if (!state.board) {
         result1.push(item);
-      } else if (state.data.certify.label == item.category) {
+      } else if (state.board == item.board) {
         result1.push(item);
       } else {
         return null;
@@ -119,32 +117,8 @@ const User: NextPage = () => {
   };
 
   const onClickUserList = async () => {
-    setState({ ...state, isLoading: true });
-
-    await axios.get("/api2/user/list").then(async (res: any) => {
-      let list = res.data.result;
-
-      list.map(async (item: any, idx: any) => {
-        let stand = list[idx].mb_business_certify.toString().slice(0, 1);
-        list[idx] = {
-          idx: list[idx].idx,
-          category: getUserCertify(stand),
-          mb_id: list[idx].mb_id,
-          mb_email: list[idx].mb_email,
-          datetime: list[idx].mb_datetime.slice(0, 10),
-          update: list[idx].mb_update.slice(0, 10),
-          business: list[idx].mb_business_num,
-          mb_ph: list[idx].mb_ph,
-        };
-
-        if (list[idx].idx == userId.userid) {
-          setUserId({ ...userId, business: list[idx].business });
-        }
-      });
-      setUser(list);
-    });
     setSearchResult([]);
-    setState({ ...state, isLoading: false, isSearch: false });
+    setState({ ...state, searchTerm: "", isLoading: false, isSearch: false });
   };
 
   const onChangeSelcet = (e: any) => {
@@ -152,7 +126,7 @@ const User: NextPage = () => {
     const label = e.label;
     setState({
       ...state,
-      data: { ...state.data, certify: { value: value, label: label } },
+      board: value,
     });
   };
 
@@ -162,6 +136,7 @@ const User: NextPage = () => {
   const onClickClosePopUp = () => {
     setOpenPopUp(false);
   };
+
   const onClickDeleteuser = async () => {
     await axios
       .post(`/api2/user/delete/${userId.userid}`)
@@ -195,7 +170,7 @@ const User: NextPage = () => {
               options={selectBox}
               placeholder={"분류"}
               onChange={onChangeSelcet}
-              value={state.data.certify.value}
+              value={state.board}
             />
 
             <TextField
@@ -203,6 +178,7 @@ const User: NextPage = () => {
               name="bo_table"
               size="medium"
               onChange={onChangeSearch}
+              value={state.searchTerm}
             />
             <Button
               variants="light"
@@ -236,11 +212,13 @@ const User: NextPage = () => {
         }
         section3={
           <>
-            <TableUser
-              size={state.tablesize ? state.tablesize : 1}
-              data={searchResult.length > 0 ? searchResult : user}
-              rowClick={onClickOpenPopUp}
-            />
+            {userList && (
+              <TableUser
+                size={state.tablesize ? state.tablesize : 1}
+                data={searchResult.length > 0 ? searchResult : userList}
+                rowClick={onClickOpenPopUp}
+              />
+            )}
           </>
         }
       />

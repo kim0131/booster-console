@@ -185,6 +185,7 @@ const BusinessPopUp = ({ open, close, id }: IStatePopUp) => {
     { value: 1, label: "승인심사중" },
     { value: 2, label: "승인거절" },
     { value: 3, label: "승인완료" },
+    { value: 4, label: "업데이트" },
   ];
   const refuseOptions = [
     { value: 21, label: "사진의 화질이 안좋음" },
@@ -279,7 +280,7 @@ const BusinessPopUp = ({ open, close, id }: IStatePopUp) => {
     });
     setTimeout(() => {
       setIsLoading(false);
-    }, 1000);
+    }, 500);
   };
 
   const onChangeSelcet = (e: any) => {

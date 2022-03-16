@@ -21,6 +21,7 @@ import {
 } from "@core/config/businesscertify";
 import BusinessPopUp from "@components/businesspopup";
 import TableBusiness from "@components/elements/table/table-business";
+import useUserList from "@core/hook/use-userList";
 interface IStateAccounts {
   data: { [key in string]: string | any };
   invalid?: string;
@@ -38,6 +39,7 @@ const selectBox = [
 const Business: NextPage = () => {
   const router = useRouter();
   const [business, setBusiness] = useState([]);
+  const { userList } = useUserList();
   const [searchResult, setSearchResult] = useState([]);
   const [userId, setUserId] = useState<string | string[] | number>();
   const [openPopUp, setOpenPopUp] = useState<boolean>();
@@ -119,27 +121,25 @@ const Business: NextPage = () => {
   const onClickUserList = async () => {
     setState({ ...state, isLoading: true });
 
-    await axios.get("/api2/user/list").then(async (res: any) => {
-      let list = res.data.result;
-      let result: any = [];
-      list.map(async (item: any, idx: any) => {
-        let stand = list[idx].mb_business_certify.toString().slice(0, 1);
-        if (stand == 0 || stand == 1 || stand == 2 || stand == 4) {
-          result.push({
-            idx: list[idx].idx,
-            category: getUserCertify(list[idx].mb_business_certify),
-            mb_id: list[idx].mb_id,
-            mb_email: list[idx].mb_email,
-            datetime: list[idx].mb_datetime.slice(0, 10),
-
-            refuse: getBusinessRefuse(list[idx].mb_business_certify),
-            mb_ph: list[idx].mb_ph,
-          });
-        }
-      });
-
-      setBusiness(result);
+    let list = userList;
+    let result: any = [];
+    list.map(async (item: any, idx: any) => {
+      let stand = item.info.mb_business_certify.toString().slice(0, 1);
+      if (stand == 0 || stand == 1 || stand == 2 || stand == 4) {
+        result.push({
+          idx: list[idx].idx,
+          category: getUserCertify(item.info.mb_business_certify),
+          mb_id: list[idx].mb_id,
+          mb_email: list[idx].mb_email,
+          datetime: item.info.mb_datetime.slice(0, 10),
+          refuse: getBusinessRefuse(item.info.mb_business_certify),
+          mb_ph: list[idx].mb_ph,
+        });
+      }
     });
+
+    setBusiness(result);
+
     setSearchResult([]);
     setState({ ...state, isLoading: false, isSearch: false });
   };
