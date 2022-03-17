@@ -23,9 +23,14 @@ const getCategoryName = (idx: any) => {
 };
 
 const topicDetailfetcher = async (url: any) => {
-    await onClickCategoryList()
-    let topicList: any = {};
-    await axios.get(url).then(async res => {
+  await onClickCategoryList();
+  let topicList: any = {};
+  await axios
+    .post(url, {
+      member_idx: 67,
+      sector: "topic",
+    })
+    .then(async res => {
       const TopicContent = res.data.result[0];
       const CurrentTime = new Date();
       const ContentTime = new Date(TopicContent.wr_datetime);
@@ -41,13 +46,16 @@ const topicDetailfetcher = async (url: any) => {
       TopicContent.create = await elapsedTime;
       topicList = TopicContent;
     });
-    return topicList;
-  };
+  return topicList;
+};
 
-  export  const useTopicDetail =  (id : any) => {
-    const { data: topicDetail, mutate } = useSWR(`/api2/topic/list/${id}`, topicDetailfetcher, {
-        onSuccess : ()=>{}
-    });
-    return  {topicDetail, mutate}
-    
-  };
+export const useTopicDetail = (id: any) => {
+  const { data: topicDetail, mutate } = useSWR(
+    `/api2/topic/${id}`,
+    topicDetailfetcher,
+    {
+      onSuccess: () => {},
+    },
+  );
+  return { topicDetail, mutate };
+};

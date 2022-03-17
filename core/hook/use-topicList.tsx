@@ -26,23 +26,28 @@ const getCategoryName = (idx: any) => {
 const topicfetcher = async (url: string) => {
   await onClickCategoryList();
   let result: any = [];
-  await axios.get(url).then(async res => {
-    const topic = res.data.result;
-    topic.map(async (item: any, idx: any) => {
-      result.push({
-        idx: item.idx,
-        category: await getCategoryName(item.board),
-        wr_subject: item.wr_subject,
-        mb_name: item.mb_name,
-        datetime: item.wr_datetime.slice(0, 10),
-        // update: item.wr_update.slice(0, 10),
-        update: "",
-        view: item.wr_view,
-        like: item.likeCnt,
-        comment: item.commentCnt,
+  await axios
+    .post(url, {
+      member_idx: 67,
+      sector: "topic",
+    })
+    .then(async res => {
+      const topic = res.data.result;
+      topic.map(async (item: any, idx: any) => {
+        result.push({
+          idx: item.idx,
+          category: await getCategoryName(item.board),
+          wr_subject: item.wr_subject,
+          mb_name: item.mb_name,
+          datetime: item.wr_datetime.slice(0, 10),
+          // update: item.wr_update.slice(0, 10),
+          update: "",
+          view: item.wr_view,
+          like: item.likeCnt,
+          comment: item.commentCnt,
+        });
       });
     });
-  });
   return result;
 };
 const useTopicList = () => {

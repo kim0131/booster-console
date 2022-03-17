@@ -13,6 +13,7 @@ import {
 } from "@components/icons";
 import theme from "@components/styles/theme";
 import { topicImageUrl } from "@core/config/imgurl";
+import { useTopicDetail } from "@core/hook/use-topicdetail";
 import styled from "@emotion/styled";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -140,30 +141,28 @@ const TopicContentLayout = ({
     file_url: "",
     file_full_url: "",
   });
-
+  const { topicDetail } = useTopicDetail(id);
   useEffect(() => {
     getTopiceContent();
-  }, [router]);
+  }, [router, topicDetail]);
 
   const getTopiceContent = async () => {
-    if (id) {
-      await axios(`/api2/topic/list/${id}`).then(res => {
-        const TopicContent = res.data.result[0];
-        const CurrentTime = new Date();
-        const ContentTime = new Date(TopicContent.wr_datetime);
-        const elapsedTime = Math.ceil(
-          (CurrentTime.getTime() - ContentTime.getTime()) / (1000 * 3600),
-        );
-        TopicContent.category = router.query.category;
-        TopicContent.bookmark = false; //추후필요
-        TopicContent.create = elapsedTime;
-        if (TopicContent.file_url) {
-          TopicContent.file_full_url =
-            topicImageUrl + TopicContent.file_url.slice(2, -2);
-          TopicContent.file_url = TopicContent.file_url.slice(2, -2);
-        }
-        setTopicContent(TopicContent);
-      });
+    if (topicDetail) {
+      const TopicContent = topicDetail;
+      const CurrentTime = new Date();
+      const ContentTime = new Date(TopicContent.wr_datetime);
+      const elapsedTime = Math.ceil(
+        (CurrentTime.getTime() - ContentTime.getTime()) / (1000 * 3600),
+      );
+      TopicContent.category = router.query.category;
+      TopicContent.bookmark = false; //추후필요
+      TopicContent.create = elapsedTime;
+      if (TopicContent.file_url) {
+        TopicContent.file_full_url =
+          topicImageUrl + TopicContent.file_url.slice(2, -2);
+        TopicContent.file_url = TopicContent.file_url.slice(2, -2);
+      }
+      setTopicContent(TopicContent);
     }
   };
   const onClinkTopicDelete = async () => {

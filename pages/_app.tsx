@@ -21,16 +21,7 @@ const Flex = styled.div`
 
 function MyApp({ Component, pageProps }: AppProps) {
   const { message } = useToast();
-  const router = useRouter();
-  useEffect(() => {
-    const handleRouteChange = (url: URL) => {
-      if (isProduction) gtag.pageview(url);
-    };
-    router.events.on("routeChangeComplete", handleRouteChange);
-    return () => {
-      router.events.off("routeChangeComplete", handleRouteChange);
-    };
-  }, [router.events]);
+
   return (
     <ThemeProvider theme={theme}>
       <SessionProvider>

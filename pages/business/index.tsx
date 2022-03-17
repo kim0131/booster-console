@@ -120,25 +120,25 @@ const Business: NextPage = () => {
 
   const onClickUserList = async () => {
     setState({ ...state, isLoading: true });
-
-    let list = userList;
-    let result: any = [];
-    list.map(async (item: any, idx: any) => {
-      let stand = item.info.mb_business_certify.toString().slice(0, 1);
-      if (stand == 0 || stand == 1 || stand == 2 || stand == 4) {
-        result.push({
-          idx: list[idx].idx,
-          category: getUserCertify(item.info.mb_business_certify),
-          mb_id: list[idx].mb_id,
-          mb_email: list[idx].mb_email,
-          datetime: item.info.mb_datetime.slice(0, 10),
-          refuse: getBusinessRefuse(item.info.mb_business_certify),
-          mb_ph: list[idx].mb_ph,
-        });
-      }
-    });
-
-    setBusiness(result);
+    if (userList) {
+      let list = userList;
+      let result: any = [];
+      list.map(async (item: any, idx: any) => {
+        let stand = item.info.mb_business_certify.toString().slice(0, 1);
+        if (stand == 0 || stand == 1 || stand == 2 || stand == 4) {
+          result.push({
+            idx: list[idx].idx,
+            category: getUserCertify(item.info.mb_business_certify),
+            mb_id: list[idx].mb_id,
+            mb_email: list[idx].mb_email,
+            datetime: item.info.mb_datetime.slice(0, 10),
+            refuse: getBusinessRefuse(item.info.mb_business_certify),
+            mb_ph: list[idx].mb_ph,
+          });
+        }
+      });
+      setBusiness(result);
+    }
 
     setSearchResult([]);
     setState({ ...state, isLoading: false, isSearch: false });
