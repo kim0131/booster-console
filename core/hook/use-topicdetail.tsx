@@ -51,7 +51,7 @@ const topicDetailfetcher = async (url: any) => {
 
 export const useTopicDetail = (id: any) => {
   const { data: topicDetail, mutate } = useSWR(
-    `/api2/topic/${id}`,
+    `/api2/topic/detail/${id}`,
     topicDetailfetcher,
     {
       onSuccess: () => {},

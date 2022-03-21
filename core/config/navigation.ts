@@ -10,8 +10,8 @@ export const UserNavigation = [
   { id: 2, content: "사용자 목록", url: "/user" },
 ];
 export const HomeNavigation = [
-  { id: 0, content: "홈", url: "/login" },
-  { id: 1, content: "홈 편집", url: "/login" },
+  { id: 0, content: "홈", url: "/" },
+  { id: 1, content: "메인 베너 편집", url: "/home" },
   { id: 2, content: "카테고리 편집", url: "/category" },
 ];
 export const AdsNavigation = [

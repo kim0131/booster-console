@@ -20,6 +20,7 @@ const Container = styled.div`
 const Title = styled.div`
   display: flex;
   justify-content: space-between;
+  flex-direction: column;
 `;
 const Block = styled.div`
   display: flex;

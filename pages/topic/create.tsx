@@ -73,7 +73,7 @@ const TopicCrate: NextPage = () => {
 
   const [image, setImage] = useState<any>({
     image_file: "",
-    preview_URL: "img/default_image.png",
+    preview_URL: "",
   });
   const hiddenFileInput = React.useRef<any>(null);
   const [loaded, setLoaded] = useState<any>(false);
