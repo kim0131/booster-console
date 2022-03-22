@@ -112,7 +112,7 @@ const HomeEdit: NextPage = () => {
     router.push("/home");
   };
 
-  const onClickSearch = () => {
+  const onClickSetPriority = () => {
     banners.map(async (item: any, idx: any) => {
       await axios.post(`/api2/home/main/update/${item.id}`, {
         title: item.title,
@@ -126,6 +126,10 @@ const HomeEdit: NextPage = () => {
       });
     });
     alert("변경되었습니다.");
+  };
+
+  const onClickReSet = () => {
+    setBanners(homeList);
   };
   const onClickRouter = (id: any) => {
     router.push(`/home/update?id=${id}`);
@@ -197,14 +201,17 @@ const HomeEdit: NextPage = () => {
               </Style.Container>
             </DndProvider>
 
-            <Button onClick={onClickSearch}>변경된 순서 적용하기</Button>
-            <Button
-              onClick={() => {
-                router.push("/home/create");
-              }}
-            >
-              등록하기
-            </Button>
+            <FlexBox>
+              <Button onClick={onClickSetPriority}>변경된 순서 적용하기</Button>
+              <Button onClick={onClickReSet}>순서 되돌리기</Button>
+              <Button
+                onClick={() => {
+                  router.push("/ads/create");
+                }}
+              >
+                등록하기
+              </Button>
+            </FlexBox>
           </>
         }
       />
