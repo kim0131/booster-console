@@ -15,6 +15,7 @@ import CalendarContainer from "@components/elements/calendar";
 import { CirclePicker, SketchPicker, TwitterPicker } from "react-color";
 import { useHomeDetail } from "@core/hook/use-home";
 import { useAdsDetail } from "@core/hook/use-Ads";
+import { adsImageUrl } from "@core/config/imgurl";
 
 const Container = styled.header`
   width: 100%;
@@ -143,7 +144,7 @@ const AdsUpdate: NextPage = () => {
       })
       .then(async res => {
         if (image.image_file != state.data.image_url) {
-          // await axios.post(`/api2/home/main/upload/update/${id}`, formData);
+          await axios.post(`/api2/home/adbanner/upload/${id}`, formData);
         }
         alert("메인 베너가 등록되었습니다");
         router.push("/ads");
@@ -279,7 +280,14 @@ const AdsUpdate: NextPage = () => {
           />
         </FlexBox>
         <ImageContainer>
-          <img src={image.preview_URL} alt="" />
+          <img
+            src={
+              image.preview_URL
+                ? image.preview_URL
+                : adsImageUrl + state.data.image_url.slice(2, -2)
+            }
+            alt=""
+          />
         </ImageContainer>
         <Header4>배경색 지정</Header4>
         <FlexBox>

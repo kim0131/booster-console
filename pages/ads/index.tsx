@@ -103,12 +103,12 @@ const AdsEdit: NextPage = () => {
     [banners],
   );
   const onClinkHomeDelete = async (id: any, iamge_url: any) => {
-    // await axios
-    //   .post(`/api2/topic/upload/delete/${id}`, {
-    //     file_url: iamge_url,
-    //   })
-    //   .then(() => {});
-    await axios.post(`/api2/home/banner/delete/${id}`).then(() => {});
+    await axios
+      .post(`/api2/home/adbanner/upload/delete/${id}`, {
+        file_url: iamge_url,
+      })
+      .then(() => {});
+    await axios.post(`/api2/home/adbanner/delete/${id}`).then(() => {});
     alert("삭제되었습니다.");
     router.push("/home");
   };

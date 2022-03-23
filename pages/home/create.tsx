@@ -115,8 +115,7 @@ const HomeCreate: NextPage = () => {
       })
       .then(async res => {
         const id = res.data.result.idx;
-        console.log(id);
-        // await axios.post(`/api2/home/main/upload/update/${id}`, formData);
+        await axios.post(`/api2/home/main/upload/${id}`, formData);
         alert("메인 베너가 등록되었습니다");
         router.push("/home");
       });

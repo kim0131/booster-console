@@ -62,7 +62,7 @@ const AdsCrate: NextPage = () => {
   const { data: session, status } = useSession();
   const [image, setImage] = useState<any>({
     image_file: "",
-    preview_URL: "img/default_image.png",
+    preview_URL: "",
   });
   const hiddenFileInput = React.useRef<any>(null);
 
@@ -99,8 +99,8 @@ const AdsCrate: NextPage = () => {
     const formData = new FormData();
     if (image.image_file) {
       formData.append("file", image.image_file);
+      formData.append("exist_url", state.data.image_url);
     }
-    console.log(state.data);
     await axios
       .post("/api2/home/adbanner/write", {
         title: state.data.title,
@@ -115,9 +115,8 @@ const AdsCrate: NextPage = () => {
       })
       .then(async res => {
         const id = res.data.result.idx;
-        console.log(id);
-        // await axios.post(`/api2/home/main/upload/update/${id}`, formData);
-        alert("메인 베너가 등록되었습니다");
+        await axios.post(`/api2/home/adbanner/upload/${id}`, formData);
+        alert("광고 베너가 등록되었습니다");
         router.push("/ads");
       });
   };
