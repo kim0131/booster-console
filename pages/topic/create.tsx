@@ -112,7 +112,7 @@ const TopicCrate: NextPage = () => {
     const res = await axios.get("/json/");
     setState({ ...state, data: { ...state.data, wr_ip: res.data.IPv4 } });
   };
-
+  //
   const onChangeTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.currentTarget;
     setState({
