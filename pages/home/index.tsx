@@ -20,7 +20,7 @@ const FlexBox = styled.div`
 const tableHead = [
   {
     id: 1,
-    content: "button",
+    content: "color",
     size: "5%",
   },
   {
@@ -171,9 +171,7 @@ const HomeEdit: NextPage = () => {
                           moveCard={moveCard}
                           key={item.id}
                         >
-                          <Style.Td>
-                            <Button />
-                          </Style.Td>
+                          <Style.Td>{item.background_color}</Style.Td>
                           <Style.Td>{item.title}</Style.Td>
                           <Style.Td>{item.subtitle}</Style.Td>
                           <Style.Td>
