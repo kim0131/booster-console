@@ -14,6 +14,7 @@ import { useSession } from "next-auth/react";
 import CalendarContainer from "@components/elements/calendar";
 import { CirclePicker, SketchPicker, TwitterPicker } from "react-color";
 import { useHomeDetail } from "@core/hook/use-home";
+import { homeImageUrl } from "@core/config/imgurl";
 
 const Container = styled.header`
   width: 100%;
@@ -63,6 +64,7 @@ const HomeUpdate: NextPage = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { id } = router.query;
+  console.log(id);
   const { homeDetail } = useHomeDetail(id);
   const [image, setImage] = useState<any>({
     image_file: "",
@@ -142,7 +144,7 @@ const HomeUpdate: NextPage = () => {
       })
       .then(async res => {
         if (image.image_file != state.data.image_url) {
-          // await axios.post(`/api2/home/main/upload/update/${id}`, formData);
+          await axios.post(`/api2/home/main/upload/${id}`, formData);
         }
         alert("메인 베너가 등록되었습니다");
         router.push("/home");
@@ -285,7 +287,14 @@ const HomeUpdate: NextPage = () => {
           />
         </FlexBox>
         <ImageContainer>
-          <img src={image.preview_URL} alt="" />
+          <img
+            src={
+              image.preview_URL
+                ? image.preview_URL
+                : homeImageUrl + state.data.image_url.slice(2, -2)
+            }
+            alt=""
+          />
         </ImageContainer>
         <Header4>배경색 지정</Header4>
         <FlexBox>

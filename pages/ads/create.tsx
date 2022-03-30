@@ -58,11 +58,11 @@ interface IStateAccounts {
   data: { [key in string]: any };
   invalid?: string;
 }
-const HomeCreate: NextPage = () => {
+const AdsCrate: NextPage = () => {
   const { data: session, status } = useSession();
   const [image, setImage] = useState<any>({
     image_file: "",
-    preview_URL: "img/default_image.png",
+    preview_URL: "",
   });
   const hiddenFileInput = React.useRef<any>(null);
 
@@ -99,10 +99,10 @@ const HomeCreate: NextPage = () => {
     const formData = new FormData();
     if (image.image_file) {
       formData.append("file", image.image_file);
+      formData.append("exist_url", state.data.image_url);
     }
-    console.log(state.data);
     await axios
-      .post("/api2/home/main/write", {
+      .post("/api2/home/adbanner/write", {
         title: state.data.title,
         subtitle: state.data.subtitle,
         posting_date: state.data.posting_date,
@@ -115,9 +115,9 @@ const HomeCreate: NextPage = () => {
       })
       .then(async res => {
         const id = res.data.result.idx;
-        await axios.post(`/api2/home/main/upload/${id}`, formData);
-        alert("메인 베너가 등록되었습니다");
-        router.push("/home");
+        await axios.post(`/api2/home/adbanner/upload/${id}`, formData);
+        alert("광고 베너가 등록되었습니다");
+        router.push("/ads");
       });
   };
 
@@ -172,7 +172,7 @@ const HomeCreate: NextPage = () => {
   return (
     <>
       <Container>
-        <Header4>메인 베너 추가</Header4>
+        <Header4>광고 베너 추가</Header4>
         <TextField
           placeholder="제목"
           name="title"
@@ -180,13 +180,7 @@ const HomeCreate: NextPage = () => {
           width="100%"
           onChange={onChangeTopic}
         />
-        <TextField
-          placeholder="소제목"
-          name="subtitle"
-          size="medium"
-          width="100%"
-          onChange={onChangeTopic}
-        />
+
         <TextField
           placeholder="링크"
           name="url"
@@ -256,13 +250,7 @@ const HomeCreate: NextPage = () => {
         <ImageContainer>
           <img src={image.preview_URL} alt="" />
         </ImageContainer>
-        <Header4>배경색 지정</Header4>
-        <FlexBox>
-          <TwitterPicker
-            color={state.data.background_color}
-            onChange={handleChangeComplete}
-          />
-        </FlexBox>
+
         <FlexBox>
           <Button
             variants="light"
@@ -277,7 +265,7 @@ const HomeCreate: NextPage = () => {
             color="primary"
             size="large"
             onClick={() => {
-              router.push("/home");
+              router.push("/ads");
             }}
           >
             취소
@@ -288,4 +276,4 @@ const HomeCreate: NextPage = () => {
   );
 };
 
-export default HomeCreate;
+export default AdsCrate;
