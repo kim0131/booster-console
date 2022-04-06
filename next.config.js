@@ -10,18 +10,23 @@ module.exports = {
   async rewrites() {
     return [
       {
-        source: '/api2/:path*',
-        destination: 'http://34.64.244.63:3001//api2/:path*' // Proxy to Backend
-        // destination: 'http://localhost:3001//api2/:path*' // Proxy to Backend
+        source: "/api3/:path*",
+        destination: "http://34.64.244.63:3001//api3/:path*", // Proxy to Backend
+        // destination: 'http://localhost:3001/api2/:path*' // Proxy to Backend
       },
       {
-        source: '/uploads/:path*',
-        destination: 'http://34.64.87.11:3001/uploads/:path*' // Proxy to Backend
+        source: "/api2/:path*",
+        destination: "http://34.64.87.11:3001//api2/:path*", // Proxy to Backend
+        // destination: 'http://localhost:3001/api2/:path*' // Proxy to Backend
+      },
+      {
+        source: "/uploads/:path*",
+        destination: "http://34.64.87.11:3001/uploads/:path*", // Proxy to Backend
       },
       {
         source: "/json/:path*",
-        destination: "https://geolocation-db.com/json/:path*"
-      }
-    ]
-  }
+        destination: "https://geolocation-db.com/json/:path*",
+      },
+    ];
+  },
 };
