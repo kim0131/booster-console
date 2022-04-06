@@ -160,7 +160,10 @@ const InsightCrate: NextPage = () => {
       })
       .then(async res => {
         const id = res.data.result.idx;
-        await axios.post(`/api2/insight/upload/${id}`, formData);
+        formData.append("idx", id);
+        if (image.image_file) {
+          await axios.post(`/api2/upload/insight`, formData);
+        }
         alert("인사이트이 등록되었습니다");
         router.push("/insight");
       })

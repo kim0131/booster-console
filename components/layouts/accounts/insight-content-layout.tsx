@@ -135,8 +135,8 @@ const InsightContentLayout = ({
   console.log(insightDetail);
   const onClinkinsightDelete = async () => {
     await axios
-      .post(`/api2/insight/upload/delete/${id}`, {
-        file_url: insightDetail.file_url,
+      .post(`/api2/upload/delete/insight`, {
+        file_url: insightDetail.file_url ? insightDetail.file_url : "",
       })
       .then(() => {});
     await axios.post(`/api2/insight/delete/${id}`).then(() => {});

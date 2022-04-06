@@ -104,8 +104,8 @@ const AdsEdit: NextPage = () => {
   );
   const onClinkHomeDelete = async (id: any, iamge_url: any) => {
     await axios
-      .post(`/api2/home/adbanner/upload/delete/${id}`, {
-        file_url: iamge_url,
+      .post(`/api2/upload/delete/adbanner`, {
+        file_url: iamge_url ? iamge_url : "",
       })
       .then(() => {});
     await axios.post(`/api2/home/adbanner/delete/${id}`).then(() => {});

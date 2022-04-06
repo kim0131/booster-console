@@ -103,8 +103,8 @@ const HomeEdit: NextPage = () => {
   );
   const onClinkHomeDelete = async (id: any, iamge_url: any) => {
     await axios
-      .post(`/api2/home/main/upload/delete/${id}`, {
-        file_url: iamge_url,
+      .post(`/api2/upload/delete/home`, {
+        file_url: iamge_url ? iamge_url : "",
       })
       .then(() => {});
     await axios.post(`/api2/home/main/delete/${id}`).then(() => {});
@@ -204,7 +204,7 @@ const HomeEdit: NextPage = () => {
               <Button onClick={onClickReSet}>순서 되돌리기</Button>
               <Button
                 onClick={() => {
-                  router.push("/ads/create");
+                  router.push("/home/create");
                 }}
               >
                 등록하기

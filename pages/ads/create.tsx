@@ -97,10 +97,10 @@ const AdsCrate: NextPage = () => {
 
   const onClickSubmitTopic = async () => {
     const formData = new FormData();
-    if (image.image_file) {
-      formData.append("file", image.image_file);
-      formData.append("exist_url", state.data.image_url);
-    }
+
+    formData.append("file", image.image_file);
+    formData.append("exist_url", state.data.image_url);
+
     await axios
       .post("/api2/home/adbanner/write", {
         title: state.data.title,
@@ -115,7 +115,10 @@ const AdsCrate: NextPage = () => {
       })
       .then(async res => {
         const id = res.data.result.idx;
-        await axios.post(`/api2/home/adbanner/upload/${id}`, formData);
+        formData.append("idx", id);
+        if (image.image_file) {
+          await axios.post(`/api2/upload/adbanner`, formData);
+        }
         alert("광고 베너가 등록되었습니다");
         router.push("/ads");
       });

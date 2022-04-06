@@ -39,7 +39,7 @@ const topicDetailfetcher = async (url: any) => {
       );
       if (TopicContent.file_url) {
         TopicContent.file_full_url =
-          (await topicImageUrl) + TopicContent.file_url.slice(2, -2);
+          (await topicImageUrl) + TopicContent.file_url;
       }
       TopicContent.category = await getCategoryName(TopicContent.board);
       TopicContent.bookmark = await false; //추후필요

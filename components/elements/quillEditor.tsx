@@ -27,9 +27,9 @@ export const QuillEditor = ({ content, onChange }: any) => {
 
         try {
           const res = await axios
-            .post(`/api2/insight/upload/2`, formData)
+            .post(`/api2/upload/insight`, formData)
             .then(async res => {
-              url = insightImageUrl + res.data.result.file_url.slice(2, -2);
+              url = insightImageUrl + res.data.result.file_url;
             });
           const range = QuillRef.current?.getEditor().getSelection()?.index;
           if (range !== null && range !== undefined) {

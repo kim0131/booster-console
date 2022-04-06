@@ -125,11 +125,10 @@ const AdsUpdate: NextPage = () => {
 
   const onClickSubmitTopic = async () => {
     const formData = new FormData();
-    if (image.image_file) {
-      formData.append("file", image.image_file);
-      formData.append("exist_url", state.data.image_url);
-    }
-    console.log(state.data);
+
+    formData.append("file", image.image_file);
+    formData.append("exist_url", state.data.image_url);
+
     await axios
       .post(`/api2/home/adbanner/update/${id}`, {
         title: state.data.title,
@@ -144,7 +143,8 @@ const AdsUpdate: NextPage = () => {
       })
       .then(async res => {
         if (image.image_file != state.data.image_url) {
-          await axios.post(`/api2/home/adbanner/upload/${id}`, formData);
+          formData.append("idx", `${id}`);
+          await axios.post(`/api2/upload/adbanner`, formData);
         }
         alert("메인 베너가 등록되었습니다");
         router.push("/ads");
@@ -284,7 +284,7 @@ const AdsUpdate: NextPage = () => {
             src={
               image.preview_URL
                 ? image.preview_URL
-                : adsImageUrl + state.data.image_url.slice(2, -2)
+                : adsImageUrl + state.data.image_url
             }
             alt=""
           />

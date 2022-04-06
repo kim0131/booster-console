@@ -145,10 +145,8 @@ const TopicUpdateContent: NextPage = () => {
 
   const onClickSubmitTopic = async () => {
     const formData = new FormData();
-    if (image.image_file) {
-      formData.append("file", image.image_file);
-      formData.append("exist_url", state.data.file_url);
-    }
+    formData.append("file", image.image_file);
+    formData.append("exist_url", state.data.file_url);
     await axios
       .post(`/api2/topic/update/${id}`, {
         wr_subject: state.data.wr_subject,
@@ -157,7 +155,8 @@ const TopicUpdateContent: NextPage = () => {
       })
       .then(async res => {
         if (image.image_file != state.data.file_url) {
-          await axios.post(`/api2/topic/upload/${id}`, formData);
+          formData.append("idx", `${id}`);
+          await axios.post(`/api2/upload/topic`, formData);
         }
         alert("토픽이 수정되었습니다");
         router.push("/topic");

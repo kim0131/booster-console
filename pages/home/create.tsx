@@ -97,9 +97,9 @@ const HomeCreate: NextPage = () => {
 
   const onClickSubmitTopic = async () => {
     const formData = new FormData();
-    if (image.image_file) {
-      formData.append("file", image.image_file);
-    }
+
+    formData.append("file", image.image_file);
+
     console.log(state.data);
     await axios
       .post("/api2/home/main/write", {
@@ -115,7 +115,10 @@ const HomeCreate: NextPage = () => {
       })
       .then(async res => {
         const id = res.data.result.idx;
-        await axios.post(`/api2/home/main/upload/${id}`, formData);
+        formData.append("idx", `${id}`);
+        if (image.image_file) {
+          await axios.post(`/api2/upload/home`, formData);
+        }
         alert("메인 베너가 등록되었습니다");
         router.push("/home");
       });

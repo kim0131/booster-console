@@ -137,7 +137,6 @@ const TopicCrate: NextPage = () => {
     if (image.image_file) {
       formData.append("file", image.image_file);
     }
-    console.log(state.data);
     await axios
       .post("/api2/topic/write", {
         wr_subject: state.data.wr_subject,
@@ -151,7 +150,10 @@ const TopicCrate: NextPage = () => {
       })
       .then(async res => {
         const id = res.data.result.idx;
-        await axios.post(`/api2/topic/upload/${id}`, formData);
+        if (image.image_file) {
+          formData.append("idx", id);
+          await axios.post(`/api2/upload/topic`, formData);
+        }
         alert("토픽이 등록되었습니다");
         router.push("/topic");
       });

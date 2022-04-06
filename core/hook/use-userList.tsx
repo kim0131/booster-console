@@ -19,7 +19,7 @@ const userListFetcher = async (url: string) => {
         mb_id: list[idx].mb_id,
         mb_email: list[idx].mb_email,
         datetime: list[idx].mb_datetime.slice(0, 10),
-        update: list[idx].mb_update.slice(0, 10),
+        // update: list[idx].mb_update.slice(0, 10),
         business: list[idx].mb_business_num,
         mb_ph: list[idx].mb_ph,
       });

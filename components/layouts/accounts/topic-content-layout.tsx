@@ -158,17 +158,15 @@ const TopicContentLayout = ({
       TopicContent.bookmark = false; //추후필요
       TopicContent.create = elapsedTime;
       if (TopicContent.file_url) {
-        TopicContent.file_full_url =
-          topicImageUrl + TopicContent.file_url.slice(2, -2);
-        TopicContent.file_url = TopicContent.file_url.slice(2, -2);
+        TopicContent.file_full_url = topicImageUrl + TopicContent.file_url;
       }
       setTopicContent(TopicContent);
     }
   };
   const onClinkTopicDelete = async () => {
     await axios
-      .post(`/api2/topic/upload/delete/${id}`, {
-        file_url: topicContent.file_url,
+      .post(`/api2/upload/delete/topic`, {
+        file_url: topicContent.file_url ? topicContent.file_url : "",
       })
       .then(() => {});
     await axios.post(`/api2/topic/delete/${id}`).then(() => {});

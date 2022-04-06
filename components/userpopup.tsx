@@ -256,7 +256,7 @@ const UserPopUp = ({ open, close, id, onClickDel }: IStatePopUp) => {
           business.business_full_url = "";
           if (business.business_url) {
             business.business_full_url =
-              businessImageUrl + business.business_url.slice(2, -2);
+              businessImageUrl + business.business_url;
           }
           console.log(business);
           setBusinessInfo(business);

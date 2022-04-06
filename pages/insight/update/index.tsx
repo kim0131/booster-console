@@ -144,11 +144,10 @@ const InsightUpdateContent: NextPage = () => {
 
   const onClickSubmitInsight = async () => {
     const formData = new FormData();
-    if (image.image_file) {
-      formData.append("file", image.image_file);
-      formData.append("exist_url", state.data.file_url);
-    }
-    console.log(state.data.board);
+
+    formData.append("file", image.image_file);
+    formData.append("exist_url", state.data.file_url);
+
     await axios
       .post(`/api2/insight/update/${id}`, {
         wr_subject: state.data.wr_subject,
@@ -157,7 +156,8 @@ const InsightUpdateContent: NextPage = () => {
       })
       .then(async res => {
         if (image.image_file != state.data.file_url) {
-          await axios.post(`/api2/insight/upload/${id}`, formData);
+          formData.append("idx", `${id}`);
+          await axios.post(`/api2/upload/insight`, formData);
         }
         alert("인사이트가 수정되었습니다");
         router.push("/insight");
