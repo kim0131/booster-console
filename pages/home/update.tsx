@@ -64,7 +64,6 @@ const HomeUpdate: NextPage = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { id } = router.query;
-  console.log(id);
   const { homeDetail } = useHomeDetail(id);
   const [image, setImage] = useState<any>({
     image_file: "",
@@ -104,8 +103,8 @@ const HomeUpdate: NextPage = () => {
         },
       });
       setImage({
-        image_file: homeDetail.file_url,
-        preview_URL: homeDetail.file_full_url,
+        image_file: homeDetail.image_url,
+        preview_URL: homeImageUrl + homeDetail.image_url,
       });
     }
   }, [homeDetail]);
@@ -201,129 +200,124 @@ const HomeUpdate: NextPage = () => {
   };
   return (
     <>
-      <Container>
-        <Header4>메인 베너 추가</Header4>
-        <TextField
-          placeholder="제목"
-          name="title"
-          size="medium"
-          width="100%"
-          onChange={onChangeTopic}
-          value={state.data.title}
-        />
-        <TextField
-          placeholder="소제목"
-          name="subtitle"
-          size="medium"
-          width="100%"
-          onChange={onChangeTopic}
-          value={state.data.subtitle}
-        />
-        <TextField
-          placeholder="링크"
-          name="url"
-          size="medium"
-          width="100%"
-          onChange={onChangeTopic}
-          value={state.data.url}
-        />
-        <Header4>기간 설정</Header4>
-        <FlexBox>
-          <CalendarContainer
-            name="posting_date"
-            onChange={onChangeCalendarStartDay}
-            selected={state.data.posting_date}
+      {homeDetail && (
+        <Container>
+          <Header4>메인 베너 추가</Header4>
+          <TextField
+            placeholder="제목"
+            name="title"
+            size="medium"
+            width="100%"
+            onChange={onChangeTopic}
+            value={state.data.title}
           />
-          ~
-          <CalendarContainer
-            name="posting_exitdate"
-            onChange={onChangeCalendarEndtDay}
-            selected={state.data.posting_exitdate}
+          <TextField
+            placeholder="소제목"
+            name="subtitle"
+            size="medium"
+            width="100%"
+            onChange={onChangeTopic}
+            value={state.data.subtitle}
           />
-        </FlexBox>
-        <Header4>타겟 지정</Header4>
-        <FlexBox>
-          <Button
-            variants="light"
-            color={state.data.open_tool == "_blank" ? "primary" : ""}
-            onClick={() => {
-              setState({
-                ...state,
-                data: { ...state.data, open_tool: "_blank" },
-              });
-            }}
-          >
-            새 탭으로 열기
-          </Button>
-          <Button
-            variants="light"
-            color={state.data.open_tool == "_self" ? "primary" : ""}
-            onClick={() => {
-              setState({
-                ...state,
-                data: { ...state.data, open_tool: "_self" },
-              });
-            }}
-          >
-            기존 창에서 열기
-          </Button>
-        </FlexBox>
-        <Header4>이미지 추가</Header4>
-        <FlexBox>
-          <Button
-            variants="light"
-            color="primary"
-            size="med"
-            onClick={onClickInput}
-          >
-            사진 첨부
-          </Button>
-          <Button onClick={deleteImage}>삭제</Button>
-          <input
-            style={{ display: "none" }}
-            type="file"
-            ref={hiddenFileInput}
-            onChange={onLoadFile}
+          <TextField
+            placeholder="링크"
+            name="url"
+            size="medium"
+            width="100%"
+            onChange={onChangeTopic}
+            value={state.data.url}
           />
-        </FlexBox>
-        <ImageContainer>
-          <img
-            src={
-              image.preview_URL
-                ? image.preview_URL
-                : homeImageUrl + state.data.image_url
-            }
-            alt=""
-          />
-        </ImageContainer>
-        <Header4>배경색 지정</Header4>
-        <FlexBox>
-          <TwitterPicker
-            color={state.data.background_color}
-            onChange={handleChangeComplete}
-          />
-        </FlexBox>
-        <FlexBox>
-          <Button
-            variants="light"
-            color="primary"
-            size="large"
-            onClick={onClickSubmitTopic}
-          >
-            등록
-          </Button>
-          <Button
-            variants="light"
-            color="primary"
-            size="large"
-            onClick={() => {
-              router.push("/home");
-            }}
-          >
-            취소
-          </Button>
-        </FlexBox>
-      </Container>
+          <Header4>기간 설정</Header4>
+          <FlexBox>
+            <CalendarContainer
+              name="posting_date"
+              onChange={onChangeCalendarStartDay}
+              selected={state.data.posting_date}
+            />
+            ~
+            <CalendarContainer
+              name="posting_exitdate"
+              onChange={onChangeCalendarEndtDay}
+              selected={state.data.posting_exitdate}
+            />
+          </FlexBox>
+          <Header4>타겟 지정</Header4>
+          <FlexBox>
+            <Button
+              variants="light"
+              color={state.data.open_tool == "_blank" ? "primary" : ""}
+              onClick={() => {
+                setState({
+                  ...state,
+                  data: { ...state.data, open_tool: "_blank" },
+                });
+              }}
+            >
+              새 탭으로 열기
+            </Button>
+            <Button
+              variants="light"
+              color={state.data.open_tool == "_self" ? "primary" : ""}
+              onClick={() => {
+                setState({
+                  ...state,
+                  data: { ...state.data, open_tool: "_self" },
+                });
+              }}
+            >
+              기존 창에서 열기
+            </Button>
+          </FlexBox>
+          <Header4>이미지 추가</Header4>
+          <FlexBox>
+            <Button
+              variants="light"
+              color="primary"
+              size="med"
+              onClick={onClickInput}
+            >
+              사진 첨부
+            </Button>
+            <Button onClick={deleteImage}>삭제</Button>
+            <input
+              style={{ display: "none" }}
+              type="file"
+              ref={hiddenFileInput}
+              onChange={onLoadFile}
+            />
+          </FlexBox>
+          <ImageContainer>
+            <img src={image.preview_URL} alt="" />
+          </ImageContainer>
+          <Header4>배경색 지정</Header4>
+          <FlexBox>
+            <TwitterPicker
+              color={state.data.background_color}
+              onChange={handleChangeComplete}
+            />
+          </FlexBox>
+          <FlexBox>
+            <Button
+              variants="light"
+              color="primary"
+              size="large"
+              onClick={onClickSubmitTopic}
+            >
+              등록
+            </Button>
+            <Button
+              variants="light"
+              color="primary"
+              size="large"
+              onClick={() => {
+                router.push("/home");
+              }}
+            >
+              취소
+            </Button>
+          </FlexBox>
+        </Container>
+      )}
     </>
   );
 };

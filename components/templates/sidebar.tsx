@@ -147,7 +147,11 @@ const SideBar = () => {
     //   alert("이동할 수 없습니다.");
     // }
     if (link) {
-      link === "logout" ? console.log("logout") : router.push(link);
+      link === "logout"
+        ? console.log("logout")
+        : link == "/any"
+        ? ""
+        : router.push(link);
     }
 
     if (content) {

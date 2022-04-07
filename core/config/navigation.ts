@@ -5,22 +5,22 @@ export const InsightNavigation = [
 ];
 
 export const UserNavigation = [
-  { id: 0, content: "사용자", url: "/login" },
+  { id: 0, content: "사용자", url: "/any" },
   { id: 1, content: "회사 인증", url: "/business" },
   { id: 2, content: "사용자 목록", url: "/user" },
 ];
 export const HomeNavigation = [
-  { id: 0, content: "홈", url: "/" },
+  { id: 0, content: "홈", url: "/any" },
   { id: 1, content: "메인 베너 편집", url: "/home" },
   { id: 2, content: "카테고리 편집", url: "/category" },
 ];
 export const AdsNavigation = [
-  { id: 0, content: "광고", url: "/" },
+  { id: 0, content: "광고", url: "/any" },
   { id: 1, content: "광고 베너 편집", url: "/ads" },
 ];
 export const StatisticsNavigation = [
-  { id: 0, content: "통계", url: "/login" },
-  { id: 1, content: "메뉴", url: "/login" },
+  { id: 0, content: "통계", url: "/any" },
+  { id: 1, content: "메뉴", url: "/any" },
 ];
 export const globalNavigationMore = [
   { id: 0, content: "공지사항", url: "/user" },
@@ -28,7 +28,7 @@ export const globalNavigationMore = [
 ];
 
 export const globalNavigationMy = [
-  { id: 0, content: "내 정보", url: "/" },
+  { id: 0, content: "내 정보", url: "/any" },
   { id: 1, content: "로그아웃", url: "logout" },
 ];
 

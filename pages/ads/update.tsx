@@ -104,8 +104,8 @@ const AdsUpdate: NextPage = () => {
         },
       });
       setImage({
-        image_file: AdsDetail.file_url,
-        preview_URL: AdsDetail.file_full_url,
+        image_file: AdsDetail.image_url,
+        preview_URL: adsImageUrl + AdsDetail.image_url,
       });
     }
   }, [AdsDetail]);
@@ -125,7 +125,6 @@ const AdsUpdate: NextPage = () => {
 
   const onClickSubmitTopic = async () => {
     const formData = new FormData();
-
     formData.append("file", image.image_file);
     formData.append("exist_url", state.data.image_url);
 
@@ -146,7 +145,7 @@ const AdsUpdate: NextPage = () => {
           formData.append("idx", `${id}`);
           await axios.post(`/api2/upload/adbanner`, formData);
         }
-        alert("메인 베너가 등록되었습니다");
+        alert("광고 베너가 수정되었습니다");
         router.push("/ads");
       });
   };
@@ -201,122 +200,117 @@ const AdsUpdate: NextPage = () => {
   };
   return (
     <>
-      <Container>
-        <Header4>메인 베너 추가</Header4>
-        <TextField
-          placeholder="제목"
-          name="title"
-          size="medium"
-          width="100%"
-          onChange={onChangeTopic}
-          value={state.data.title}
-        />
+      {AdsDetail && (
+        <Container>
+          <Header4>메인 베너 추가</Header4>
+          <TextField
+            placeholder="제목"
+            name="title"
+            size="medium"
+            width="100%"
+            onChange={onChangeTopic}
+            value={state.data.title}
+          />
 
-        <TextField
-          placeholder="링크"
-          name="url"
-          size="medium"
-          width="100%"
-          onChange={onChangeTopic}
-          value={state.data.url}
-        />
-        <Header4>기간 설정</Header4>
-        <FlexBox>
-          <CalendarContainer
-            name="posting_date"
-            onChange={onChangeCalendarStartDay}
-            selected={state.data.posting_date}
+          <TextField
+            placeholder="링크"
+            name="url"
+            size="medium"
+            width="100%"
+            onChange={onChangeTopic}
+            value={state.data.url}
           />
-          ~
-          <CalendarContainer
-            name="posting_exitdate"
-            onChange={onChangeCalendarEndtDay}
-            selected={state.data.posting_exitdate}
-          />
-        </FlexBox>
-        <Header4>타겟 지정</Header4>
-        <FlexBox>
-          <Button
-            variants="light"
-            color={state.data.open_tool == "_blank" ? "primary" : ""}
-            onClick={() => {
-              setState({
-                ...state,
-                data: { ...state.data, open_tool: "_blank" },
-              });
-            }}
-          >
-            새 탭으로 열기
-          </Button>
-          <Button
-            variants="light"
-            color={state.data.open_tool == "_self" ? "primary" : ""}
-            onClick={() => {
-              setState({
-                ...state,
-                data: { ...state.data, open_tool: "_self" },
-              });
-            }}
-          >
-            기존 창에서 열기
-          </Button>
-        </FlexBox>
-        <Header4>이미지 추가</Header4>
-        <FlexBox>
-          <Button
-            variants="light"
-            color="primary"
-            size="med"
-            onClick={onClickInput}
-          >
-            사진 첨부
-          </Button>
-          <Button onClick={deleteImage}>삭제</Button>
-          <input
-            style={{ display: "none" }}
-            type="file"
-            ref={hiddenFileInput}
-            onChange={onLoadFile}
-          />
-        </FlexBox>
-        <ImageContainer>
-          <img
-            src={
-              image.preview_URL
-                ? image.preview_URL
-                : adsImageUrl + state.data.image_url
-            }
-            alt=""
-          />
-        </ImageContainer>
-        <Header4>배경색 지정</Header4>
-        <FlexBox>
-          <TwitterPicker
-            color={state.data.background_color}
-            onChange={handleChangeComplete}
-          />
-        </FlexBox>
-        <FlexBox>
-          <Button
-            variants="light"
-            color="primary"
-            size="large"
-            onClick={onClickSubmitTopic}
-          >
-            등록
-          </Button>
-          <Button
-            variants="light"
-            color="primary"
-            size="large"
-            onClick={() => {
-              router.push("/ads");
-            }}
-          >
-            취소
-          </Button>
-        </FlexBox>
-      </Container>
+          <Header4>기간 설정</Header4>
+          <FlexBox>
+            <CalendarContainer
+              name="posting_date"
+              onChange={onChangeCalendarStartDay}
+              selected={state.data.posting_date}
+            />
+            ~
+            <CalendarContainer
+              name="posting_exitdate"
+              onChange={onChangeCalendarEndtDay}
+              selected={state.data.posting_exitdate}
+            />
+          </FlexBox>
+          <Header4>타겟 지정</Header4>
+          <FlexBox>
+            <Button
+              variants="light"
+              color={state.data.open_tool == "_blank" ? "primary" : ""}
+              onClick={() => {
+                setState({
+                  ...state,
+                  data: { ...state.data, open_tool: "_blank" },
+                });
+              }}
+            >
+              새 탭으로 열기
+            </Button>
+            <Button
+              variants="light"
+              color={state.data.open_tool == "_self" ? "primary" : ""}
+              onClick={() => {
+                setState({
+                  ...state,
+                  data: { ...state.data, open_tool: "_self" },
+                });
+              }}
+            >
+              기존 창에서 열기
+            </Button>
+          </FlexBox>
+          <Header4>이미지 추가</Header4>
+          <FlexBox>
+            <Button
+              variants="light"
+              color="primary"
+              size="med"
+              onClick={onClickInput}
+            >
+              사진 첨부
+            </Button>
+            <Button onClick={deleteImage}>삭제</Button>
+            <input
+              style={{ display: "none" }}
+              type="file"
+              ref={hiddenFileInput}
+              onChange={onLoadFile}
+            />
+          </FlexBox>
+          <ImageContainer>
+            <img src={image.preview_URL} alt="" />
+          </ImageContainer>
+          <Header4>배경색 지정</Header4>
+          <FlexBox>
+            <TwitterPicker
+              color={state.data.background_color}
+              onChange={handleChangeComplete}
+            />
+          </FlexBox>
+          <FlexBox>
+            <Button
+              variants="light"
+              color="primary"
+              size="large"
+              onClick={onClickSubmitTopic}
+            >
+              등록
+            </Button>
+            <Button
+              variants="light"
+              color="primary"
+              size="large"
+              onClick={() => {
+                router.push("/ads");
+              }}
+            >
+              취소
+            </Button>
+          </FlexBox>
+        </Container>
+      )}
     </>
   );
 };

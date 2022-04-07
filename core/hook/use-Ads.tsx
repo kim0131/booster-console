@@ -4,7 +4,16 @@ import useSWR from "swr";
 const adsDetailFetcher = async (proms: any) => {
   let result: any = {};
   await axios.get(`/api2/home/adbanner/detail/${proms.id}`).then(res => {
-    result = res.data.result;
+    const item = res.data.result;
+    result = {
+      id: item.idx,
+      image_url: item.image_url,
+      posting_date: item.posting_date,
+      posting_exitdate: item.posting_exitdate,
+      title: item.title,
+      url: item.url,
+      priority: item.priority,
+    };
   });
 
   return result;

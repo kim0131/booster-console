@@ -1,10 +1,23 @@
+import { homeImageUrl } from "@core/config/imgurl";
 import axios from "axios";
 import useSWR from "swr";
 
 const homeDetailFetcher = async (proms: any) => {
   let result: any = {};
   await axios.get(`/api2/home/main/detail/${proms.id}`).then(res => {
-    result = res.data.result;
+    const homeList = res.data.result;
+    result = {
+      background_color: homeList.background_color,
+      id: homeList.idx,
+      image_url: homeList.image_url,
+      posting_date: homeList.posting_date,
+      posting_exitdate: homeList.posting_exitdate,
+      subtitle: homeList.subtitle,
+      title: homeList.title,
+      url: homeList.url,
+
+      priority: homeList.priority,
+    };
   });
 
   return result;
@@ -18,7 +31,7 @@ const homeListFetcher = async () => {
       result.push({
         background_color: item.background_color,
         id: item.idx,
-        image_url: item.image_url,
+        image_url: homeImageUrl + item.image_url,
         posting_date: item.posting_date,
         posting_exitdate: item.posting_exitdate,
         subtitle: item.subtitle,

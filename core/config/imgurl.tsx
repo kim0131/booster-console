@@ -7,4 +7,4 @@ export const insightImageUrl =
 export const homeImageUrl =
   "https://storage.googleapis.com/booster-bucket/home/";
 export const adsImageUrl =
-  "https://storage.googleapis.com/booster-bucket/home/adbanner/";
+  "https://storage.googleapis.com/booster-bucket/adbanner/";
