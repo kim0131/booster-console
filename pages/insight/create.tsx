@@ -119,21 +119,15 @@ const InsightCrate: NextPage = () => {
 
   const onChangeinsight = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.currentTarget;
-    console.log(state.data);
+    console.log(state.data, value, name);
     setState({
       ...state,
       data: {
         ...state.data,
         [name]: value,
+        wr_content: contents,
         mb_id: session?.user?.email,
         mb_name: session?.user?.name,
-      },
-    });
-    setState({
-      ...state,
-      data: {
-        ...state.data,
-        wr_content: contents,
       },
     });
   };

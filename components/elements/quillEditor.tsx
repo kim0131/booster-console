@@ -23,14 +23,15 @@ export const QuillEditor = ({ content, onChange }: any) => {
     input.onchange = async () => {
       const file = input.files;
       if (file !== null) {
-        formData.append("image", file[0]);
-
+        formData.append("file", file[0]);
         try {
-          const res = await axios
-            .post(`/api2/upload/insight`, formData)
+          await axios
+            .post(`/api2/upload/insight-quill`, formData)
             .then(async res => {
-              url = insightImageUrl + res.data.result.file_url;
+              url = insightImageUrl + res.data.file_url;
+              console.log(url);
             });
+
           const range = QuillRef.current?.getEditor().getSelection()?.index;
           if (range !== null && range !== undefined) {
             let quill = QuillRef.current?.getEditor();
