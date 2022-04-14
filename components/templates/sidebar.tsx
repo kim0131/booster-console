@@ -183,7 +183,7 @@ const Snb = ({ category, searchTerm }: any) => {
     e.preventDefault();
     const { value, name } = e.currentTarget;
 
-    router.push(`/${value}`);
+    // router.push(`/${value}`);
   };
 
   return isDesktop ? (
@@ -197,7 +197,7 @@ const Snb = ({ category, searchTerm }: any) => {
                 (menu: { id: number; content: string; param: string }) => (
                   <Style.Desktop.Category.Button
                     key={menu.id}
-                    isRoute={menu.param === category}
+                    isRoute={menu.param === router.pathname.slice(1)}
                     value={menu.param}
                     onClick={onClickRouter}
                   >
