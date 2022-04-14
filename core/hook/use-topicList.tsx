@@ -33,12 +33,13 @@ const topicfetcher = async (url: string) => {
     })
     .then(async res => {
       const topic = res.data.result;
+
       topic.map(async (item: any, idx: any) => {
         result.push({
           idx: item.idx,
           category: await getCategoryName(item.board),
           wr_subject: item.wr_subject,
-          mb_name: item.mb_name,
+          mb_name: item.mb_nick,
           datetime: item.wr_datetime.slice(0, 10),
           // update: item.wr_update.slice(0, 10),
           update: "",

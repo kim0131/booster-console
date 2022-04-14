@@ -16,7 +16,7 @@ export const HomeNavigation = [
 ];
 export const AdsNavigation = [
   { id: 0, content: "광고", url: "/any" },
-  { id: 1, content: "광고 베너 편집", url: "/ads" },
+  { id: 1, content: "광고베너편집", url: "/ads" },
 ];
 export const StatisticsNavigation = [
   { id: 0, content: "통계", url: "/any" },

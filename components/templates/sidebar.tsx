@@ -1,333 +1,235 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import Button from "@components/elements/button";
-import Logo from "@components/elements/logo";
-import TextField from "@components/elements/text-field";
-import { IconMenu, IconProfile, IconSearch } from "@components/icons";
-import {
-  AdsNavigation,
-  globalNavigationMore,
-  globalNavigationMy,
-  HomeNavigation,
-  InsightNavigation,
-  StatisticsNavigation,
-  TopicNavigation,
-  UserNavigation,
-} from "@core/config/navigation";
-import useDesktop from "@core/hook/use-desktop";
-import styled from "@emotion/styled";
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
-import { signIn, signOut, useSession } from "next-auth/react";
-import Dropdown from "@components/elements/dropdown";
-import { accountsNavigation } from "@core/config/navigation";
-import theme from "@components/styles/theme";
+import styled from "@emotion/styled";
 
-interface IPropsNavItem {
+import { Body2 } from "@components/elements/types";
+import { IconChevronDown } from "@components/icons";
+
+import { useEffect } from "react";
+import useDesktop from "@core/hook/use-desktop";
+
+interface IPropsStyle {
   isRoute?: boolean;
 }
 
-const Container = styled.header`
-  position: sticky;
-  width: 15rem;
-  top: 0;
-  min-height: 50rem;
-  background-color: ${props => props.theme.color.white};
-  box-shadow: ${props => props.theme.shadow.inset.bottom};
-  display: flex;
-  flex-direction: column;
-  z-index: 10;
-  // margin: auto;
-  ${props => props.theme.screen.md} {
-    max-width: 50rem;
-    padding: 1.25rem 0;
-  }
-`;
+const Style = {
+  Desktop: {
+    Container: styled.div`
+      flex: none;
+      width: 12rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      padding: 1rem;
+    `,
+    Category: {
+      Container: styled.div`
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      `,
+      Block: styled.div`
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      `,
+      Button: styled.button<IPropsStyle>`
+        padding: 0.5rem;
+        border-radius: ${props => props.theme.rounded.md};
+        background-color: ${props =>
+          props.isRoute ? props.theme.color.blue[50] : "transparent"};
+        color: ${props =>
+          props.isRoute
+            ? props.theme.color.blue[600]
+            : props.theme.color.gray[900]};
+        font-size: ${props => props.theme.fontSize.body2};
+        font-weight: ${props => (props.isRoute ? 500 : 400)};
+        line-height: ${props => props.theme.lineHeight.body2};
+        text-align: left;
+        &:hover,
+        &:focus {
+          outline: 0;
+          background-color: ${props =>
+            props.isRoute
+              ? props.theme.color.blue[50]
+              : props.theme.color.gray[100]};
+        }
+      `,
+    },
+  },
+  Mobile: {
+    Wrapper: styled.div`
+      position: relative;
+      width: 100%;
+      height: 3.5rem;
+      background-color: ${props => props.theme.color.white};
+    `,
+    Selectbox: styled.select`
+      appearance: none;
+      width: 100%;
+      height: 3.5rem;
+      padding: 0 1.25rem;
+      background-color: ${props => props.theme.color.white};
+      box-shadow: ${props => props.theme.shadow.inset.bottom};
+      font-size: ${props => props.theme.fontSize.body2};
+      line-height: ${props => props.theme.lineHeight.body2};
+      color: ${props => props.theme.color.gray[900]};
+      outline: 0;
+      &:focus,
+      &:active {
+        outline: 0;
+      }
+    `,
+    Icon: styled.div`
+      position: absolute;
+      top: 1rem;
+      right: 1.25rem;
+      width: 1.5rem;
+      height: 1.5rem;
+      pointer-events: none;
+    `,
+  },
+};
 
-const Wrapper = styled.div`
-  width: 100%;
-  max-width: 72rem;
-  margin: 0 auto;
-  padding: 0.5rem 0.25rem;
-  ${props => props.theme.screen.md} {
-    padding: 0 3rem 0.05rem;
-  }
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  gap: 1rem;
-`;
+const snbDatas = [
+  {
+    id: 1,
+    category: "게시글",
+    menus: [
+      {
+        id: 11,
+        content: `토픽`,
+        param: "topic",
+        name: "토픽",
+      },
+      {
+        id: 12,
+        content: `인사이트`,
+        param: "insight",
+        name: "인사이트",
+      },
+    ],
+  },
+  {
+    id: 2,
+    category: "사용자",
+    menus: [
+      {
+        id: 21,
+        content: `회사인증`,
+        param: "business",
+        name: "회사인증",
+      },
+      {
+        id: 22,
+        content: `사용자 목록`,
+        param: "user",
+        name: "사용자 목록",
+      },
+    ],
+  },
+  {
+    id: 3,
+    category: "홈",
+    menus: [
+      {
+        id: 31,
+        content: `메인베너편집`,
+        param: "home",
+        name: "메인베너편집",
+      },
+      {
+        id: 32,
+        content: `카테고리 편집`,
+        param: "category",
+        name: "카테고리 편집",
+      },
+    ],
+  },
+  {
+    id: 4,
+    category: "광고",
+    menus: [
+      {
+        id: 41,
+        content: `광고베너편집`,
+        param: "ads",
+        name: "광고베너편집",
+      },
+    ],
+  },
+  {
+    id: 5,
+    category: "통계",
+    menus: [
+      {
+        id: 51,
+        content: `개발중....`,
+        param: "",
+        name: "개발중....",
+      },
+    ],
+  },
+];
 
-const MobileWrapper = styled.div`
-  width: 100%;
-  max-width: 72rem;
-  margin: 0 auto;
-  padding-right: 1.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const Nav = styled.nav`
-  display: flex;
-  // flex-wrap: wrap;
-  align-items: flex-start;
-  flex-direction: column;
-  width: 100%;
-`;
-
-const NavItem = styled.div<IPropsNavItem>`
-  // padding: 0 0.75rem;
-  font-size: 1.25rem;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  position: relative;
-  cursor: pointer;
-  &:hover {
-    color: ${props =>
-      props.isRoute ? `${props.theme.color.blue[600]}` : "none"};
-  }
-  color: ${props =>
-    props.isRoute ? `${props.theme.color.blue[600]}` : "none"};
-`;
-
-const NavItem2 = styled.div<IPropsNavItem>`
-  padding: 0.25rem 0.75rem;
-  font-size: 1rem;
-  font-weight: 500;
-
-  display: flex;
-  align-items: center;
-  position: relative;
-  cursor: pointer;
-  &:hover {
-    color: ${props =>
-      props.isRoute ? `${props.theme.color.blue[600]}` : "none"};
-  }
-  color: ${props =>
-    props.isRoute ? `${props.theme.color.blue[600]}` : "none"};
-`;
-
-const BorderBottom = styled.div`
-  width: 100%;
-  border-bottom: 1px black solid;
-`;
-
-const SideBar = () => {
-  const router = useRouter();
-  const { data: session, status } = useSession();
-  useEffect(() => {
-    // if (status == "unauthenticated") {
-    //   router.push("/login");
-    //   console.log(status);
-    // }
-  }, [status]);
-
+const Snb = ({ category, searchTerm }: any) => {
   const { isDesktop } = useDesktop();
+  const router = useRouter();
 
-  const onClickLink = (
-    e: React.MouseEvent<HTMLButtonElement | HTMLDivElement | SVGElement>,
+  const onClickRouter = (
+    e:
+      | React.MouseEvent<HTMLButtonElement>
+      | React.ChangeEvent<HTMLSelectElement>,
   ) => {
     e.preventDefault();
-    const link: string | undefined = e.currentTarget.dataset.value;
-    const content: string | null = e.currentTarget.textContent;
-    // if (status == "authenticated") {
-    //   if (link) {
-    //     link === "logout" ? console.log("logout") : router.push(link);
-    //   }
+    const { value, name } = e.currentTarget;
 
-    //   if (content) {
-    //     content === "로그아웃"
-    //       ? signOut({
-    //           redirect: false,
-    //         })
-    //       : "";
-    //   }
-    // } else {
-    //   alert("이동할 수 없습니다.");
-    // }
-    if (link) {
-      link === "logout"
-        ? console.log("logout")
-        : link == "/any"
-        ? ""
-        : router.push(link);
-    }
-
-    if (content) {
-      content === "로그아웃"
-        ? signOut({
-            redirect: false,
-          })
-        : "";
-    }
+    router.push(`/${value}`);
   };
 
-  const CheckRouter = (url: string) => {
-    if (router.pathname.includes(url)) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-  return (
-    <Container>
-      <Wrapper>
-        {isDesktop && (
-          <Nav>
-            {TopicNavigation.map((nav, idx) =>
-              idx == 0 ? (
-                <NavItem
-                  key={nav.id}
-                  data-value={nav.url}
-                  isRoute={CheckRouter(nav.url)}
-                  onClick={onClickLink}
-                >
-                  {nav.content}
-                </NavItem>
-              ) : (
-                <NavItem2
-                  key={nav.id}
-                  data-value={nav.url}
-                  isRoute={CheckRouter(nav.url)}
-                  onClick={onClickLink}
-                >
-                  {nav.content}
-                </NavItem2>
-              ),
-            )}
-          </Nav>
-        )}
-
-        {isDesktop && (
-          <Nav>
-            {InsightNavigation.map((nav, idx) =>
-              idx == 0 ? (
-                <NavItem
-                  key={nav.id}
-                  data-value={nav.url}
-                  isRoute={CheckRouter(nav.url)}
-                  onClick={onClickLink}
-                >
-                  {nav.content}
-                </NavItem>
-              ) : (
-                <NavItem2
-                  key={nav.id}
-                  data-value={nav.url}
-                  isRoute={CheckRouter(nav.url)}
-                  onClick={onClickLink}
-                >
-                  {nav.content}
-                </NavItem2>
-              ),
-            )}
-          </Nav>
-        )}
-        <BorderBottom />
-        {isDesktop && (
-          <Nav>
-            {UserNavigation.map((nav, idx) =>
-              idx == 0 ? (
-                <NavItem
-                  key={nav.id}
-                  data-value={nav.url}
-                  isRoute={CheckRouter(nav.url)}
-                  onClick={onClickLink}
-                >
-                  {nav.content}
-                </NavItem>
-              ) : (
-                <NavItem2
-                  key={nav.id}
-                  data-value={nav.url}
-                  isRoute={CheckRouter(nav.url)}
-                  onClick={onClickLink}
-                >
-                  {nav.content}
-                </NavItem2>
-              ),
-            )}
-          </Nav>
-        )}
-        {isDesktop && (
-          <Nav>
-            {HomeNavigation.map((nav, idx) =>
-              idx == 0 ? (
-                <NavItem
-                  key={nav.id}
-                  data-value={nav.url}
-                  isRoute={CheckRouter(nav.url)}
-                  onClick={onClickLink}
-                >
-                  {nav.content}
-                </NavItem>
-              ) : (
-                <NavItem2
-                  key={nav.id}
-                  data-value={nav.url}
-                  isRoute={CheckRouter(nav.url)}
-                  onClick={onClickLink}
-                >
-                  {nav.content}
-                </NavItem2>
-              ),
-            )}
-          </Nav>
-        )}
-        {isDesktop && (
-          <Nav>
-            {AdsNavigation.map((nav, idx) =>
-              idx == 0 ? (
-                <NavItem
-                  key={nav.id}
-                  data-value={nav.url}
-                  isRoute={CheckRouter(nav.url)}
-                  onClick={onClickLink}
-                >
-                  {nav.content}
-                </NavItem>
-              ) : (
-                <NavItem2
-                  key={nav.id}
-                  data-value={nav.url}
-                  isRoute={CheckRouter(nav.url)}
-                  onClick={onClickLink}
-                >
-                  {nav.content}
-                </NavItem2>
-              ),
-            )}
-          </Nav>
-        )}
-        {isDesktop && (
-          <Nav>
-            {StatisticsNavigation.map((nav, idx) =>
-              idx == 0 ? (
-                <NavItem
-                  key={nav.id}
-                  data-value={nav.url}
-                  isRoute={CheckRouter(nav.url)}
-                  onClick={onClickLink}
-                >
-                  {nav.content}
-                </NavItem>
-              ) : (
-                <NavItem2
-                  key={nav.id}
-                  data-value={nav.url}
-                  isRoute={CheckRouter(nav.url)}
-                  onClick={onClickLink}
-                >
-                  {nav.content}
-                </NavItem2>
-              ),
-            )}
-          </Nav>
-        )}
-      </Wrapper>
-    </Container>
+  return isDesktop ? (
+    <Style.Desktop.Container>
+      {snbDatas.map((snbData: any) => (
+        <Style.Desktop.Category.Container key={snbData.id}>
+          <Body2 isBold>{snbData.category}</Body2>
+          <Style.Desktop.Category.Block>
+            {snbData.menus &&
+              snbData.menus.map(
+                (menu: { id: number; content: string; param: string }) => (
+                  <Style.Desktop.Category.Button
+                    key={menu.id}
+                    isRoute={menu.param === category}
+                    value={menu.param}
+                    onClick={onClickRouter}
+                  >
+                    {menu.content}
+                  </Style.Desktop.Category.Button>
+                ),
+              )}
+          </Style.Desktop.Category.Block>
+        </Style.Desktop.Category.Container>
+      ))}
+    </Style.Desktop.Container>
+  ) : (
+    <Style.Mobile.Wrapper>
+      <Style.Mobile.Selectbox defaultValue={category} onChange={onClickRouter}>
+        {snbDatas.map((snbData: any) => (
+          <optgroup key={snbData.id} label={snbData.category}>
+            {snbData.menus &&
+              snbData.menus.map(
+                (menu: { id: number; content: string; param: string }) => (
+                  <option key={menu.id} value={menu.param}>
+                    {menu.content}
+                  </option>
+                ),
+              )}
+          </optgroup>
+        ))}
+      </Style.Mobile.Selectbox>
+      <Style.Mobile.Icon>
+        <IconChevronDown />
+      </Style.Mobile.Icon>
+    </Style.Mobile.Wrapper>
   );
 };
 
-export default SideBar;
+export default Snb;

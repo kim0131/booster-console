@@ -32,6 +32,7 @@ const topicDetailfetcher = async (url: any) => {
     })
     .then(async res => {
       const TopicContent = res.data.result[0];
+
       const CurrentTime = new Date();
       const ContentTime = new Date(TopicContent.wr_datetime);
       const elapsedTime = Math.ceil(

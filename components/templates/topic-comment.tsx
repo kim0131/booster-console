@@ -307,18 +307,25 @@ const TopicComment = ({ id, children, count }: IPropsComment) => {
   };
 
   const onClickWriteComment = async () => {
-    await axios.post(`/api2/topic/write`, commentdata).then(res => {
-      alert("댓글이 등록되었습니다");
-      setCommentData({ ...commentdata, wr_content: "" });
-      router.push(router.asPath);
-    });
+    if (commentdata.wr_content) {
+      await axios.post(`/api2/topic/write`, commentdata).then(res => {
+        alert("댓글이 등록되었습니다");
+        setCommentData({ ...commentdata, wr_content: "" });
+      });
+    } else {
+      alert("댓글을 입력해주세요");
+    }
   };
   const onClickWriteReply = async () => {
-    await axios.post(`/api2/topic/write`, replydata).then(res => {
-      alert("댓글이 등록되었습니다");
-      setReply({ ...replydata, wr_parent2: 0, wr_content: "" });
-      router.push(router.asPath);
-    });
+    if (replydata.wr_content) {
+      await axios.post(`/api2/topic/write`, replydata).then(res => {
+        alert("댓글이 등록되었습니다");
+        setReply({ ...replydata, wr_parent2: 0, wr_content: "" });
+        router.push(router.asPath);
+      });
+    } else {
+      alert("댓글을 입력해주세요");
+    }
   };
   const onChangeTextareaComment = (e: any) => {
     const { name, value } = e.target;

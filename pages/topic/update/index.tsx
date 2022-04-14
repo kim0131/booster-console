@@ -147,6 +147,9 @@ const TopicUpdateContent: NextPage = () => {
     const formData = new FormData();
     formData.append("file", image.image_file);
     formData.append("exist_url", state.data.file_url);
+    if (!state.data.board) return alert("카테고리를 선택해주세요");
+    if (!state.data.wr_subject) return alert("제목을 작성해주세요");
+    if (!state.data.wr_content) return alert("내용을 작성해주세요");
     await axios
       .post(`/api2/topic/update/${id}`, {
         wr_subject: state.data.wr_subject,

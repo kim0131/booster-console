@@ -132,11 +132,13 @@ const TopicCrate: NextPage = () => {
   };
 
   const onClickSubmitTopic = async () => {
-    setState({ ...state, isLoading: true });
     const formData = new FormData();
     if (image.image_file) {
       formData.append("file", image.image_file);
     }
+    if (!state.data.board) return alert("카테고리를 선택해주세요");
+    if (!state.data.wr_subject) return alert("제목을 작성해주세요");
+    if (!state.data.wr_content) return alert("내용을 작성해주세요");
     await axios
       .post("/api2/topic/write", {
         wr_subject: state.data.wr_subject,
@@ -157,7 +159,6 @@ const TopicCrate: NextPage = () => {
         alert("토픽이 등록되었습니다");
         router.push("/topic");
       });
-    setState({ ...state, isLoading: false });
   };
 
   const onClickInput = () => {

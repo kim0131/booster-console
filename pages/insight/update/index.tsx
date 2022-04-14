@@ -147,7 +147,10 @@ const InsightUpdateContent: NextPage = () => {
 
     formData.append("file", image.image_file);
     formData.append("exist_url", state.data.file_url);
-
+    if (!state.data.board) return alert("카테고리를 선택해주세요");
+    if (!state.data.wr_subject) return alert("제목을 작성해주세요");
+    if (!contents) return alert("내용을 작성해주세요");
+    if (!image.image_file) return alert("썸네일을 업로드해주세요");
     await axios
       .post(`/api2/insight/update/${id}`, {
         wr_subject: state.data.wr_subject,

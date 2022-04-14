@@ -130,9 +130,9 @@ const Header = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
   useEffect(() => {
-    // if (status == "unauthenticated" && router.route != "/login") {
-    //   router.push("/login");
-    // }
+    if (status == "unauthenticated" && router.route != "/login") {
+      router.push("/login");
+    }
   }, [router, status]);
 
   const { isDesktop } = useDesktop();
@@ -143,21 +143,21 @@ const Header = () => {
     e.preventDefault();
     const link: string | undefined = e.currentTarget.dataset.value;
     const content: string | null = e.currentTarget.textContent;
-    // if (status == "authenticated") {
-    //   if (link) {
-    //     link === "logout" ? console.log("logout") : router.push(link);
-    //   }
+    if (status == "authenticated") {
+      if (link) {
+        link === "logout" ? console.log("logout") : router.push(link);
+      }
 
-    //   if (content) {
-    //     content === "로그아웃"
-    //       ? signOut({
-    //           redirect: false,
-    //         })
-    //       : "";
-    //   }
-    // } else {
-    //   alert("이동할 수 없습니다.");
-    // }
+      if (content) {
+        content === "로그아웃"
+          ? signOut({
+              redirect: false,
+            })
+          : "";
+      }
+    } else {
+      alert("이동할 수 없습니다.");
+    }
     if (link) {
       link === "logout" ? console.log("logout") : router.push(link);
     }

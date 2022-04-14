@@ -140,6 +140,7 @@ const TopicContentLayout = ({
     wr_content: "",
     file_url: "",
     file_full_url: "",
+    mb_nick: "",
   });
   const { topicDetail } = useTopicDetail(id);
   useEffect(() => {
@@ -189,7 +190,7 @@ const TopicContentLayout = ({
             <Style.Header.Bottom.Badge>
               <IconProfile size={16} color={theme.color.gray[500]} />
               <Body3 color={theme.color.gray[500]}>
-                {topicContent.mb_name}
+                {topicContent.mb_nick}
               </Body3>
             </Style.Header.Bottom.Badge>
             <Style.Header.Bottom.Badge>
