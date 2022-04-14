@@ -183,7 +183,7 @@ const Snb = ({ category, searchTerm }: any) => {
     e.preventDefault();
     const { value, name } = e.currentTarget;
 
-    // router.push(`/${value}`);
+    router.push(`/${value}`);
   };
 
   return isDesktop ? (
